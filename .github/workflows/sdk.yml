@@ -38,3 +38,7 @@ jobs:
         run: |
           source .venv/bin/activate
           PYTHONPATH=. pylint jaxl/api
+      - name: Generate docs
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=. ./docs.sh
