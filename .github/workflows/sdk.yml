@@ -1,0 +1,40 @@
+---
+name: jaxl-python
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+concurrency:
+  group: >-
+    ${{
+        github.workflow
+    }}-${{
+        github.event.pull_request.number || github.sha
+    }}
+  cancel-in-progress: true
+jobs:
+  lint-and-build:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up virtual environment
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Run mypy
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=. mypy -p jaxl.api
+      - name: Run pylint
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=. pylint jaxl/api

@@ -12,4 +12,4 @@ import argparse
 
 def _subparser(parser: argparse.ArgumentParser) -> None:
     """Manage Notifications (Android, iOS, Web)"""
-    subparsers = parser.add_subparsers(dest="action", required=True)
+    _subparsers = parser.add_subparsers(dest="action", required=True)
