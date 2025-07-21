@@ -1,0 +1,199 @@
+"""
+Copyright (c) 2010-present by Jaxl Innovations Private Limited.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms,
+with or without modification, is strictly prohibited.
+"""
+
+import argparse
+from typing import Any, Dict, Union
+
+from jaxl.api._client import JaxlApiModule, jaxl_api_client
+from jaxl.api.client.api.v1 import (
+    v1_ivr_create,
+    v1_ivr_options_create,
+    v1_ivr_options_list,
+    v1_ivr_options_partial_update,
+)
+from jaxl.api.client.models.cta_request import CTARequest
+from jaxl.api.client.models.id_enum import IdEnum
+from jaxl.api.client.models.ivr_collection_request import IVRCollectionRequest
+from jaxl.api.client.models.ivr_menu_request import IVRMenuRequest
+from jaxl.api.client.models.ivr_menu_response import IVRMenuResponse
+from jaxl.api.client.models.ivr_options_invalid_response import (
+    IVROptionsInvalidResponse,
+)
+from jaxl.api.client.models.ivr_options_request import IVROptionsRequest
+from jaxl.api.client.models.ivr_options_response import IVROptionsResponse
+from jaxl.api.client.models.next_or_cta_request import NextOrCTARequest
+from jaxl.api.client.models.patched_ivr_options_update_request import (
+    PatchedIVROptionsUpdateRequest,
+)
+from jaxl.api.client.types import Response
+
+
+def ivrs_create(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
+    return v1_ivr_create.sync_detailed(
+        client=jaxl_api_client(JaxlApiModule.CALL),
+        json_body=IVRMenuRequest(
+            name=args["message"],
+            hangup=args.get("hangup", False),
+        ),
+    )
+
+
+def ivrs_options_create(
+    args: Dict[str, Any],
+) -> Response[Union[IVROptionsInvalidResponse, IVROptionsResponse]]:
+    client = jaxl_api_client(JaxlApiModule.CALL)
+    next_or_cta = (
+        NextOrCTARequest(next_=args["next_"], cta=None)
+        if args.get("next_", None) is not None
+        else NextOrCTARequest(
+            next_=None,
+            cta=CTARequest(
+                phone_number=args["phone"],
+                devices=args["devices"],
+                appusers=args["appusers"],
+                collections=(
+                    IVRCollectionRequest(
+                        type=IdEnum.VALUE_1,
+                        collection_ids=args["teams"],
+                    )
+                    if args["teams"]
+                    else None
+                ),
+                webhook=args["webhook"],
+            ),
+        )
+    )
+
+    # Check whether this args["input_"] is already configured for IVR.
+    # Accordingly, either patch or create.
+    options_response = v1_ivr_options_list.sync_detailed(
+        menu_id=args["ivr"],
+        client=client,
+    )
+    if options_response.status_code != 200 or options_response.parsed is None:
+        raise ValueError(
+            f"Unable to fetch existing options for IVR#{args['ivr']}, please try again"
+        )
+    existing_option_id = None
+    for option in options_response.parsed.results:
+        if option.input_ == args["input_"]:
+            existing_option_id = option.id
+            break
+
+    return (
+        v1_ivr_options_partial_update.sync_detailed(
+            id=existing_option_id,
+            menu_id=args["ivr"],
+            client=client,
+            json_body=PatchedIVROptionsUpdateRequest(
+                name=args["message"],
+                enabled=args.get("enabled", True),
+                next_or_cta=next_or_cta,
+                # When needs_data_prompt is enabled, we need a message to speak out
+                needs_data_prompt=None,
+                # When needs_data_prompt is enabled, enabling confirmation will speak back the
+                # input to the user for double confirmation
+                confirmation=None,
+            ),
+        )
+        if existing_option_id is not None
+        else v1_ivr_options_create.sync_detailed(
+            menu_id=args["ivr"],
+            client=client,
+            json_body=IVROptionsRequest(
+                name=args["message"],
+                input_=args["input_"],
+                next_or_cta=next_or_cta,
+                enabled=args.get("enabled", True),
+                # When needs_data_prompt is enabled, we need a message to speak out
+                needs_data_prompt=None,
+                # When needs_data_prompt is enabled, enabling confirmation will speak back the
+                # input to the user for double confirmation
+                confirmation=None,
+            ),
+        )
+    )
+
+
+def _options_subparser(parser: argparse.ArgumentParser) -> None:
+    """Returns ivr options resource subparser."""
+    subparsers = parser.add_subparsers(dest="action", required=True)
+
+    options_configure_ivr = subparsers.add_parser(
+        "configure",
+        help="Configure IVR options",
+    )
+    options_configure_ivr.add_argument(
+        "--ivr",
+        required=True,
+        type=int,
+        help="IVR for which this option needs to be created",
+    )
+    options_configure_ivr.add_argument(
+        "--input",
+        dest="input_",
+        type=str,
+        required=True,
+        help="Expected DTMF input from the user",
+    )
+    options_configure_ivr.add_argument(
+        "--message",
+        required=True,
+        type=str,
+        help="Message to speak when referencing this option",
+    )
+    group = options_configure_ivr.add_mutually_exclusive_group(required=True)
+    group.add_argument("--phone", type=str, help="Send to a phone number")
+    group.add_argument("--devices", type=int, nargs="+", help="Send to devices")
+    group.add_argument("--appusers", type=int, nargs="+", help="Send to app users")
+    group.add_argument("--teams", type=int, nargs="+", help="Send to teams")
+    group.add_argument("--webhook", type=str, help="Send to a webhook URL")
+    group.add_argument("--next", type=int, dest="next_", help="Next IVR ID")
+    options_configure_ivr.set_defaults(
+        func=ivrs_options_create,
+        _arg_keys=[
+            "input_",
+            "ivr",
+            "message",
+            "next_",
+            "phone",
+            "devices",
+            "appusers",
+            "teams",
+            "webhook",
+        ],
+    )
+
+
+def _subparser(parser: argparse.ArgumentParser) -> None:
+    """Manage IVRs (Interactive Voice Response)"""
+    subparsers = parser.add_subparsers(dest="action", required=True)
+
+    # create ivr
+    ivrs_create_parser = subparsers.add_parser(
+        "create",
+        help="Create a new IVR",
+    )
+    ivrs_create_parser.add_argument(
+        "--message",
+        required=True,
+        help="Message to speak when user connects to this IVR",
+    )
+    ivrs_create_parser.add_argument(
+        "--hangup",
+        action="store_true",
+        help="Whether to hangup after speaking out the message. Default: False.",
+    )
+    ivrs_create_parser.set_defaults(
+        func=ivrs_create,
+        _arg_keys=["message", "hangup"],
+    )
+
+    # create ivr options subparser
+    _options_subparser(subparsers.add_parser("options", help="Manage IVR Options"))

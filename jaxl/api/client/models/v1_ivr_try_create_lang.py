@@ -1,0 +1,75 @@
+"""
+Copyright (c) 2010-present by Jaxl Innovations Private Limited.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms,
+with or without modification, is strictly prohibited.
+"""
+
+from enum import Enum
+
+
+class V1IvrTryCreateLang(str, Enum):
+    AF = "af"
+    AR = "ar"
+    BG = "bg"
+    BN = "bn"
+    BS = "bs"
+    CA = "ca"
+    CS = "cs"
+    DA = "da"
+    DE = "de"
+    EL = "el"
+    EN = "en"
+    ES = "es"
+    ET = "et"
+    FI = "fi"
+    FR = "fr"
+    GU = "gu"
+    HI = "hi"
+    HR = "hr"
+    HU = "hu"
+    ID = "id"
+    IS = "is"
+    IT = "it"
+    IW = "iw"
+    JA = "ja"
+    JW = "jw"
+    KM = "km"
+    KN = "kn"
+    KO = "ko"
+    LA = "la"
+    LV = "lv"
+    ML = "ml"
+    MR = "mr"
+    MS = "ms"
+    MY = "my"
+    NE = "ne"
+    NL = "nl"
+    NO = "no"
+    PL = "pl"
+    PT = "pt"
+    RO = "ro"
+    RU = "ru"
+    SI = "si"
+    SK = "sk"
+    SQ = "sq"
+    SR = "sr"
+    SU = "su"
+    SV = "sv"
+    SW = "sw"
+    TA = "ta"
+    TE = "te"
+    TH = "th"
+    TL = "tl"
+    TR = "tr"
+    UK = "uk"
+    UR = "ur"
+    VI = "vi"
+    ZH = "zh"
+    ZH_CN = "zh-CN"
+    ZH_TW = "zh-TW"
+
+    def __str__(self) -> str:
+        return str(self.value)

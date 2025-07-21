@@ -1,0 +1,75 @@
+"""
+Copyright (c) 2010-present by Jaxl Innovations Private Limited.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms,
+with or without modification, is strictly prohibited.
+"""
+
+from enum import Enum
+
+
+class LanguageEnum(str, Enum):
+    AFAFRIKAANS = "af:Afrikaans"
+    ARARABIC = "ar:Arabic"
+    BGBULGARIAN = "bg:Bulgarian"
+    BNBENGALI = "bn:Bengali"
+    BSBOSNIAN = "bs:Bosnian"
+    CACATALAN = "ca:Catalan"
+    CSCZECH = "cs:Czech"
+    DADANISH = "da:Danish"
+    DEGERMAN = "de:German"
+    ELGREEK = "el:Greek"
+    ENENGLISH = "en:English"
+    ESSPANISH = "es:Spanish"
+    ETESTONIAN = "et:Estonian"
+    FIFINNISH = "fi:Finnish"
+    FRFRENCH = "fr:French"
+    GUGUJARATI = "gu:Gujarati"
+    HIHINDI = "hi:Hindi"
+    HRCROATIAN = "hr:Croatian"
+    HUHUNGARIAN = "hu:Hungarian"
+    IDINDONESIAN = "id:Indonesian"
+    ISICELANDIC = "is:Icelandic"
+    ITITALIAN = "it:Italian"
+    IWHEBREW = "iw:Hebrew"
+    JAJAPANESE = "ja:Japanese"
+    JWJAVANESE = "jw:Javanese"
+    KMKHMER = "km:Khmer"
+    KNKANNADA = "kn:Kannada"
+    KOKOREAN = "ko:Korean"
+    LALATIN = "la:Latin"
+    LVLATVIAN = "lv:Latvian"
+    MLMALAYALAM = "ml:Malayalam"
+    MRMARATHI = "mr:Marathi"
+    MSMALAY = "ms:Malay"
+    MYMYANMAR_BURMESE = "my:Myanmar (Burmese)"
+    NENEPALI = "ne:Nepali"
+    NLDUTCH = "nl:Dutch"
+    NONORWEGIAN = "no:Norwegian"
+    PLPOLISH = "pl:Polish"
+    PTPORTUGUESE = "pt:Portuguese"
+    ROROMANIAN = "ro:Romanian"
+    RURUSSIAN = "ru:Russian"
+    SISINHALA = "si:Sinhala"
+    SKSLOVAK = "sk:Slovak"
+    SQALBANIAN = "sq:Albanian"
+    SRSERBIAN = "sr:Serbian"
+    SUSUNDANESE = "su:Sundanese"
+    SVSWEDISH = "sv:Swedish"
+    SWSWAHILI = "sw:Swahili"
+    TATAMIL = "ta:Tamil"
+    TETELUGU = "te:Telugu"
+    THTHAI = "th:Thai"
+    TLFILIPINO = "tl:Filipino"
+    TRTURKISH = "tr:Turkish"
+    UKUKRAINIAN = "uk:Ukrainian"
+    URURDU = "ur:Urdu"
+    VIVIETNAMESE = "vi:Vietnamese"
+    ZHCHINESE_MANDARIN = "zh:Chinese (Mandarin)"
+    ZH_CNCHINESE_SIMPLIFIED = "zh-CN:Chinese (Simplified)"
+    ZH_TWCHINESE_MANDARINTAIWAN = "zh-TW:Chinese (Mandarin/Taiwan)"
+
+    def __str__(self) -> str:
+        return str(self.value)

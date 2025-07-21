@@ -1,0 +1,140 @@
+"""
+Copyright (c) 2010-present by Jaxl Innovations Private Limited.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms,
+with or without modification, is strictly prohibited.
+"""
+
+import argparse
+from typing import Any, Dict
+
+from jaxl.api._client import JaxlApiModule, jaxl_api_client
+from jaxl.api.client.api.v1 import (
+    v1_phonenumbers_list,
+    v1_phonenumbers_search_retrieve,
+)
+from jaxl.api.client.models.paginated_phone_number_list import (
+    PaginatedPhoneNumberList,
+)
+from jaxl.api.client.models.phone_number_search_response import (
+    PhoneNumberSearchResponse,
+)
+from jaxl.api.client.models.v1_phonenumbers_list_additional_status_item import (
+    V1PhonenumbersListAdditionalStatusItem,
+)
+from jaxl.api.client.models.v1_phonenumbers_list_status import (
+    V1PhonenumbersListStatus,
+)
+from jaxl.api.client.models.v1_phonenumbers_search_retrieve_iso_country_code import (
+    V1PhonenumbersSearchRetrieveIsoCountryCode,
+)
+from jaxl.api.client.models.v1_phonenumbers_search_retrieve_resource import (
+    V1PhonenumbersSearchRetrieveResource,
+)
+from jaxl.api.client.types import Response
+
+
+def _phone_type(ptype: str) -> V1PhonenumbersSearchRetrieveResource:
+    if ptype == "landline":
+        return V1PhonenumbersSearchRetrieveResource.LOCAL
+    if ptype == "mobile":
+        return V1PhonenumbersSearchRetrieveResource.MOBILE
+    if ptype == "tollfree":
+        return V1PhonenumbersSearchRetrieveResource.TOLL_FREE
+    raise NotImplementedError()
+
+
+def phones_search(args: Dict[str, Any]) -> Response[PhoneNumberSearchResponse]:
+    return v1_phonenumbers_search_retrieve.sync_detailed(
+        client=jaxl_api_client(JaxlApiModule.CALL),
+        iso_country_code=V1PhonenumbersSearchRetrieveIsoCountryCode[args["country"]],
+        resource=_phone_type(args["type"]),
+        region=args.get("region", None),
+        contains=args.get("contains", None),
+        locality=args.get("locality", None),
+        fax_enabled=None,
+        mms_enabled=None,
+        sms_enabled=None,
+        voice_enabled=None,
+    )
+
+
+def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
+    ctype = args.get("type", "active")
+    client = jaxl_api_client(JaxlApiModule.CALL)
+    if ctype == "all":
+        return v1_phonenumbers_list.sync_detailed(
+            client=client,
+        )
+    if ctype == "active":
+        return v1_phonenumbers_list.sync_detailed(
+            client=jaxl_api_client(JaxlApiModule.CALL),
+            status=V1PhonenumbersListStatus.SUCCESS,
+            additional_status=[
+                V1PhonenumbersListAdditionalStatusItem.SCHEDULED_FOR_RELEASE
+            ],
+        )
+    if ctype == "inactive":
+        return v1_phonenumbers_list.sync_detailed(
+            client=jaxl_api_client(JaxlApiModule.CALL),
+            status=V1PhonenumbersListStatus.RELEASED_TO_PROVIDER,
+            additional_status=[
+                V1PhonenumbersListAdditionalStatusItem.RELEASED_BY_PROVIDER
+            ],
+        )
+    raise NotImplementedError()
+
+
+def _subparser(parser: argparse.ArgumentParser) -> None:
+    """Manage Phones (Landline, Mobile, TollFree)"""
+    subparsers = parser.add_subparsers(dest="action", required=True)
+
+    # list
+    phones_list_parser = subparsers.add_parser("list", help="List all phones")
+    phones_list_parser.add_argument(
+        "--type",
+        choices=["all", "active", "inactive"],
+        default="active",
+        help="Filter phones by type (default: active)",
+    )
+    phones_list_parser.set_defaults(func=phones_list, _arg_keys=["type"])
+
+    # search
+    phones_search_parser = subparsers.add_parser(
+        "search",
+        help="Search for available phone numbers for purchase",
+    )
+    phones_search_parser.add_argument(
+        "--country",
+        type=str,
+        choices=[c.value for c in V1PhonenumbersSearchRetrieveIsoCountryCode],
+        required=True,
+        help="Country for which to show search results",
+    )
+    phones_search_parser.add_argument(
+        "--type",
+        type=str,
+        choices=["landline", "mobile", "tollfree"],
+        default="landline",
+        help="Type of number to search for.  Default: landline",
+    )
+    phones_search_parser.add_argument(
+        "--region",
+        type=str,
+        default=None,
+        required=False,
+        help="Only search for numbers from provided region e.g. MP, KA, TX",
+    )
+    phones_search_parser.add_argument(
+        "--locality",
+        type=str,
+        default=None,
+        required=False,
+        help="Only search for numbers from provided locality e.g. Tulia",
+    )
+    phones_search_parser.set_defaults(
+        func=phones_search,
+        _arg_keys=["country", "type", "region", "locality"],
+    )
