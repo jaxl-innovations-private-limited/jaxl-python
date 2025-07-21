@@ -42,3 +42,7 @@ jobs:
         run: |
           source .venv/bin/activate
           PYTHONPATH=. ./docs.sh
+      - name: Build
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=. python -m build
