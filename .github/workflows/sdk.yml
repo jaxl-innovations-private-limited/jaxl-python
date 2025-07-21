@@ -33,8 +33,8 @@ jobs:
       - name: Run mypy
         run: |
           source .venv/bin/activate
-          mypy -p jaxl.api
+          PYTHONPATH=. mypy -p jaxl.api
       - name: Run pylint
         run: |
           source .venv/bin/activate
-          pylint jaxl/api
+          PYTHONPATH=. pylint jaxl/api
