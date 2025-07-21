@@ -2,6 +2,14 @@
 
 Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 
+1. [Install](#install)
+2. [JAXL CLI](#jaxl-cli)
+   - [CLI Example Usage](#cli-example-usage)
+3. [Jaxl Python SDK](#jaxl-python-sdk)
+   - [SDK Example Usage](#sdk-example-usage)
+4. [Documentation](#documentation)
+5. [Status](#status)
+
 ## Install
 
 `pip install jaxl-python`
@@ -33,7 +41,7 @@ options:
   -h, --help  show this help message and exit
 ```
 
-### Example Usage
+### CLI Example Usage
 
 ```bash
 export JAXL_API_CREDENTIALS=/path/to/jaxl-api-credentials.json
@@ -53,7 +61,7 @@ Response(status_code=<HTTPStatus.OK: 200>, content=b'... [redacted] ...')
   - `jaxl.api.resources`: Wrapper methods written to support `jaxl` CLI
   - `jaxl_api_client`: Helper function to retrieve an instance of `JaxlApiClient`
 
-### Example Usage:
+### SDK Example Usage:
 
 ```python
 from jaxl.api import JaxlApiModule, jaxl_api_client
@@ -78,9 +86,24 @@ git clone git@github.com:jaxl-innovations-private-limited/jaxl-python.git
 # Enter cloned repo directory
 cd jaxl-python
 
+# Create virtual environment
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Install
+pip install -e ".[dev]"
+
 # Generate documentation
 ./docs.sh
 
 # View documentation in browser
 open docs/jaxl/index.html
 ```
+
+## Status
+
+[![Python 3.x](https://img.shields.io/static/v1?label=Python&message=3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12&color=blue&style=flat-square)](https://www.python.org/)
+
+[![Checked with mypy](https://img.shields.io/static/v1?label=MyPy&message=checked&color=blue&style=flat-square)](http://mypy-lang.org/)
