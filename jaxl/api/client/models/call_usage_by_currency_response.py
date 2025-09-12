@@ -27,6 +27,7 @@ T = TypeVar("T", bound="CallUsageByCurrencyResponse")
 class CallUsageByCurrencyResponse:
     """
     Attributes:
+        signed (str):
         num_calls (int):
         call_time (int):
         start_time (datetime.datetime):
@@ -36,6 +37,7 @@ class CallUsageByCurrencyResponse:
         currency (Union[Unset, None, str]):
     """
 
+    signed: str
     num_calls: int
     call_time: int
     start_time: datetime.datetime
@@ -46,6 +48,7 @@ class CallUsageByCurrencyResponse:
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
+        signed = self.signed
         num_calls = self.num_calls
         call_time = self.call_time
         start_time = self.start_time.isoformat()
@@ -65,6 +68,7 @@ class CallUsageByCurrencyResponse:
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
+                "signed": signed,
                 "num_calls": num_calls,
                 "call_time": call_time,
                 "start_time": start_time,
@@ -84,6 +88,8 @@ class CallUsageByCurrencyResponse:
         from ..models.call_usage_stats_response import CallUsageStatsResponse
 
         d = src_dict.copy()
+        signed = d.pop("signed")
+
         num_calls = d.pop("num_calls")
 
         call_time = d.pop("call_time")
@@ -104,6 +110,7 @@ class CallUsageByCurrencyResponse:
         currency = d.pop("currency", UNSET)
 
         call_usage_by_currency_response = cls(
+            signed=signed,
             num_calls=num_calls,
             call_time=call_time,
             start_time=start_time,

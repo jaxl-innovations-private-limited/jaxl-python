@@ -14,66 +14,41 @@ import attr
 from ..types import UNSET, Unset
 
 
-T = TypeVar("T", bound="RemoveAccountRequest")
+T = TypeVar("T", bound="AuthTokenInvalidResponse")
 
 
 @attr.s(auto_attribs=True)
-class RemoveAccountRequest:
+class AuthTokenInvalidResponse:
     """
     Attributes:
-        id (int): User ID
-        identifier (str): Signed email ID
-        usage (Union[Unset, None, str]):
-        currency (Union[Unset, None, int]):
+        reason (Union[Unset, None, str]):
     """
 
-    id: int
-    identifier: str
-    usage: Union[Unset, None, str] = UNSET
-    currency: Union[Unset, None, int] = UNSET
+    reason: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        id = self.id
-        identifier = self.identifier
-        usage = self.usage
-        currency = self.currency
+        reason = self.reason
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "id": id,
-                "identifier": identifier,
-            }
-        )
-        if usage is not UNSET:
-            field_dict["usage"] = usage
-        if currency is not UNSET:
-            field_dict["currency"] = currency
+        field_dict.update({})
+        if reason is not UNSET:
+            field_dict["reason"] = reason
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        id = d.pop("id")
+        reason = d.pop("reason", UNSET)
 
-        identifier = d.pop("identifier")
-
-        usage = d.pop("usage", UNSET)
-
-        currency = d.pop("currency", UNSET)
-
-        remove_account_request = cls(
-            id=id,
-            identifier=identifier,
-            usage=usage,
-            currency=currency,
+        auth_token_invalid_response = cls(
+            reason=reason,
         )
 
-        remove_account_request.additional_properties = d
-        return remove_account_request
+        auth_token_invalid_response.additional_properties = d
+        return auth_token_invalid_response
 
     @property
     def additional_keys(self) -> List[str]:

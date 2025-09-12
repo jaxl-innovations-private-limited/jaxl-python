@@ -25,6 +25,7 @@ class Payment:
     Attributes:
         id (int):
         order_id (int):
+        paid_by (str):
         plan_name (str):
         provider_plan_id (str):
         transaction_id (int):
@@ -42,6 +43,7 @@ class Payment:
 
     id: int
     order_id: int
+    paid_by: str
     plan_name: str
     provider_plan_id: str
     transaction_id: int
@@ -60,6 +62,7 @@ class Payment:
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
         order_id = self.order_id
+        paid_by = self.paid_by
         plan_name = self.plan_name
         provider_plan_id = self.provider_plan_id
         transaction_id = self.transaction_id
@@ -86,6 +89,7 @@ class Payment:
             {
                 "id": id,
                 "order_id": order_id,
+                "paid_by": paid_by,
                 "plan_name": plan_name,
                 "provider_plan_id": provider_plan_id,
                 "transaction_id": transaction_id,
@@ -113,6 +117,8 @@ class Payment:
         id = d.pop("id")
 
         order_id = d.pop("order_id")
+
+        paid_by = d.pop("paid_by")
 
         plan_name = d.pop("plan_name")
 
@@ -148,6 +154,7 @@ class Payment:
         payment = cls(
             id=id,
             order_id=order_id,
+            paid_by=paid_by,
             plan_name=plan_name,
             provider_plan_id=provider_plan_id,
             transaction_id=transaction_id,

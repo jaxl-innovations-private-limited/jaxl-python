@@ -14,6 +14,7 @@ import attr
 from ..models.available_phone_number_provider_enum import (
     AvailablePhoneNumberProviderEnum,
 )
+from ..models.intent_enum import IntentEnum
 from ..models.rental_currency_enum import RentalCurrencyEnum
 from ..models.resource_enum import ResourceEnum
 from ..types import UNSET, Unset
@@ -42,6 +43,7 @@ class AvailablePhoneNumber:
         rental_currency (RentalCurrencyEnum):
         signature (str):
         provider (AvailablePhoneNumberProviderEnum):
+        intent (IntentEnum):
         rental_price (Union[Unset, None, float]):
     """
 
@@ -55,6 +57,7 @@ class AvailablePhoneNumber:
     rental_currency: RentalCurrencyEnum
     signature: str
     provider: AvailablePhoneNumberProviderEnum
+    intent: IntentEnum
     rental_price: Union[Unset, None, float] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
@@ -73,6 +76,8 @@ class AvailablePhoneNumber:
         signature = self.signature
         provider = self.provider.value
 
+        intent = self.intent.value
+
         rental_price = self.rental_price
 
         field_dict: Dict[str, Any] = {}
@@ -89,6 +94,7 @@ class AvailablePhoneNumber:
                 "rental_currency": rental_currency,
                 "signature": signature,
                 "provider": provider,
+                "intent": intent,
             }
         )
         if rental_price is not UNSET:
@@ -123,6 +129,8 @@ class AvailablePhoneNumber:
 
         provider = AvailablePhoneNumberProviderEnum(d.pop("provider"))
 
+        intent = IntentEnum(d.pop("intent"))
+
         rental_price = d.pop("rental_price", UNSET)
 
         available_phone_number = cls(
@@ -136,6 +144,7 @@ class AvailablePhoneNumber:
             rental_currency=rental_currency,
             signature=signature,
             provider=provider,
+            intent=intent,
             rental_price=rental_price,
         )
 

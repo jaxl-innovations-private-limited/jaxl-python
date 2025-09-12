@@ -29,6 +29,7 @@ class Item:
         iso_country_code (Union[Unset, None, str]):
         iso_alpha3_country_code (Union[Unset, None, str]):
         flag_url (Union[Unset, None, str]):
+        intent (Union[Unset, None, str]):
     """
 
     type: str
@@ -39,6 +40,7 @@ class Item:
     iso_country_code: Union[Unset, None, str] = UNSET
     iso_alpha3_country_code: Union[Unset, None, str] = UNSET
     flag_url: Union[Unset, None, str] = UNSET
+    intent: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -50,6 +52,7 @@ class Item:
         iso_country_code = self.iso_country_code
         iso_alpha3_country_code = self.iso_alpha3_country_code
         flag_url = self.flag_url
+        intent = self.intent
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -72,6 +75,8 @@ class Item:
             field_dict["iso_alpha3_country_code"] = iso_alpha3_country_code
         if flag_url is not UNSET:
             field_dict["flag_url"] = flag_url
+        if intent is not UNSET:
+            field_dict["intent"] = intent
 
         return field_dict
 
@@ -94,6 +99,8 @@ class Item:
 
         flag_url = d.pop("flag_url", UNSET)
 
+        intent = d.pop("intent", UNSET)
+
         item = cls(
             type=type,
             sku=sku,
@@ -103,6 +110,7 @@ class Item:
             iso_country_code=iso_country_code,
             iso_alpha3_country_code=iso_alpha3_country_code,
             flag_url=flag_url,
+            intent=intent,
         )
 
         item.additional_properties = d

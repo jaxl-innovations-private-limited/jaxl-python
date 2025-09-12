@@ -15,6 +15,9 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.phone_number_search_response import PhoneNumberSearchResponse
+from ...models.v1_phonenumbers_search_retrieve_intent import (
+    V1PhonenumbersSearchRetrieveIntent,
+)
 from ...models.v1_phonenumbers_search_retrieve_iso_country_code import (
     V1PhonenumbersSearchRetrieveIsoCountryCode,
 )
@@ -29,6 +32,9 @@ def _get_kwargs(
     client: AuthenticatedClient,
     contains: Union[Unset, None, int] = UNSET,
     fax_enabled: Union[Unset, None, bool] = UNSET,
+    intent: Union[
+        Unset, None, V1PhonenumbersSearchRetrieveIntent
+    ] = V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL,
     iso_country_code: V1PhonenumbersSearchRetrieveIsoCountryCode = V1PhonenumbersSearchRetrieveIsoCountryCode.US,
     locality: Union[Unset, None, str] = UNSET,
     mms_enabled: Union[Unset, None, bool] = UNSET,
@@ -46,6 +52,12 @@ def _get_kwargs(
     params["contains"] = contains
 
     params["fax_enabled"] = fax_enabled
+
+    json_intent: Union[Unset, None, str] = UNSET
+    if not isinstance(intent, Unset):
+        json_intent = intent.value if intent else None
+
+    params["intent"] = json_intent
 
     json_iso_country_code = iso_country_code.value
 
@@ -114,6 +126,9 @@ def sync_detailed(
     client: AuthenticatedClient,
     contains: Union[Unset, None, int] = UNSET,
     fax_enabled: Union[Unset, None, bool] = UNSET,
+    intent: Union[
+        Unset, None, V1PhonenumbersSearchRetrieveIntent
+    ] = V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL,
     iso_country_code: V1PhonenumbersSearchRetrieveIsoCountryCode = V1PhonenumbersSearchRetrieveIsoCountryCode.US,
     locality: Union[Unset, None, str] = UNSET,
     mms_enabled: Union[Unset, None, bool] = UNSET,
@@ -127,6 +142,8 @@ def sync_detailed(
     Args:
         contains (Union[Unset, None, int]):
         fax_enabled (Union[Unset, None, bool]):
+        intent (Union[Unset, None, V1PhonenumbersSearchRetrieveIntent]):  Default:
+            V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL.
         iso_country_code (V1PhonenumbersSearchRetrieveIsoCountryCode):  Default:
             V1PhonenumbersSearchRetrieveIsoCountryCode.US.
         locality (Union[Unset, None, str]):
@@ -148,6 +165,7 @@ def sync_detailed(
         client=client,
         contains=contains,
         fax_enabled=fax_enabled,
+        intent=intent,
         iso_country_code=iso_country_code,
         locality=locality,
         mms_enabled=mms_enabled,
@@ -170,6 +188,9 @@ def sync(
     client: AuthenticatedClient,
     contains: Union[Unset, None, int] = UNSET,
     fax_enabled: Union[Unset, None, bool] = UNSET,
+    intent: Union[
+        Unset, None, V1PhonenumbersSearchRetrieveIntent
+    ] = V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL,
     iso_country_code: V1PhonenumbersSearchRetrieveIsoCountryCode = V1PhonenumbersSearchRetrieveIsoCountryCode.US,
     locality: Union[Unset, None, str] = UNSET,
     mms_enabled: Union[Unset, None, bool] = UNSET,
@@ -183,6 +204,8 @@ def sync(
     Args:
         contains (Union[Unset, None, int]):
         fax_enabled (Union[Unset, None, bool]):
+        intent (Union[Unset, None, V1PhonenumbersSearchRetrieveIntent]):  Default:
+            V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL.
         iso_country_code (V1PhonenumbersSearchRetrieveIsoCountryCode):  Default:
             V1PhonenumbersSearchRetrieveIsoCountryCode.US.
         locality (Union[Unset, None, str]):
@@ -204,6 +227,7 @@ def sync(
         client=client,
         contains=contains,
         fax_enabled=fax_enabled,
+        intent=intent,
         iso_country_code=iso_country_code,
         locality=locality,
         mms_enabled=mms_enabled,
@@ -219,6 +243,9 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     contains: Union[Unset, None, int] = UNSET,
     fax_enabled: Union[Unset, None, bool] = UNSET,
+    intent: Union[
+        Unset, None, V1PhonenumbersSearchRetrieveIntent
+    ] = V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL,
     iso_country_code: V1PhonenumbersSearchRetrieveIsoCountryCode = V1PhonenumbersSearchRetrieveIsoCountryCode.US,
     locality: Union[Unset, None, str] = UNSET,
     mms_enabled: Union[Unset, None, bool] = UNSET,
@@ -232,6 +259,8 @@ async def asyncio_detailed(
     Args:
         contains (Union[Unset, None, int]):
         fax_enabled (Union[Unset, None, bool]):
+        intent (Union[Unset, None, V1PhonenumbersSearchRetrieveIntent]):  Default:
+            V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL.
         iso_country_code (V1PhonenumbersSearchRetrieveIsoCountryCode):  Default:
             V1PhonenumbersSearchRetrieveIsoCountryCode.US.
         locality (Union[Unset, None, str]):
@@ -253,6 +282,7 @@ async def asyncio_detailed(
         client=client,
         contains=contains,
         fax_enabled=fax_enabled,
+        intent=intent,
         iso_country_code=iso_country_code,
         locality=locality,
         mms_enabled=mms_enabled,
@@ -273,6 +303,9 @@ async def asyncio(
     client: AuthenticatedClient,
     contains: Union[Unset, None, int] = UNSET,
     fax_enabled: Union[Unset, None, bool] = UNSET,
+    intent: Union[
+        Unset, None, V1PhonenumbersSearchRetrieveIntent
+    ] = V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL,
     iso_country_code: V1PhonenumbersSearchRetrieveIsoCountryCode = V1PhonenumbersSearchRetrieveIsoCountryCode.US,
     locality: Union[Unset, None, str] = UNSET,
     mms_enabled: Union[Unset, None, bool] = UNSET,
@@ -286,6 +319,8 @@ async def asyncio(
     Args:
         contains (Union[Unset, None, int]):
         fax_enabled (Union[Unset, None, bool]):
+        intent (Union[Unset, None, V1PhonenumbersSearchRetrieveIntent]):  Default:
+            V1PhonenumbersSearchRetrieveIntent.PROMOTIONAL.
         iso_country_code (V1PhonenumbersSearchRetrieveIsoCountryCode):  Default:
             V1PhonenumbersSearchRetrieveIsoCountryCode.US.
         locality (Union[Unset, None, str]):
@@ -308,6 +343,7 @@ async def asyncio(
             client=client,
             contains=contains,
             fax_enabled=fax_enabled,
+            intent=intent,
             iso_country_code=iso_country_code,
             locality=locality,
             mms_enabled=mms_enabled,
