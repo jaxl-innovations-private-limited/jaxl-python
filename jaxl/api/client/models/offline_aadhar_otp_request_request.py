@@ -14,46 +14,55 @@ import attr
 from ..types import Unset
 
 
-T = TypeVar("T", bound="AadharOtpVerificationRequestRequest")
+T = TypeVar("T", bound="OfflineAadharOtpRequestRequest")
 
 
 @attr.s(auto_attribs=True)
-class AadharOtpVerificationRequestRequest:
+class OfflineAadharOtpRequestRequest:
     """
     Attributes:
-        signature (str):
-        otp (str):
+        phone_number (str):
+        aadhar_number (str):
+        kyc_id (int):
     """
 
-    signature: str
-    otp: str
+    phone_number: str
+    aadhar_number: str
+    kyc_id: int
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        signature = self.signature
-        otp = self.otp
+        phone_number = self.phone_number
+        aadhar_number = self.aadhar_number
+        kyc_id = self.kyc_id
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "signature": signature,
-                "otp": otp,
+                "phone_number": phone_number,
+                "aadhar_number": aadhar_number,
+                "kyc_id": kyc_id,
             }
         )
 
         return field_dict
 
     def to_multipart(self) -> Dict[str, Any]:
-        signature = (
-            self.signature
-            if isinstance(self.signature, Unset)
-            else (None, str(self.signature).encode(), "text/plain")
+        phone_number = (
+            self.phone_number
+            if isinstance(self.phone_number, Unset)
+            else (None, str(self.phone_number).encode(), "text/plain")
         )
-        otp = (
-            self.otp
-            if isinstance(self.otp, Unset)
-            else (None, str(self.otp).encode(), "text/plain")
+        aadhar_number = (
+            self.aadhar_number
+            if isinstance(self.aadhar_number, Unset)
+            else (None, str(self.aadhar_number).encode(), "text/plain")
+        )
+        kyc_id = (
+            self.kyc_id
+            if isinstance(self.kyc_id, Unset)
+            else (None, str(self.kyc_id).encode(), "text/plain")
         )
 
         field_dict: Dict[str, Any] = {}
@@ -65,8 +74,9 @@ class AadharOtpVerificationRequestRequest:
         )
         field_dict.update(
             {
-                "signature": signature,
-                "otp": otp,
+                "phone_number": phone_number,
+                "aadhar_number": aadhar_number,
+                "kyc_id": kyc_id,
             }
         )
 
@@ -75,17 +85,20 @@ class AadharOtpVerificationRequestRequest:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        signature = d.pop("signature")
+        phone_number = d.pop("phone_number")
 
-        otp = d.pop("otp")
+        aadhar_number = d.pop("aadhar_number")
 
-        aadhar_otp_verification_request_request = cls(
-            signature=signature,
-            otp=otp,
+        kyc_id = d.pop("kyc_id")
+
+        offline_aadhar_otp_request_request = cls(
+            phone_number=phone_number,
+            aadhar_number=aadhar_number,
+            kyc_id=kyc_id,
         )
 
-        aadhar_otp_verification_request_request.additional_properties = d
-        return aadhar_otp_verification_request_request
+        offline_aadhar_otp_request_request.additional_properties = d
+        return offline_aadhar_otp_request_request
 
     @property
     def additional_keys(self) -> List[str]:

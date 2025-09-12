@@ -19,6 +19,8 @@ from .aadhar_otp_verification_request_request import (
 )
 from .aadhar_otp_verification_response import AadharOtpVerificationResponse
 from .aadhar_upload_request import AadharUploadRequest
+from .aadhar_xml_attributes_request import AadharXmlAttributesRequest
+from .aadhar_xml_upload_request import AadharXmlUploadRequest
 from .ack import Ack
 from .act_enum import ActEnum
 from .action_enum import ActionEnum
@@ -44,6 +46,9 @@ from .app_user_preferences_request_preferences import (
     AppUserPreferencesRequestPreferences,
 )
 from .app_user_sdds_response import AppUserSddsResponse
+from .auth_token import AuthToken
+from .auth_token_invalid_response import AuthTokenInvalidResponse
+from .auth_token_request_request import AuthTokenRequestRequest
 from .available_phone_number import AvailablePhoneNumber
 from .available_phone_number_capabilities import (
     AvailablePhoneNumberCapabilities,
@@ -90,6 +95,7 @@ from .campaign_stats_v2 import CampaignStatsV2
 from .campaign_tag import CampaignTag
 from .campaign_update_status_enum import CampaignUpdateStatusEnum
 from .campaign_upload_request import CampaignUploadRequest
+from .campaign_upload_request_options import CampaignUploadRequestOptions
 from .campaign_upload_type_enum import CampaignUploadTypeEnum
 from .campaign_usage_summary import CampaignUsageSummary
 from .campaign_v2 import CampaignV2
@@ -210,6 +216,7 @@ from .inbound import Inbound
 from .incorrect_pdf_image_conversion import IncorrectPdfImageConversion
 from .individual_plan_request import IndividualPlanRequest
 from .information import Information
+from .intent_enum import IntentEnum
 from .invalid_call_search_response import InvalidCallSearchResponse
 from .invalid_request import InvalidRequest
 from .invalid_sms_response import InvalidSmsResponse
@@ -302,6 +309,7 @@ from .non_compliant_kyc import NonCompliantKyc
 from .non_compliant_kyc_response import NonCompliantKycResponse
 from .notification_request import NotificationRequest
 from .number_type import NumberType
+from .offline_aadhar_otp_request_request import OfflineAadharOtpRequestRequest
 from .order_attributes import OrderAttributes
 from .order_attributes_attributes import OrderAttributesAttributes
 from .order_checkout_response import OrderCheckoutResponse
@@ -338,6 +346,7 @@ from .paginated_analytics_slug_response_list import (
 )
 from .paginated_app_country_list import PaginatedAppCountryList
 from .paginated_app_domain_list import PaginatedAppDomainList
+from .paginated_auth_token_list import PaginatedAuthTokenList
 from .paginated_call_list import PaginatedCallList
 from .paginated_call_search_response_list import (
     PaginatedCallSearchResponseList,
@@ -632,6 +641,9 @@ from .v1_phonenumbers_list_additional_status_item import (
 )
 from .v1_phonenumbers_list_provider import V1PhonenumbersListProvider
 from .v1_phonenumbers_list_status import V1PhonenumbersListStatus
+from .v1_phonenumbers_search_retrieve_intent import (
+    V1PhonenumbersSearchRetrieveIntent,
+)
 from .v1_phonenumbers_search_retrieve_iso_country_code import (
     V1PhonenumbersSearchRetrieveIsoCountryCode,
 )
@@ -682,6 +694,8 @@ __all__ = (
     "AadharOtpVerificationRequestRequest",
     "AadharOtpVerificationResponse",
     "AadharUploadRequest",
+    "AadharXmlAttributesRequest",
+    "AadharXmlUploadRequest",
     "Ack",
     "ActEnum",
     "ActionEnum",
@@ -705,6 +719,9 @@ __all__ = (
     "AppUserPreferencesRequest",
     "AppUserPreferencesRequestPreferences",
     "AppUserSddsResponse",
+    "AuthToken",
+    "AuthTokenInvalidResponse",
+    "AuthTokenRequestRequest",
     "AvailablePhoneNumber",
     "AvailablePhoneNumberCapabilities",
     "AvailablePhoneNumberProviderEnum",
@@ -747,6 +764,7 @@ __all__ = (
     "CampaignTag",
     "CampaignUpdateStatusEnum",
     "CampaignUploadRequest",
+    "CampaignUploadRequestOptions",
     "CampaignUploadTypeEnum",
     "CampaignUsageSummary",
     "CampaignV2",
@@ -839,6 +857,7 @@ __all__ = (
     "IncorrectPdfImageConversion",
     "IndividualPlanRequest",
     "Information",
+    "IntentEnum",
     "InvalidCallSearchResponse",
     "InvalidRequest",
     "InvalidSmsResponse",
@@ -921,6 +940,7 @@ __all__ = (
     "NonCompliantKycResponse",
     "NotificationRequest",
     "NumberType",
+    "OfflineAadharOtpRequestRequest",
     "OrderAttributes",
     "OrderAttributesAttributes",
     "OrderCheckoutResponse",
@@ -947,6 +967,7 @@ __all__ = (
     "PaginatedAnalyticsSlugResponseList",
     "PaginatedAppCountryList",
     "PaginatedAppDomainList",
+    "PaginatedAuthTokenList",
     "PaginatedCallList",
     "PaginatedCallSearchResponseList",
     "PaginatedCallTagCountList",
@@ -1165,6 +1186,7 @@ __all__ = (
     "V1PhonenumbersListAdditionalStatusItem",
     "V1PhonenumbersListProvider",
     "V1PhonenumbersListStatus",
+    "V1PhonenumbersSearchRetrieveIntent",
     "V1PhonenumbersSearchRetrieveIsoCountryCode",
     "V1PhonenumbersSearchRetrieveResource",
     "V1PlansCountriesListType",

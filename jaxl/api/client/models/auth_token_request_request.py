@@ -7,73 +7,55 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import Any, Dict, List, Type, TypeVar
 
 import attr
 
-from ..types import UNSET, Unset
 
-
-T = TypeVar("T", bound="RemoveAccountRequest")
+T = TypeVar("T", bound="AuthTokenRequestRequest")
 
 
 @attr.s(auto_attribs=True)
-class RemoveAccountRequest:
+class AuthTokenRequestRequest:
     """
     Attributes:
-        id (int): User ID
-        identifier (str): Signed email ID
-        usage (Union[Unset, None, str]):
-        currency (Union[Unset, None, int]):
+        name (str):
+        ttl (int): Token time to live in days
     """
 
-    id: int
-    identifier: str
-    usage: Union[Unset, None, str] = UNSET
-    currency: Union[Unset, None, int] = UNSET
+    name: str
+    ttl: int
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        id = self.id
-        identifier = self.identifier
-        usage = self.usage
-        currency = self.currency
+        name = self.name
+        ttl = self.ttl
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "id": id,
-                "identifier": identifier,
+                "name": name,
+                "ttl": ttl,
             }
         )
-        if usage is not UNSET:
-            field_dict["usage"] = usage
-        if currency is not UNSET:
-            field_dict["currency"] = currency
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        id = d.pop("id")
+        name = d.pop("name")
 
-        identifier = d.pop("identifier")
+        ttl = d.pop("ttl")
 
-        usage = d.pop("usage", UNSET)
-
-        currency = d.pop("currency", UNSET)
-
-        remove_account_request = cls(
-            id=id,
-            identifier=identifier,
-            usage=usage,
-            currency=currency,
+        auth_token_request_request = cls(
+            name=name,
+            ttl=ttl,
         )
 
-        remove_account_request.additional_properties = d
-        return remove_account_request
+        auth_token_request_request.additional_properties = d
+        return auth_token_request_request
 
     @property
     def additional_keys(self) -> List[str]:

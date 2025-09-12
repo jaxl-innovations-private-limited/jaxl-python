@@ -7,54 +7,56 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar
+import json
+from io import BytesIO
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
 
 import attr
 
-from ..types import Unset
+from ..types import File
 
 
-T = TypeVar("T", bound="AadharOtpVerificationRequestRequest")
+if TYPE_CHECKING:
+    from ..models.aadhar_xml_attributes_request import (
+        AadharXmlAttributesRequest,
+    )
+
+
+T = TypeVar("T", bound="AadharXmlUploadRequest")
 
 
 @attr.s(auto_attribs=True)
-class AadharOtpVerificationRequestRequest:
+class AadharXmlUploadRequest:
     """
     Attributes:
-        signature (str):
-        otp (str):
+        aadhar_zip (File):
+        inputs (AadharXmlAttributesRequest):
     """
 
-    signature: str
-    otp: str
+    aadhar_zip: File
+    inputs: "AadharXmlAttributesRequest"
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        signature = self.signature
-        otp = self.otp
+        aadhar_zip = self.aadhar_zip.to_tuple()
+
+        inputs = self.inputs.to_dict()
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "signature": signature,
-                "otp": otp,
+                "aadhar_zip": aadhar_zip,
+                "inputs": inputs,
             }
         )
 
         return field_dict
 
     def to_multipart(self) -> Dict[str, Any]:
-        signature = (
-            self.signature
-            if isinstance(self.signature, Unset)
-            else (None, str(self.signature).encode(), "text/plain")
-        )
-        otp = (
-            self.otp
-            if isinstance(self.otp, Unset)
-            else (None, str(self.otp).encode(), "text/plain")
-        )
+        aadhar_zip = self.aadhar_zip.to_tuple()
+
+        inputs = (None, json.dumps(self.inputs.to_dict()).encode(), "application/json")
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(
@@ -65,8 +67,8 @@ class AadharOtpVerificationRequestRequest:
         )
         field_dict.update(
             {
-                "signature": signature,
-                "otp": otp,
+                "aadhar_zip": aadhar_zip,
+                "inputs": inputs,
             }
         )
 
@@ -74,18 +76,22 @@ class AadharOtpVerificationRequestRequest:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        d = src_dict.copy()
-        signature = d.pop("signature")
-
-        otp = d.pop("otp")
-
-        aadhar_otp_verification_request_request = cls(
-            signature=signature,
-            otp=otp,
+        from ..models.aadhar_xml_attributes_request import (
+            AadharXmlAttributesRequest,
         )
 
-        aadhar_otp_verification_request_request.additional_properties = d
-        return aadhar_otp_verification_request_request
+        d = src_dict.copy()
+        aadhar_zip = File(payload=BytesIO(d.pop("aadhar_zip")))
+
+        inputs = AadharXmlAttributesRequest.from_dict(d.pop("inputs"))
+
+        aadhar_xml_upload_request = cls(
+            aadhar_zip=aadhar_zip,
+            inputs=inputs,
+        )
+
+        aadhar_xml_upload_request.additional_properties = d
+        return aadhar_xml_upload_request
 
     @property
     def additional_keys(self) -> List[str]:

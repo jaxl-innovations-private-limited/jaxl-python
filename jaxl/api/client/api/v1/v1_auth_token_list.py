@@ -8,49 +8,31 @@ with or without modification, is strictly prohibited.
 """
 
 from http import HTTPStatus
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.paginated_campaign_v2_list import PaginatedCampaignV2List
-from ...models.v2_campaign_list_status_item import V2CampaignListStatusItem
+from ...models.paginated_auth_token_list import PaginatedAuthTokenList
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     *,
     client: AuthenticatedClient,
-    currency: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
-    status: Union[Unset, None, List[V2CampaignListStatusItem]] = UNSET,
 ) -> Dict[str, Any]:
-    url = "{}/v2/campaign/".format(client.base_url)
+    url = "{}/v1/auth/token/".format(client.base_url)
 
     headers: Dict[str, str] = client.get_headers()
     cookies: Dict[str, Any] = client.get_cookies()
 
     params: Dict[str, Any] = {}
-    params["currency"] = currency
-
     params["limit"] = limit
 
     params["offset"] = offset
-
-    json_status: Union[Unset, None, List[str]] = UNSET
-    if not isinstance(status, Unset):
-        if status is None:
-            json_status = None
-        else:
-            json_status = []
-            for status_item_data in status:
-                status_item = status_item_data.value
-
-                json_status.append(status_item)
-
-    params["status"] = json_status
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -66,9 +48,9 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Client, response: httpx.Response
-) -> Optional[PaginatedCampaignV2List]:
+) -> Optional[PaginatedAuthTokenList]:
     if response.status_code == HTTPStatus.OK:
-        response_200 = PaginatedCampaignV2List.from_dict(response.json())
+        response_200 = PaginatedAuthTokenList.from_dict(response.json())
 
         return response_200
     if client.raise_on_unexpected_status:
@@ -79,7 +61,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Client, response: httpx.Response
-) -> Response[PaginatedCampaignV2List]:
+) -> Response[PaginatedAuthTokenList]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -91,32 +73,27 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-    currency: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
-    status: Union[Unset, None, List[V2CampaignListStatusItem]] = UNSET,
-) -> Response[PaginatedCampaignV2List]:
-    """
+) -> Response[PaginatedAuthTokenList]:
+    """API view for Auth token.
+
     Args:
-        currency (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
-        status (Union[Unset, None, List[V2CampaignListStatusItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PaginatedCampaignV2List]
+        Response[PaginatedAuthTokenList]
     """
 
     kwargs = _get_kwargs(
         client=client,
-        currency=currency,
         limit=limit,
         offset=offset,
-        status=status,
     )
 
     response = httpx.request(
@@ -130,64 +107,54 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-    currency: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
-    status: Union[Unset, None, List[V2CampaignListStatusItem]] = UNSET,
-) -> Optional[PaginatedCampaignV2List]:
-    """
+) -> Optional[PaginatedAuthTokenList]:
+    """API view for Auth token.
+
     Args:
-        currency (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
-        status (Union[Unset, None, List[V2CampaignListStatusItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PaginatedCampaignV2List]
+        Response[PaginatedAuthTokenList]
     """
 
     return sync_detailed(
         client=client,
-        currency=currency,
         limit=limit,
         offset=offset,
-        status=status,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-    currency: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
-    status: Union[Unset, None, List[V2CampaignListStatusItem]] = UNSET,
-) -> Response[PaginatedCampaignV2List]:
-    """
+) -> Response[PaginatedAuthTokenList]:
+    """API view for Auth token.
+
     Args:
-        currency (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
-        status (Union[Unset, None, List[V2CampaignListStatusItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PaginatedCampaignV2List]
+        Response[PaginatedAuthTokenList]
     """
 
     kwargs = _get_kwargs(
         client=client,
-        currency=currency,
         limit=limit,
         offset=offset,
-        status=status,
     )
 
     async with httpx.AsyncClient(verify=client.verify_ssl) as _client:
@@ -199,32 +166,27 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-    currency: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
-    status: Union[Unset, None, List[V2CampaignListStatusItem]] = UNSET,
-) -> Optional[PaginatedCampaignV2List]:
-    """
+) -> Optional[PaginatedAuthTokenList]:
+    """API view for Auth token.
+
     Args:
-        currency (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
-        status (Union[Unset, None, List[V2CampaignListStatusItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PaginatedCampaignV2List]
+        Response[PaginatedAuthTokenList]
     """
 
     return (
         await asyncio_detailed(
             client=client,
-            currency=currency,
             limit=limit,
             offset=offset,
-            status=status,
         )
     ).parsed

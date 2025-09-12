@@ -21,6 +21,9 @@ from ..types import UNSET, File, Unset
 
 
 if TYPE_CHECKING:
+    from ..models.campaign_upload_request_options import (
+        CampaignUploadRequestOptions,
+    )
     from ..models.campaign_window_request import CampaignWindowRequest
 
 
@@ -41,6 +44,8 @@ class CampaignUploadRequest:
         template (Union[Unset, str]):
         window (Union[Unset, None, CampaignWindowRequest]):
         auto_retry (Union[Unset, bool]):
+        cc (Union[Unset, None, str]):
+        options (Union[Unset, None, CampaignUploadRequestOptions]):
     """
 
     specification: File
@@ -53,6 +58,8 @@ class CampaignUploadRequest:
     template: Union[Unset, str] = UNSET
     window: Union[Unset, None, "CampaignWindowRequest"] = UNSET
     auto_retry: Union[Unset, bool] = False
+    cc: Union[Unset, None, str] = UNSET
+    options: Union[Unset, None, "CampaignUploadRequestOptions"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -75,6 +82,10 @@ class CampaignUploadRequest:
             window = self.window.to_dict() if self.window else None
 
         auto_retry = self.auto_retry
+        cc = self.cc
+        options: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.options, Unset):
+            options = self.options.to_dict() if self.options else None
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -98,6 +109,10 @@ class CampaignUploadRequest:
             field_dict["window"] = window
         if auto_retry is not UNSET:
             field_dict["auto_retry"] = auto_retry
+        if cc is not UNSET:
+            field_dict["cc"] = cc
+        if options is not UNSET:
+            field_dict["options"] = options
 
         return field_dict
 
@@ -145,6 +160,18 @@ class CampaignUploadRequest:
             if isinstance(self.auto_retry, Unset)
             else (None, str(self.auto_retry).encode(), "text/plain")
         )
+        cc = (
+            self.cc
+            if isinstance(self.cc, Unset)
+            else (None, str(self.cc).encode(), "text/plain")
+        )
+        options: Union[Unset, Tuple[None, bytes, str]] = UNSET
+        if not isinstance(self.options, Unset):
+            options = (
+                (None, json.dumps(self.options.to_dict()).encode(), "application/json")
+                if self.options
+                else UNSET
+            )
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(
@@ -173,11 +200,18 @@ class CampaignUploadRequest:
             field_dict["window"] = window
         if auto_retry is not UNSET:
             field_dict["auto_retry"] = auto_retry
+        if cc is not UNSET:
+            field_dict["cc"] = cc
+        if options is not UNSET:
+            field_dict["options"] = options
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.campaign_upload_request_options import (
+            CampaignUploadRequestOptions,
+        )
         from ..models.campaign_window_request import CampaignWindowRequest
 
         d = src_dict.copy()
@@ -215,6 +249,17 @@ class CampaignUploadRequest:
 
         auto_retry = d.pop("auto_retry", UNSET)
 
+        cc = d.pop("cc", UNSET)
+
+        _options = d.pop("options", UNSET)
+        options: Union[Unset, None, CampaignUploadRequestOptions]
+        if _options is None:
+            options = None
+        elif isinstance(_options, Unset):
+            options = UNSET
+        else:
+            options = CampaignUploadRequestOptions.from_dict(_options)
+
         campaign_upload_request = cls(
             specification=specification,
             content_type=content_type,
@@ -226,6 +271,8 @@ class CampaignUploadRequest:
             template=template,
             window=window,
             auto_retry=auto_retry,
+            cc=cc,
+            options=options,
         )
 
         campaign_upload_request.additional_properties = d

@@ -8,12 +8,13 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
 
 import attr
 from dateutil.parser import isoparse
 
 from ..models.campaign_v2_status_enum import CampaignV2StatusEnum
+from ..types import UNSET, Unset
 
 
 if TYPE_CHECKING:
@@ -36,6 +37,8 @@ class CampaignV2:
         tags (List['CampaignTag']):
         created_on (datetime.datetime): Datetime when this object was created
         in_window (bool):
+        auto_retry (bool):
+        parent (Union[Unset, None, int]): Campaign from which this campaign was cloned.
     """
 
     id: int
@@ -46,6 +49,8 @@ class CampaignV2:
     tags: List["CampaignTag"]
     created_on: datetime.datetime
     in_window: bool
+    auto_retry: bool
+    parent: Union[Unset, None, int] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -65,6 +70,8 @@ class CampaignV2:
         created_on = self.created_on.isoformat()
 
         in_window = self.in_window
+        auto_retry = self.auto_retry
+        parent = self.parent
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -78,8 +85,11 @@ class CampaignV2:
                 "tags": tags,
                 "created_on": created_on,
                 "in_window": in_window,
+                "auto_retry": auto_retry,
             }
         )
+        if parent is not UNSET:
+            field_dict["parent"] = parent
 
         return field_dict
 
@@ -110,6 +120,10 @@ class CampaignV2:
 
         in_window = d.pop("in_window")
 
+        auto_retry = d.pop("auto_retry")
+
+        parent = d.pop("parent", UNSET)
+
         campaign_v2 = cls(
             id=id,
             name=name,
@@ -119,6 +133,8 @@ class CampaignV2:
             tags=tags,
             created_on=created_on,
             in_window=in_window,
+            auto_retry=auto_retry,
+            parent=parent,
         )
 
         campaign_v2.additional_properties = d

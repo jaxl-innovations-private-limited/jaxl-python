@@ -7,50 +7,49 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar, Union
+import datetime
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 import attr
+from dateutil.parser import isoparse
 
-from ..types import UNSET, Unset
 
-
-T = TypeVar("T", bound="RemoveAccountRequest")
+T = TypeVar("T", bound="AuthToken")
 
 
 @attr.s(auto_attribs=True)
-class RemoveAccountRequest:
+class AuthToken:
     """
     Attributes:
-        id (int): User ID
-        identifier (str): Signed email ID
-        usage (Union[Unset, None, str]):
-        currency (Union[Unset, None, int]):
+        id (int):
+        name (str): Name assigned to this auth token.
+        expires_on (datetime.datetime): Datetime when this token expires
+        token (Optional[str]):
     """
 
     id: int
-    identifier: str
-    usage: Union[Unset, None, str] = UNSET
-    currency: Union[Unset, None, int] = UNSET
+    name: str
+    expires_on: datetime.datetime
+    token: Optional[str]
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
-        identifier = self.identifier
-        usage = self.usage
-        currency = self.currency
+        name = self.name
+        expires_on = self.expires_on.isoformat()
+
+        token = self.token
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
                 "id": id,
-                "identifier": identifier,
+                "name": name,
+                "expires_on": expires_on,
+                "token": token,
             }
         )
-        if usage is not UNSET:
-            field_dict["usage"] = usage
-        if currency is not UNSET:
-            field_dict["currency"] = currency
 
         return field_dict
 
@@ -59,21 +58,21 @@ class RemoveAccountRequest:
         d = src_dict.copy()
         id = d.pop("id")
 
-        identifier = d.pop("identifier")
+        name = d.pop("name")
 
-        usage = d.pop("usage", UNSET)
+        expires_on = isoparse(d.pop("expires_on"))
 
-        currency = d.pop("currency", UNSET)
+        token = d.pop("token")
 
-        remove_account_request = cls(
+        auth_token = cls(
             id=id,
-            identifier=identifier,
-            usage=usage,
-            currency=currency,
+            name=name,
+            expires_on=expires_on,
+            token=token,
         )
 
-        remove_account_request.additional_properties = d
-        return remove_account_request
+        auth_token.additional_properties = d
+        return auth_token
 
     @property
     def additional_keys(self) -> List[str]:
