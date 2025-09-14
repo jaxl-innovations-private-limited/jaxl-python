@@ -54,18 +54,18 @@ def ivrs_options_create(
         else NextOrCTARequest(
             next_=None,
             cta=CTARequest(
-                phone_number=args["phone"],
-                devices=args["devices"],
-                appusers=args["appusers"],
+                phone_number=args.get("phone"),
+                devices=args.get("devices"),
+                appusers=args.get("appusers"),
                 collections=(
                     IVRCollectionRequest(
                         type=IdEnum.VALUE_1,
                         collection_ids=args["teams"],
                     )
-                    if args["teams"]
+                    if args.get("teams")
                     else None
                 ),
-                webhook=args["webhook"],
+                webhook=args.get("webhook"),
             ),
         )
     )
@@ -121,6 +121,30 @@ def ivrs_options_create(
     )
 
 
+IVR_CTA_KEYS = [
+    "phone",
+    "devices",
+    "appusers",
+    "teams",
+    "webhook",
+]
+
+IVR_INPUTS = (
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "*",
+    "#",
+)
+
+
 def _options_subparser(parser: argparse.ArgumentParser) -> None:
     """Returns ivr options resource subparser."""
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -162,12 +186,8 @@ def _options_subparser(parser: argparse.ArgumentParser) -> None:
             "ivr",
             "message",
             "next_",
-            "phone",
-            "devices",
-            "appusers",
-            "teams",
-            "webhook",
-        ],
+        ]
+        + IVR_CTA_KEYS,
     )
 
 

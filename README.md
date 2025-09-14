@@ -77,6 +77,16 @@ response = v1_calls_list.sync_detailed(
 )
 ```
 
+### Dial-out 2-Party Conference
+
+```bash
+jaxl calls create \
+  --to "+91<Doctors Number>" \
+  --from "+91<Purchased Number from Jaxl>" \
+  --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
+  --option "1=Press 1 to proceed with your appointment:phone=+91<Patient Number>"
+```
+
 ## Documentation
 
 ```
