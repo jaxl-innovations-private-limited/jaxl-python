@@ -84,7 +84,7 @@ jaxl calls create \
   --to "+91<Doctors Number>" \
   --from "+91<Purchased Number from Jaxl>" \
   --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
-  --option "1=Press 1 to proceed with your appointment:phone=+91<Patient Number>"
+  --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
 ```
 
 ## Documentation
