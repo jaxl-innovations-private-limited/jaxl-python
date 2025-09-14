@@ -53,6 +53,81 @@ jaxl calls list
 Response(status_code=<HTTPStatus.OK: 200>, content=b'... [redacted] ...')
 ```
 
+### Create an IVR
+
+```bash
+jaxl ivrs create \
+  --message "Hello, we are calling via Jaxl IVR demo created from CLI"
+```
+
+### Create a hangup IVR
+
+This IVR will speak the message and then hangup the call.
+
+```bash
+jaxl ivrs create \
+  --message "Hello, we are calling via Jaxl IVR demo created from CLI" \
+  --hangup
+```
+
+### Configure IVR Options
+
+This IVR option uses `--next` to send user to another IVR.
+
+```bash
+jaxl ivrs options configure \
+  --ivr <IVR ID TO CONFIGURE> \
+  --input 0 \
+  --message "Press 0 to repeat this menu" \
+  --next <NEXT IVR ID>
+```
+
+> Use &lt;IVR ID TO CONFIGURE&gt; as the &lt;NEXT IVR ID&gt; to complete the "repeat this menu" experience.
+
+One of the CTA key flag must be provided. Allowed CTA keys are:
+
+- `--next`: Send to another IVR
+- `--phone`: Send to an external phone number
+- `--devices`: Send to devices by ID
+- `--appusers`: Send to app users (org employees) by ID
+- `--teams`: Send to teams by ID
+
+### List IVRs
+
+```bash
+jaxl ivrs list
+```
+
+### Place Outgoing Call and Send to existing IVR
+
+```bash
+jaxl calls create \
+  --to "+91<Callee Number>" \
+  --from "+91<Purchased Jaxl Number>" \
+  --ivr <IVR ID>
+```
+
+### Place Outgoing Call and Send to Ad-hoc IVR
+
+```bash
+jaxl calls create \
+  --to "+91<Callee Number>" \
+  --from "+91<Purchased Jaxl Number>" \
+  --message "Hello, we are calling you from MyCompany" \
+  --option "1=Press 1 for sales:team=<Sales Team ID>" \
+  --option "2=Press 2 for HR department:team=<HR Team ID>
+```
+
+### Dial-out 2-Party Conference with Ad-hoc IVR
+
+```bash
+jaxl calls create \
+  --to "+91<Doctors Number>" \
+  --from "+91<Purchased Jaxl Number>" \
+  --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
+  --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
+```
+
 ## Jaxl Python SDK
 
 - Jaxl APIs is built upon [OpenAPI specification](https://www.openapis.org/)
@@ -75,16 +150,6 @@ response = v1_calls_list.sync_detailed(
     client=jaxl_api_client(JaxlApiModule.CALL),
     currency=2, # 1=USD, 2=INR
 )
-```
-
-### Dial-out 2-Party Conference
-
-```bash
-jaxl calls create \
-  --to "+91<Doctors Number>" \
-  --from "+91<Purchased Number from Jaxl>" \
-  --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
-  --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
 ```
 
 ## Documentation
