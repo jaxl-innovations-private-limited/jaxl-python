@@ -13,6 +13,7 @@ from typing import Any, Dict, Union
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_ivr_create,
+    v1_ivr_list,
     v1_ivr_options_create,
     v1_ivr_options_list,
     v1_ivr_options_partial_update,
@@ -31,7 +32,19 @@ from jaxl.api.client.models.next_or_cta_request import NextOrCTARequest
 from jaxl.api.client.models.patched_ivr_options_update_request import (
     PatchedIVROptionsUpdateRequest,
 )
+from jaxl.api.client.models.v1_ivr_list_duration import V1IvrListDuration
 from jaxl.api.client.types import Response
+from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
+
+
+def ivrs_list(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
+    return v1_ivr_list.sync_detailed(
+        client=jaxl_api_client(JaxlApiModule.CALL),
+        assigned=args.get("assigned", False),
+        duration=V1IvrListDuration.ONE_WEEK,
+        limit=args.get("limit", DEFAULT_LIST_LIMIT),
+        offset=args.get("offset", None),
+    )
 
 
 def ivrs_create(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
@@ -122,6 +135,7 @@ def ivrs_options_create(
 
 
 IVR_CTA_KEYS = [
+    "next_",
     "phone",
     "devices",
     "appusers",
@@ -185,7 +199,6 @@ def _options_subparser(parser: argparse.ArgumentParser) -> None:
             "input_",
             "ivr",
             "message",
-            "next_",
         ]
         + IVR_CTA_KEYS,
     )
@@ -194,6 +207,34 @@ def _options_subparser(parser: argparse.ArgumentParser) -> None:
 def _subparser(parser: argparse.ArgumentParser) -> None:
     """Manage IVRs (Interactive Voice Response)"""
     subparsers = parser.add_subparsers(dest="action", required=True)
+
+    # list ivr
+    ivrs_list_parser = subparsers.add_parser(
+        "list",
+        help="List IVRs",
+    )
+    ivrs_list_parser.add_argument(
+        "--assigned",
+        action="store_true",
+        required=False,
+        help="Use this flag to only list IVRs assigned to atleast 1 Phone Number",
+    )
+    ivrs_list_parser.add_argument(
+        "--limit",
+        default=DEFAULT_LIST_LIMIT,
+        required=False,
+        help="List page size",
+    )
+    ivrs_list_parser.add_argument(
+        "--offset",
+        default=None,
+        required=False,
+        help="List page offset",
+    )
+    ivrs_list_parser.set_defaults(
+        func=ivrs_list,
+        _arg_keys=["assigned", "limit", "offset"],
+    )
 
     # create ivr
     ivrs_create_parser = subparsers.add_parser(
