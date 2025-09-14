@@ -5,6 +5,18 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 1. [Install](#install)
 2. [JAXL CLI](#jaxl-cli)
    - [CLI Example Usage](#cli-example-usage)
+   - [Verify API Credentials & Auth Token](#verify-api-credentials--auth-token)
+   - [Check Account Balance](#check-account-balance)
+   - [List Purchased Jaxl Numbers](#list-purchased-jaxl-numbers)
+   - [Create an IVR](#create-an-ivr)
+   - [Create a hangup IVR](#create-a-hangup-ivr)
+   - [Configure IVR Options](#configure-ivr-options)
+   - [List IVRs](#list-ivrs)
+   - [Place Outgoing Call and Send to existing IVR](#place-outgoing-call-and-send-to-existing-ivr)
+   - [Place Outgoing Call and Send to Ad-hoc IVR](#place-outgoing-call-and-send-to-ad-hoc-ivr)
+   - [Dial-out 2-Party Conference with Ad-hoc IVR](#dial-out-2-party-conference-with-ad-hoc-ivr)
+   - [List Subscriptions Payments](#list-subscriptions-payments)
+   - [List Consumable Payments](#list-consumable-payments)
 3. [Jaxl Python SDK](#jaxl-python-sdk)
    - [SDK Example Usage](#sdk-example-usage)
 4. [Documentation](#documentation)
@@ -48,9 +60,27 @@ export JAXL_API_CREDENTIALS=/path/to/jaxl-api-credentials.json
 
 export JAXL_API_AUTH_TOKEN="....authentication token..."
 
-jaxl calls list
+jaxl accounts me
 
 Response(status_code=<HTTPStatus.OK: 200>, content=b'... [redacted] ...')
+```
+
+### Verify API Credentials & Auth Token
+
+```bash
+jaxl accounts me
+```
+
+### Check Account Balance
+
+```bash
+jaxl accounts balance
+```
+
+### List Purchased Jaxl Numbers
+
+```bash
+jaxl phones list
 ```
 
 ### Create an IVR
@@ -126,6 +156,18 @@ jaxl calls create \
   --from "+91<Purchased Jaxl Number>" \
   --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
   --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
+```
+
+### List Subscriptions Payments
+
+```bash
+jaxl payments subscriptions list
+```
+
+### List Consumable Payments
+
+```bash
+jaxl payments consumables total
 ```
 
 ## Jaxl Python SDK
