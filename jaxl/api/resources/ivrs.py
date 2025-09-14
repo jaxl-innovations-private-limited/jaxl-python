@@ -29,6 +29,9 @@ from jaxl.api.client.models.ivr_options_invalid_response import (
 from jaxl.api.client.models.ivr_options_request import IVROptionsRequest
 from jaxl.api.client.models.ivr_options_response import IVROptionsResponse
 from jaxl.api.client.models.next_or_cta_request import NextOrCTARequest
+from jaxl.api.client.models.paginated_ivr_menu_response_list import (
+    PaginatedIVRMenuResponseList,
+)
 from jaxl.api.client.models.patched_ivr_options_update_request import (
     PatchedIVROptionsUpdateRequest,
 )
@@ -37,7 +40,7 @@ from jaxl.api.client.types import Response
 from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
 
 
-def ivrs_list(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
+def ivrs_list(args: Dict[str, Any]) -> Response[PaginatedIVRMenuResponseList]:
     return v1_ivr_list.sync_detailed(
         client=jaxl_api_client(JaxlApiModule.CALL),
         assigned=args.get("assigned", False),
