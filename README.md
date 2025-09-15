@@ -15,6 +15,17 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Place Outgoing Call and Send to existing IVR](#place-outgoing-call-and-send-to-existing-ivr)
    - [Place Outgoing Call and Send to Ad-hoc IVR](#place-outgoing-call-and-send-to-ad-hoc-ivr)
    - [Dial-out 2-Party Conference with Ad-hoc IVR](#dial-out-2-party-conference-with-ad-hoc-ivr)
+   - [Add External Phone Number to an Active Call](#add-external-phone-number-to-an-active-call)
+   - [Add Another Agent to an Active Call](#add-another-agent-to-an-active-call)
+   - [Remove External Phone Number and/or Agent from an Active Call](#remove-external-phone-number-andor-agent-from-an-active-call)
+   - [Send Text Prompts (TTS) in an Active Call](#send-text-prompts-tts-in-an-active-call)
+   - [Play Audio File in an Active Call](#play-audio-file-in-an-active-call)
+   - [Mute/Unmute an Active Call](#muteunmute-an-active-call)
+   - [Hold/Unhold an Active Call](#holdunhold-an-active-call)
+   - [Realtime Raw Audio](#realtime-raw-audio)
+   - [Realtime Speech Segments](#realtime-speech-segments)
+   - [Realtime Transcriptions](#realtime-transcriptions)
+   - [AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS](#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts)
    - [List Subscriptions Payments](#list-subscriptions-payments)
    - [List Consumable Payments](#list-consumable-payments)
 3. [Jaxl Python SDK](#jaxl-python-sdk)
@@ -157,6 +168,62 @@ jaxl calls create \
   --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
   --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
 ```
+
+### Add External Phone Number to an Active Call
+
+### Add Another Agent to an Active Call
+
+### Remove External Phone Number and/or Agent from an Active Call
+
+### Send Text Prompts (TTS) in an Active Call
+
+### Play Audio File in an Active Call
+
+### Mute/Unmute an Active Call
+
+Mute one or more calls
+
+```bash
+jaxl calls mute --call-id 1234 --call-id 1235
+```
+
+Unmute one or more calls
+
+```bash
+jaxl calls mute --call-id 1234 --call-id 1235
+```
+
+### Hold/Unhold an Active Call
+
+### Realtime Raw Audio
+
+### Realtime Speech Segments
+
+### Realtime Transcriptions
+
+### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
+
+```bash
+jaxl calls create \
+  --to "+91<Callee>"
+  --from "+91<Purchased Jaxl Number>" \
+  --transcribe
+```
+
+When `--pipeline` flag is used, Jaxl SDK will:
+
+- Start a local HTTP server for signaling
+- Starts [grout](https://github.com/abhinavsingh/proxy.py?tab=readme-ov-file#grout-ngrok-alternative) so that Jaxl servers can reach our signaling server
+- Pipeline framework will:
+  - Receive raw audio packets from callee and start to perform silence detection
+  - Starts STT conversion for detected speech segments
+  - Use local CPU (or GPUs if available for Silence detection & STT)
+  - Invokes pipeline module's `on_transcription` asynchronously as STT finishes
+
+Within our pipeline module we can then:
+
+- Feed transcription with prior knowledge base to LLM of choice e.g. ChatGPT, Ollama Models etc
+- Send back response from LLM back to the callee
 
 ### List Subscriptions Payments
 

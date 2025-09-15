@@ -147,6 +147,10 @@ def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallL
     )
 
 
+# def calls_hangup(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
+#     pass
+
+
 def _subparser(parser: argparse.ArgumentParser) -> None:
     """Manage Calls (Domestic & International Cellular, App-to-App)"""
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -190,6 +194,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         func=calls_create,
         _arg_keys=["to", "from_", "ivr", "message", "option"],
     )
+
     # list
     calls_list_parser = subparsers.add_parser("list", help="List all calls")
     calls_list_parser.add_argument(
@@ -206,7 +211,40 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         required=False,
         help="Call page size. Defaults to 1.",
     )
-    calls_list_parser.set_defaults(func=calls_list, _arg_keys=["currency", "limit"])
+    calls_list_parser.add_argument(
+        "--active",
+        action="store_true",
+        required=False,
+        help="Use this flag to only list active calls",
+    )
+    calls_list_parser.set_defaults(
+        func=calls_list, _arg_keys=["currency", "limit", "active"]
+    )
+
+    # hangup
+    # calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup calls")
+    # calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=[])
+
+    # transfer
+
+    # add
+    # remove
+
+    # mute/unmute
+    # hold/unhold
+
+    # play
+    # say
+
+    # ivr (send active call into an ivr)
+
+    # recording stop/pause/resume/start
+    # transcription list/get/search/summary/sentiment
+
+    # stream audio (unidirectional raw audio callbacks)
+    # stream speech (unidirectional speech segment callbacks)
+    # stream stt (unidirectional speech segment to stt and callbacks)
+    #
 
 
 def _unique_comma_separated(value: str) -> list[str]:
