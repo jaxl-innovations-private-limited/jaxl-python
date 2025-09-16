@@ -22,6 +22,7 @@ from jaxl.api.client.models.paginated_phone_number_list import (
 from jaxl.api.client.models.patched_phone_number_request import (
     PatchedPhoneNumberRequest,
 )
+from jaxl.api.client.models.phone_number import PhoneNumber
 from jaxl.api.client.models.phone_number_search_response import (
     PhoneNumberSearchResponse,
 )
@@ -50,7 +51,7 @@ def _phone_type(ptype: str) -> V1PhonenumbersSearchRetrieveResource:
     raise NotImplementedError()
 
 
-def phones_ivrs(args: Dict[str, Any]) -> None:
+def phones_ivrs(args: Dict[str, Any]) -> Response[PhoneNumber]:
     existing = phones_list({"e164": args["e164"]})
     if (
         existing.status_code != 200

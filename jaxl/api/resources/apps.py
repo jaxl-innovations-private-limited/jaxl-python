@@ -9,7 +9,7 @@ with or without modification, is strictly prohibited.
 
 import argparse
 import importlib
-from typing import Any, Dict
+from typing import Any, Dict, Optional, cast
 
 import uvicorn
 from fastapi import FastAPI, WebSocket
@@ -28,15 +28,15 @@ def _start_server(app: BaseJaxlApp) -> FastAPI:
     @server.post("/webhook", response_model=JaxlWebhookResponse)
     async def webhook(req: JaxlWebhookRequest) -> JaxlWebhookResponse:
         """Jaxl Webhook IVR Endpoint."""
+        response: Optional[JaxlWebhookResponse] = None
         if req.event == JaxlWebhookEvent.SETUP:
-            return await app.handle_setup(req)
-
-        if req.event == JaxlWebhookEvent.OPTION:
-            return await app.handle_option(req)
-
-        if req.event == JaxlWebhookEvent.TEARDOWN:
-            return await app.handle_teardown(req)
-
+            response = await app.handle_setup(req)
+        elif req.event == JaxlWebhookEvent.OPTION:
+            response = await app.handle_option(req)
+        elif req.event == JaxlWebhookEvent.TEARDOWN:
+            response = await app.handle_teardown(req)
+        if response is not None:
+            return response
         raise NotImplementedError(f"Unhandled event {req.event}")
 
     @server.websocket("/stream")
@@ -50,11 +50,11 @@ def _start_server(app: BaseJaxlApp) -> FastAPI:
     return server
 
 
-def _load_app(dotted_path: str):
+def _load_app(dotted_path: str) -> BaseJaxlApp:
     module_name, class_name = dotted_path.split(":")
     module = importlib.import_module(module_name)
     app_cls = getattr(module, class_name)
-    return app_cls()
+    return cast(BaseJaxlApp, app_cls())
 
 
 def apps_run(args: Dict[str, Any]) -> str:

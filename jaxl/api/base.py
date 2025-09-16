@@ -50,11 +50,26 @@ class JaxlWebhookResponse(BaseModel):
 
 
 class BaseJaxlApp:
-    async def handle_setup(self, req: JaxlWebhookRequest) -> JaxlWebhookResponse:
-        pass
+    # pylint: disable=no-self-use
+    async def handle_setup(
+        self,
+        # pylint: disable=unused-argument
+        req: JaxlWebhookRequest,
+    ) -> Optional[JaxlWebhookResponse]:
+        return None
 
-    async def handle_option(self, req: JaxlWebhookRequest) -> JaxlWebhookResponse:
-        pass
+    # pylint: disable=no-self-use
+    async def handle_option(
+        self,
+        # pylint: disable=unused-argument
+        req: JaxlWebhookRequest,
+    ) -> Optional[JaxlWebhookResponse]:
+        return None
 
-    async def handle_teardown(self, req: JaxlWebhookRequest) -> JaxlWebhookResponse:
-        pass
+    # pylint: disable=no-self-use
+    async def handle_teardown(
+        self,
+        # pylint: disable=unused-argument
+        req: JaxlWebhookRequest,
+    ) -> Optional[JaxlWebhookResponse]:
+        return None
