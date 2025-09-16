@@ -22,7 +22,7 @@ class JaxlApp(BaseJaxlApp):
             print(f"[{req.pk}] setup event received")
         return JaxlWebhookResponse(
             prompt=["Please enter code followed by star"],
-            num_characters="*",
+            num_characters=1,
             stream=None,
         )
 

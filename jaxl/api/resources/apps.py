@@ -12,7 +12,7 @@ import importlib
 from typing import Any, Dict, Optional, cast
 
 import uvicorn
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, Request, WebSocket
 
 from jaxl.api.base import (
     BaseJaxlApp,
@@ -25,15 +25,22 @@ from jaxl.api.base import (
 def _start_server(app: BaseJaxlApp) -> FastAPI:
     server = FastAPI()
 
-    @server.post("/webhook", response_model=JaxlWebhookResponse)
-    async def webhook(req: JaxlWebhookRequest) -> JaxlWebhookResponse:
+    @server.api_route(
+        "/webhook",
+        methods=["POST", "DELETE"],
+        response_model=JaxlWebhookResponse,
+    )
+    async def webhook(req: JaxlWebhookRequest, request: Request) -> JaxlWebhookResponse:
         """Jaxl Webhook IVR Endpoint."""
         response: Optional[JaxlWebhookResponse] = None
         if req.event == JaxlWebhookEvent.SETUP:
+            assert request.method == "POST"
             response = await app.handle_setup(req)
         elif req.event == JaxlWebhookEvent.OPTION:
+            assert request.method == "POST"
             response = await app.handle_option(req)
         elif req.event == JaxlWebhookEvent.TEARDOWN:
+            assert request.method == "DELETE"
             response = await app.handle_teardown(req)
         if response is not None:
             return response
