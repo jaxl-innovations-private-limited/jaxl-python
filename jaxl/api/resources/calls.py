@@ -125,7 +125,7 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
             from_number=args["from_"],
             to_number=to_number,
             call_type=CallTypeEnum.VALUE_2,
-            session_id=uuid.uuid4().hex,
+            session_id=str(uuid.uuid4()).upper(),
             currency="INR",
             total_recharge=total_recharge.parsed.signed,
             balance="0",

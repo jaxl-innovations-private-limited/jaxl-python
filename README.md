@@ -13,7 +13,6 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [List IVRs](#list-ivrs)
    - [List Purchased Jaxl Numbers](#list-purchased-jaxl-numbers)
    - [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id)
-   - [Create a Webhook IVR](#create-a-webhook-ivr)
    - [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
    - [Place Outgoing Cellular Call with Ad-hoc IVR](#place-outgoing-cellular-call-with-ad-hoc-ivr)
    - [Dial-out Multi-Party Conference between Cellular Numbers](#dial-out-multi-party-conference-between-cellular-numbers)
@@ -29,8 +28,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Unmute a Participant in an Active Call](#unmute-a-participant-in-an-active-call)
    - [Hold a Participant in an Active Call](#hold-a-participant-in-an-active-call)
    - [Unhold a Participant in an Active Call](#unhold-a-participant-in-an-active-call)
-   - [Receive Call Events via Webhook IVRs](#receive-call-events-via-ivr-webhook-ivrs)
-   - [Realtime Streaming Call Events](#realtime-streaming-call-events)
+   - [Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs)
    - [Realtime Streaming Audio](#realtime-streaming-audio)
    - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
    - [Realtime Streaming Transcriptions per Speech Segment](#realtime-streaming-transcriptions-per-speech-segment)
@@ -163,21 +161,6 @@ jaxl phones ivrs \
   --e164 "+91<Purchased Jaxl Number>" \
   --ivr <IVR ID>
 ```
-
-### Create a Webhook IVR
-
-Webhook IVRs can be used to programatically control the lifecycle of incoming calls. Jaxl will
-invoke configured webhook URL for subscribed call events. Handle the webhook request and
-use Jaxl SDK to continue and customise the call flows.
-
-To create a webhook IVR, use a `https://` URL as `--message` flag e.g.
-
-```bash
-jaxl ivrs create --message "https://example.com/jaxl-webhook-ivr"
-```
-
-Next, assign a number to webhook IVR as shown previously under [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id). Now, all incoming calls on the number will start with
-webhook before proceeding further.
 
 ### Place Outgoing Cellular Call with Existing IVR
 
@@ -362,7 +345,22 @@ jaxl calls unhold --call-id 1235 --agent <someone@mycompany.com>
 
 ### Receive Call Events via Webhook IVRs
 
-### Realtime Streaming Call Events
+Webhook IVRs can be used to programatically control the lifecycle of incoming and outgoing calls.
+Jaxl will invoke configured webhook URL for subscribed call events. Handle the webhook request and
+use Jaxl SDK to continue and customise the call flows.
+
+To create a webhook IVR, use a `https://` URL as `--message` flag e.g.
+
+```bash
+jaxl ivrs create --message "https://example.com/jaxl-webhook-ivr"
+```
+
+Next, assign a number to webhook IVR as shown previously under [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id). Now, all incoming calls on the number will start with
+webhook before proceeding further.
+
+To control flow of outgoing calls, use webhook IVR ID when placing an outbound call. See [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
+
+See [examples/app.py](./examples/app.py) for a working webhook example.
 
 ### Realtime Streaming Audio
 

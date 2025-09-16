@@ -279,7 +279,7 @@ def _attest() -> Optional[Dict[str, Any]]:
     """Ensures valid attestation with Jaxl backend."""
     sk = default_api_credentials()["client"]["genesis_key"]
     idd = None
-    did = f"jaxl:grout:{uuid.uuid4().hex}"
+    did = f"jaxl:sdk:{uuid.uuid4().hex}"
     origin = f"{pyplatform.system().lower()}://"
     ip_address = "127.0.0.1"
 
