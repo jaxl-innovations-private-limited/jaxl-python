@@ -9,10 +9,7 @@ with or without modification, is strictly prohibited.
 
 import argparse
 import importlib
-from typing import Any, Dict, Optional, cast
-
-import uvicorn
-from fastapi import FastAPI, Request, WebSocket
+from typing import TYPE_CHECKING, Any, Dict, Optional, cast
 
 from jaxl.api.base import (
     BaseJaxlApp,
@@ -22,7 +19,13 @@ from jaxl.api.base import (
 )
 
 
-def _start_server(app: BaseJaxlApp) -> FastAPI:
+if TYPE_CHECKING:
+    from fastapi import FastAPI
+
+
+def _start_server(app: BaseJaxlApp) -> "FastAPI":
+    from fastapi import FastAPI, Request, WebSocket
+
     server = FastAPI()
 
     @server.api_route(
@@ -66,7 +69,11 @@ def _load_app(dotted_path: str) -> BaseJaxlApp:
 
 def apps_run(args: Dict[str, Any]) -> str:
     app = _start_server(_load_app(args["app"]))
+
+    import uvicorn
+
     uvicorn.run(app, host=args["host"], port=args["port"])
+
     return "Bbye"
 
 
