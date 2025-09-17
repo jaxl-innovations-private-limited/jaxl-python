@@ -46,7 +46,10 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
                 response = await app.handle_setup(req)
         elif req.event == JaxlWebhookEvent.OPTION:
             assert request.method == "POST"
-            response = await app.handle_option(req)
+            if req.data:
+                response = await app.handle_user_data(req)
+            else:
+                response = await app.handle_option(req)
         elif req.event == JaxlWebhookEvent.TEARDOWN:
             assert request.method == "DELETE"
             response = await app.handle_teardown(req)
