@@ -52,16 +52,14 @@ class JaxlWebhookRequest(BaseModel):
 class JaxlWebhookResponse(BaseModel):
     prompt: List[str]
     num_characters: Union[int, str]
-    stream: Optional[float]
 
 
 class JaxlCtaResponse(BaseModel):
     next: Optional[int] = None
     phone: Optional[str] = None
-    devices: Optional[List[str]] = None
-    appusers: Optional[List[str]] = None
-    teams: Optional[List[str]] = None
-    webhook: Optional[str] = None
+    devices: Optional[List[int]] = None
+    appusers: Optional[List[int]] = None
+    teams: Optional[List[int]] = None
 
     @model_validator(mode="after")
     def ensure_only_one_key(self) -> "JaxlCtaResponse":

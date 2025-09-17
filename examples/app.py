@@ -12,6 +12,7 @@ from typing import Dict
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlCtaResponse,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
@@ -20,7 +21,6 @@ from jaxl.api.base import (
 ASK_FOR_CODE_RESPONSE = JaxlWebhookResponse(
     prompt=["Please enter your code followed by star sign"],
     num_characters="*",
-    stream=None,
 )
 
 
@@ -32,7 +32,6 @@ def _ask_for_confirmation_response(code: str) -> JaxlWebhookResponse:
             "Press 2 to re-enter your code.",
         ],
         num_characters=1,
-        stream=None,
     )
 
 
@@ -43,7 +42,6 @@ def _thankyou_response(code: str) -> JaxlWebhookResponse:
             f"We have successfully received your code {code}",
         ],
         num_characters=0,
-        stream=None,
     )
 
 
@@ -72,7 +70,9 @@ class JaxlAppRequestCodeAndSendToCellular(BaseJaxlApp):
     async def handle_option(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         assert req.state
         if req.option == "1":
-            return _thankyou_response(self._codes[req.state.call_id])
+            # return _thankyou_response(self._codes[req.state.call_id])
+            # TODO: Fetch target number from your database
+            return JaxlCtaResponse(phone="+919919273495")
         # For any other input than "1" we simply take user to re-enter code flow.
         return ASK_FOR_CODE_RESPONSE
 

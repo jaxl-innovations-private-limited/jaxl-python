@@ -23,11 +23,7 @@ from jaxl.api.base import (
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
-DUMMY_RESPONSE = JaxlWebhookResponse(
-    prompt=[" . "],
-    num_characters=0,
-    stream=None,
-)
+DUMMY_RESPONSE = JaxlWebhookResponse(prompt=[" . "], num_characters=0)
 
 
 def _start_server(app: BaseJaxlApp) -> "FastAPI":
