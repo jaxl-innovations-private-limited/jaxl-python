@@ -70,8 +70,7 @@ class BaseJaxlApp:
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
-        """Invoked when IVR starts or when user
-        input was requested just after the greeting message."""
+        """Invoked when IVR starts."""
         return None
 
     async def handle_user_data(
@@ -79,8 +78,8 @@ class BaseJaxlApp:
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
-        """Invoked when IVR has received user input ending in a
-        character during the greeting phase."""
+        """Invoked when IVR has received multiple character user input
+        ending in a specified character."""
         return None
 
     # pylint: disable=no-self-use
@@ -89,7 +88,7 @@ class BaseJaxlApp:
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
-        """Invoked when IVR option is chosen and when IVR option data has been received."""
+        """Invoked when IVR option is chosen."""
         return None
 
     # pylint: disable=no-self-use

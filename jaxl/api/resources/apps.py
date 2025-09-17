@@ -22,6 +22,12 @@ from jaxl.api.base import (
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
+DUMMY_RESPONSE = JaxlWebhookResponse(
+    prompt=[" . "],
+    num_characters=0,
+    stream=None,
+)
+
 
 def _start_server(app: BaseJaxlApp) -> "FastAPI":
     from fastapi import FastAPI, Request, WebSocket
@@ -40,16 +46,31 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
             assert request.method == "POST"
             if req.state is None:
                 response = await app.handle_configure(req)
+                if response is None:
+                    # Configure event is used to prewarm TTS for your IVR.
+                    # But its not absolutely essential to prewarm if you wish to do so.
+                    # Mock dummy response for now, allowing module developers
+                    # to not override handle_teardown if they wish not to use it.
+                    response = DUMMY_RESPONSE
             elif req.data:
                 response = await app.handle_user_data(req)
             else:
                 response = await app.handle_setup(req)
         elif req.event == JaxlWebhookEvent.OPTION:
             assert request.method == "POST"
-            response = await app.handle_option(req)
+            if req.data:
+                response = await app.handle_user_data(req)
+            else:
+                response = await app.handle_option(req)
         elif req.event == JaxlWebhookEvent.TEARDOWN:
             assert request.method == "DELETE"
             response = await app.handle_teardown(req)
+            if response is None:
+                # Teardown request doesn't really expect any response,
+                # atleast currently its not even being processed at Jaxl servers.
+                # Just mock a dummy response for now, allowing module developers
+                # to not override handle_teardown if they wish not to use it.
+                response = DUMMY_RESPONSE
         if response is not None:
             return response
         raise NotImplementedError(f"Unhandled event {req.event}")
