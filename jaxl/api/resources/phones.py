@@ -13,11 +13,16 @@ from typing import Any, Dict
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_phonenumbers_list,
+    v1_phonenumbers_partial_update,
     v1_phonenumbers_search_retrieve,
 )
 from jaxl.api.client.models.paginated_phone_number_list import (
     PaginatedPhoneNumberList,
 )
+from jaxl.api.client.models.patched_phone_number_request import (
+    PatchedPhoneNumberRequest,
+)
+from jaxl.api.client.models.phone_number import PhoneNumber
 from jaxl.api.client.models.phone_number_search_response import (
     PhoneNumberSearchResponse,
 )
@@ -46,6 +51,21 @@ def _phone_type(ptype: str) -> V1PhonenumbersSearchRetrieveResource:
     raise NotImplementedError()
 
 
+def phones_ivrs(args: Dict[str, Any]) -> Response[PhoneNumber]:
+    existing = phones_list({"e164": args["e164"]})
+    if (
+        existing.status_code != 200
+        or existing.parsed is None
+        or len(existing.parsed.results) != 1
+    ):
+        raise ValueError(f"Unable to fetch details for {args['e164']}")
+    return v1_phonenumbers_partial_update.sync_detailed(
+        client=jaxl_api_client(JaxlApiModule.CALL),
+        id=existing.parsed.results[0].id,
+        json_body=PatchedPhoneNumberRequest(ivr=args["ivr"]),
+    )
+
+
 def phones_search(args: Dict[str, Any]) -> Response[PhoneNumberSearchResponse]:
     return v1_phonenumbers_search_retrieve.sync_detailed(
         client=jaxl_api_client(JaxlApiModule.CALL),
@@ -64,9 +84,11 @@ def phones_search(args: Dict[str, Any]) -> Response[PhoneNumberSearchResponse]:
 def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
     ctype = args.get("type", "active")
     client = jaxl_api_client(JaxlApiModule.CALL)
+    e164 = args.get("e164")
     if ctype == "all":
         return v1_phonenumbers_list.sync_detailed(
             client=client,
+            uid=e164,
         )
     if ctype == "active":
         return v1_phonenumbers_list.sync_detailed(
@@ -75,6 +97,7 @@ def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
             additional_status=[
                 V1PhonenumbersListAdditionalStatusItem.SCHEDULED_FOR_RELEASE
             ],
+            uid=e164,
         )
     if ctype == "inactive":
         return v1_phonenumbers_list.sync_detailed(
@@ -83,6 +106,7 @@ def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
             additional_status=[
                 V1PhonenumbersListAdditionalStatusItem.RELEASED_BY_PROVIDER
             ],
+            uid=e164,
         )
     raise NotImplementedError()
 
@@ -99,7 +123,33 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         default="active",
         help="Filter phones by type (default: active)",
     )
-    phones_list_parser.set_defaults(func=phones_list, _arg_keys=["type"])
+    phones_list_parser.add_argument(
+        "--e164",
+        required=False,
+        default=None,
+        help="Fetch a specific phone by its e164 number",
+    )
+    phones_list_parser.set_defaults(func=phones_list, _arg_keys=["type", "e164"])
+
+    # ivrs
+    phones_ivrs_parser = subparsers.add_parser(
+        "ivrs",
+        help="Assign/Unassign IVR to a phone number",
+    )
+    phones_ivrs_parser.add_argument(
+        "--e164",
+        required=True,
+        help="Phone number to configure",
+    )
+    phones_ivrs_parser.add_argument(
+        "--ivr",
+        type=int,
+        required=False,
+        default=None,
+        help="IVR ID that this phone must be assigned to.  "
+        + "When not passed, removes any existing IVR assignment on this phone number",
+    )
+    phones_ivrs_parser.set_defaults(func=phones_ivrs, _arg_keys=["e164", "ivr"])
 
     # search
     phones_search_parser = subparsers.add_parser(

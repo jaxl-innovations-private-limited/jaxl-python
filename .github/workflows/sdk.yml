@@ -29,15 +29,17 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install --upgrade pip
-          pip install -e .[dev]
+          pip install -e .[dev,app,grout]
       - name: Run mypy
         run: |
           source .venv/bin/activate
           PYTHONPATH=. mypy -p jaxl.api
+          PYTHONPATH=. mypy -p examples
       - name: Run pylint
         run: |
           source .venv/bin/activate
           PYTHONPATH=. pylint jaxl/api
+          PYTHONPATH=. pylint examples
       - name: Generate docs
         run: |
           source .venv/bin/activate

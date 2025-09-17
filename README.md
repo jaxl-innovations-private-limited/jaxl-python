@@ -7,14 +7,32 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [CLI Example Usage](#cli-example-usage)
    - [Verify API Credentials & Auth Token](#verify-api-credentials--auth-token)
    - [Check Account Balance](#check-account-balance)
-   - [List Purchased Jaxl Numbers](#list-purchased-jaxl-numbers)
    - [Create an IVR](#create-an-ivr)
    - [Create a hangup IVR](#create-a-hangup-ivr)
    - [Configure IVR Options](#configure-ivr-options)
    - [List IVRs](#list-ivrs)
-   - [Place Outgoing Call and Send to existing IVR](#place-outgoing-call-and-send-to-existing-ivr)
-   - [Place Outgoing Call and Send to Ad-hoc IVR](#place-outgoing-call-and-send-to-ad-hoc-ivr)
+   - [List Purchased Jaxl Numbers](#list-purchased-jaxl-numbers)
+   - [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id)
+   - [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
+   - [Place Outgoing Cellular Call with Ad-hoc IVR](#place-outgoing-cellular-call-with-ad-hoc-ivr)
+   - [Dial-out Multi-Party Conference between Cellular Numbers](#dial-out-multi-party-conference-between-cellular-numbers)
+   - [Dial-out Agent Team and Cellular Numbers](#dial-out-agent-team-and-cellular-numbers)
    - [Dial-out 2-Party Conference with Ad-hoc IVR](#dial-out-2-party-conference-with-ad-hoc-ivr)
+   - [Add External Phone Number to an Active Call](#add-external-phone-number-to-an-active-call)
+   - [Add Agent to an Active Call](#add-agent-to-an-active-call)
+   - [Remove External Phone Number from an Active Call](#remove-external-phone-number-from-an-active-call)
+   - [Remove Agent from an Active Call](#remove-agent-from-an-active-call)
+   - [Send Text Prompts (TTS) in an Active Call](#send-text-prompts-tts-in-an-active-call)
+   - [Play Audio File in an Active Call](#play-audio-file-in-an-active-call)
+   - [Mute a Participant in an Active Call](#mute-a-participant-in-an-active-call)
+   - [Unmute a Participant in an Active Call](#unmute-a-participant-in-an-active-call)
+   - [Hold a Participant in an Active Call](#hold-a-participant-in-an-active-call)
+   - [Unhold a Participant in an Active Call](#unhold-a-participant-in-an-active-call)
+   - [Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs)
+   - [Realtime Streaming Audio](#realtime-streaming-audio)
+   - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
+   - [Realtime Streaming Transcriptions per Speech Segment](#realtime-streaming-transcriptions-per-speech-segment)
+   - [AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS](#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts)
    - [List Subscriptions Payments](#list-subscriptions-payments)
    - [List Consumable Payments](#list-consumable-payments)
 3. [Jaxl Python SDK](#jaxl-python-sdk)
@@ -77,12 +95,6 @@ jaxl accounts me
 jaxl accounts balance
 ```
 
-### List Purchased Jaxl Numbers
-
-```bash
-jaxl phones list
-```
-
 ### Create an IVR
 
 ```bash
@@ -128,7 +140,35 @@ One of the CTA key flag must be provided. Allowed CTA keys are:
 jaxl ivrs list
 ```
 
-### Place Outgoing Call and Send to existing IVR
+### List Purchased Jaxl Numbers
+
+```bash
+jaxl phones list
+```
+
+You can also search for a specific purchased number:
+
+```bash
+jaxl phones list --e164 "+91<Purchased Jaxl Number>"
+```
+
+### Assign a Phone Number to IVR by ID
+
+All incoming calls to this number will send user to the assigned IVR.
+
+```bash
+jaxl phones ivrs \
+  --e164 "+91<Purchased Jaxl Number>" \
+  --ivr <IVR ID>
+```
+
+### Place Outgoing Cellular Call with Existing IVR
+
+Below command will execute the following flow:
+
+- Places a call to <Callee Number>
+- When answered sends them to an existing IVR ID
+- Once IVR finishes, call continues to CTA returned by IVR
 
 ```bash
 jaxl calls create \
@@ -137,7 +177,14 @@ jaxl calls create \
   --ivr <IVR ID>
 ```
 
-### Place Outgoing Call and Send to Ad-hoc IVR
+### Place Outgoing Cellular Call with Ad-hoc IVR
+
+Below command will execute the following flow:
+
+- Creates an Ad-hoc IVR using `--message` and `--option` flags
+- Places a call to <Callee Number>
+- When answered sends callee to the ad-hoc IVR
+- Once IVR finishes, call continues to CTA returned by IVR
 
 ```bash
 jaxl calls create \
@@ -148,7 +195,47 @@ jaxl calls create \
   --option "2=Press 2 for HR department:team=<HR Team ID>
 ```
 
+## Dial-out Multi-Party Conference between Cellular Numbers
+
+Below command will execute the following flow:
+
+- Dials out all `--to` participants in parallel
+- Connects them together as they answer the call
+- Ends the call when one but all others have hanged up the call
+
+```bash
+jaxl calls create \
+  --to "+91<Doctors Number>" \
+  --to "+91<Patient Number>" \
+  --to "+91<Supervisor Number>" \
+  --from "+91<Purchased Jaxl Number>"
+```
+
+### Dial-out Agent Team and Cellular Numbers
+
+Below command will execute the following flow:
+
+- Dials out multiple teams of doctors & patient in parallel
+- Connects the patient with first doctor to pick the call from the teams
+- Doctors are called on their cellular number first (if added on Jaxl app),
+  followed by an attempt to call on Jaxl app directly (VoIP).
+- Calling preference can be controlled per agent (doctor) or team to dictate
+  whether to use cellular or voip first to connect with a doctor.
+
+```bash
+jaxl calls create \
+  --to "teams=<Doctors Team ID1>,<Doctors Team ID2>" \
+  --to "+91<Patient Number>"
+```
+
 ### Dial-out 2-Party Conference with Ad-hoc IVR
+
+Below command will execute the following flow:
+
+- Dials out to Doctor first
+- When doctor answers the call, they are asked to press 1 when ready
+- If doctor presses 1, a second call is placed to the patient
+- Ends the call when one but all others have hanged up the call
 
 ```bash
 jaxl calls create \
@@ -157,6 +244,153 @@ jaxl calls create \
   --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
   --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
 ```
+
+### Add External Phone Number to an Active Call
+
+```bash
+jaxl calls add --call-id 1234 --phone +91<Mobile Number>
+```
+
+### Add Agent to an Active Call
+
+```bash
+jaxl calls add --call-id 1234 --agent <someone@mycompany.com>
+```
+
+### Remove External Phone Number from an Active Call
+
+```bash
+jaxl calls remove --call-id 1234 --phone +91<Mobile Number>
+```
+
+### Remove Agent from an Active Call
+
+```bash
+jaxl calls remove --call-id 1234 --agent <someone@mycompany.com>
+```
+
+### Send Text Prompts (TTS) in an Active Call
+
+```bash
+jaxl calls speak --call-id 1234 \
+  --prompt "Hello, this text was injected in the middle of an active call" \
+  --prompt "Yes its possible to pass in multiple prompt flags" \
+  --prompt "Use shorter prompt phrases to keep TTS latency low" \
+  --prompt "Avoid using excessively large sentences"
+```
+
+### Play Audio File in an Active Call
+
+```bash
+jaxl calls play --call-id 1234 --audio /path/to/a/file/on/local/disk/or/public/url
+```
+
+> NOTE: Audio file must be in SLIN16 format i.e. 8KHz Mono 16-bit.
+
+### Mute a Participant in an Active Call
+
+Mute a specific cellular user in a call.
+
+```bash
+jaxl calls mute --call-id 1234 --phone +91<Mobile Number>
+```
+
+Mute an agent (Jaxl App User) in a call.
+
+```bash
+jaxl calls mute --call-id 1235 --agent <someone@mycompany.com>
+```
+
+### Unmute a Participant in an Active Call
+
+Unmute a specific cellular user in a call.
+
+```bash
+jaxl calls unmute --call-id 1234 --phone +91<Mobile Number>
+```
+
+Unmute a specific agent (Jaxl App User) in a call.
+
+```bash
+jaxl calls unmute --call-id 1235 --agent <someone@mycompany.com>
+```
+
+### Hold a Participant in an Active Call
+
+Put a cellular user on-hold in a call
+
+```bash
+jaxl calls hold --call-id 1234 --phone +91<Mobile Number>
+```
+
+Put an agent on-hold in a call
+
+```bash
+jaxl calls hold --call-id 1235 --agent <someone@mycompany.com>
+```
+
+### Unhold a Participant in an Active Call
+
+Unhold a cellular user in a call
+
+```bash
+jaxl calls unhold --call-id 1234 --phone +91<Mobile Number>
+```
+
+Unhold an agent in a call
+
+```bash
+jaxl calls unhold --call-id 1235 --agent <someone@mycompany.com>
+```
+
+### Receive Call Events via Webhook IVRs
+
+Webhook IVRs can be used to programatically control the lifecycle of incoming and outgoing calls.
+Jaxl will invoke configured webhook URL for subscribed call events. Handle the webhook request and
+use Jaxl SDK to continue and customise the call flows.
+
+To create a webhook IVR, use a `https://` URL as `--message` flag e.g.
+
+```bash
+jaxl ivrs create --message "https://example.com/jaxl-webhook-ivr"
+```
+
+Next, assign a number to webhook IVR as shown previously under [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id). Now, all incoming calls on the number will start with
+webhook before proceeding further.
+
+To control flow of outgoing calls, use webhook IVR ID when placing an outbound call. See [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
+
+See [examples/app.py](./examples/app.py) for a working webhook example.
+
+### Realtime Streaming Audio
+
+### Realtime Streaming Speech Segments
+
+### Realtime Streaming Transcriptions per Speech Segment
+
+### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
+
+```bash
+jaxl calls create \
+  --to "+91<Callee>"
+  --from "+91<Purchased Jaxl Number>" \
+  --transcribe
+```
+
+When `--pipeline` flag is used, Jaxl SDK will:
+
+- Start a local HTTP server for signaling
+- Starts [grout](https://github.com/abhinavsingh/proxy.py?tab=readme-ov-file#grout-ngrok-alternative) so that Jaxl servers can reach our signaling server
+- Pipeline framework will:
+  - Receive raw audio packets from callee and start to perform silence detection
+  - Starts STT conversion for detected speech segments
+  - Use local CPU (or GPUs if available for Silence detection & STT)
+  - Invokes pipeline module's `on_transcription` asynchronously as STT finishes
+
+Within our pipeline module we can then:
+
+- Feed transcription with prior knowledge base to LLM of choice e.g. ChatGPT, Ollama Models etc
+- Send back response from LLM back to the callee
 
 ### List Subscriptions Payments
 

@@ -125,7 +125,7 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
             from_number=args["from_"],
             to_number=to_number,
             call_type=CallTypeEnum.VALUE_2,
-            session_id=uuid.uuid4().hex,
+            session_id=str(uuid.uuid4()).upper(),
             currency="INR",
             total_recharge=total_recharge.parsed.signed,
             balance="0",
@@ -145,6 +145,10 @@ def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallL
         currency=args.get("currency", DEFAULT_CURRENCY),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
     )
+
+
+# def calls_hangup(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
+#     pass
 
 
 def _subparser(parser: argparse.ArgumentParser) -> None:
@@ -190,6 +194,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         func=calls_create,
         _arg_keys=["to", "from_", "ivr", "message", "option"],
     )
+
     # list
     calls_list_parser = subparsers.add_parser("list", help="List all calls")
     calls_list_parser.add_argument(
@@ -206,7 +211,40 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         required=False,
         help="Call page size. Defaults to 1.",
     )
-    calls_list_parser.set_defaults(func=calls_list, _arg_keys=["currency", "limit"])
+    calls_list_parser.add_argument(
+        "--active",
+        action="store_true",
+        required=False,
+        help="Use this flag to only list active calls",
+    )
+    calls_list_parser.set_defaults(
+        func=calls_list, _arg_keys=["currency", "limit", "active"]
+    )
+
+    # hangup
+    # calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup calls")
+    # calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=[])
+
+    # transfer
+
+    # add
+    # remove
+
+    # mute/unmute
+    # hold/unhold
+
+    # play
+    # say
+
+    # ivr (send active call into an ivr)
+
+    # recording stop/pause/resume/start
+    # transcription list/get/search/summary/sentiment
+
+    # stream audio (unidirectional raw audio callbacks)
+    # stream speech (unidirectional speech segment callbacks)
+    # stream stt (unidirectional speech segment to stt and callbacks)
+    #
 
 
 def _unique_comma_separated(value: str) -> list[str]:
