@@ -58,7 +58,7 @@ def phones_ivrs(args: Dict[str, Any]) -> Response[PhoneNumber]:
         or existing.parsed is None
         or len(existing.parsed.results) != 1
     ):
-        raise ValueError(f"{args['e164']} is not an active phone number")
+        raise ValueError(f"Unable to fetch details for {args['e164']}")
     return v1_phonenumbers_partial_update.sync_detailed(
         client=jaxl_api_client(JaxlApiModule.CALL),
         id=existing.parsed.results[0].id,
