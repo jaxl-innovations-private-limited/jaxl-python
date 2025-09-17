@@ -38,7 +38,12 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
         response: Optional[JaxlWebhookResponse] = None
         if req.event == JaxlWebhookEvent.SETUP:
             assert request.method == "POST"
-            response = await app.handle_setup(req)
+            if req.state is None:
+                response = await app.handle_configure(req)
+            elif req.data:
+                response = await app.handle_user_data(req)
+            else:
+                response = await app.handle_setup(req)
         elif req.event == JaxlWebhookEvent.OPTION:
             assert request.method == "POST"
             response = await app.handle_option(req)

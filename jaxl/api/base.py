@@ -41,6 +41,10 @@ class JaxlWebhookRequest(BaseModel):
     event: JaxlWebhookEvent
     # Webhook state
     state: Optional[JaxlWebhookState]
+    # DTMF inputs
+    option: Optional[str]
+    # Extra data
+    data: Optional[str]
 
 
 class JaxlWebhookResponse(BaseModel):
@@ -50,12 +54,33 @@ class JaxlWebhookResponse(BaseModel):
 
 
 class BaseJaxlApp:
+
+    # pylint: disable=no-self-use
+    async def handle_configure(
+        self,
+        # pylint: disable=unused-argument
+        req: JaxlWebhookRequest,
+    ) -> Optional[JaxlWebhookResponse]:
+        """Invoked when a phone number gets assigned to IVR."""
+        return None
+
     # pylint: disable=no-self-use
     async def handle_setup(
         self,
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
+        """Invoked when IVR starts or when user
+        input was requested just after the greeting message."""
+        return None
+
+    async def handle_user_data(
+        self,
+        # pylint: disable=unused-argument
+        req: JaxlWebhookRequest,
+    ) -> Optional[JaxlWebhookResponse]:
+        """Invoked when IVR has received user input ending in a
+        character during the greeting phase."""
         return None
 
     # pylint: disable=no-self-use
@@ -64,6 +89,7 @@ class BaseJaxlApp:
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
+        """Invoked when IVR option is chosen and when IVR option data has been received."""
         return None
 
     # pylint: disable=no-self-use
@@ -72,4 +98,5 @@ class BaseJaxlApp:
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
+        """Invoked when a call ends."""
         return None
