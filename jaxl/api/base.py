@@ -78,8 +78,8 @@ class BaseJaxlApp:
         # pylint: disable=unused-argument
         req: JaxlWebhookRequest,
     ) -> Optional[JaxlWebhookResponse]:
-        """Invoked when IVR has received user input ending in a
-        character during the greeting phase."""
+        """Invoked when IVR has received multiple character user input
+        ending in a specified character."""
         return None
 
     # pylint: disable=no-self-use
