@@ -10,7 +10,9 @@ with or without modification, is strictly prohibited.
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
+
+from jaxl.api.resources.ivrs import IVR_CTA_KEYS
 
 
 class JaxlWebhookEvent(Enum):
@@ -53,49 +55,53 @@ class JaxlWebhookResponse(BaseModel):
     stream: Optional[float]
 
 
+class JaxlCtaResponse(BaseModel):
+    next: Optional[int] = None
+    phone: Optional[str] = None
+    devices: Optional[List[str]] = None
+    appusers: Optional[List[str]] = None
+    teams: Optional[List[str]] = None
+    webhook: Optional[str] = None
+
+    @model_validator(mode="after")
+    def ensure_only_one_key(self):
+        non_null_keys = [k for k, v in self.__dict__.items() if v is not None]
+        if len(non_null_keys) == 0:
+            raise ValueError(f"At least one of {IVR_CTA_KEYS} must be provided")
+        if len(non_null_keys) > 1:
+            raise ValueError(
+                f"Only one of {IVR_CTA_KEYS} can be non-null, got {non_null_keys}"
+            )
+        return self
+
+
+HANDLER_RESPONSE = Optional[Union[JaxlWebhookResponse, JaxlCtaResponse]]
+
+
 class BaseJaxlApp:
 
-    # pylint: disable=no-self-use
-    async def handle_configure(
-        self,
-        # pylint: disable=unused-argument
-        req: JaxlWebhookRequest,
-    ) -> Optional[JaxlWebhookResponse]:
+    # pylint: disable=no-self-use,unused-argument
+    async def handle_configure(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a phone number gets assigned to IVR."""
         return None
 
-    # pylint: disable=no-self-use
-    async def handle_setup(
-        self,
-        # pylint: disable=unused-argument
-        req: JaxlWebhookRequest,
-    ) -> Optional[JaxlWebhookResponse]:
+    # pylint: disable=no-self-use,unused-argument
+    async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when IVR starts."""
         return None
 
-    async def handle_user_data(
-        self,
-        # pylint: disable=unused-argument
-        req: JaxlWebhookRequest,
-    ) -> Optional[JaxlWebhookResponse]:
+    # pylint: disable=no-self-use,unused-argument
+    async def handle_user_data(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when IVR has received multiple character user input
         ending in a specified character."""
         return None
 
-    # pylint: disable=no-self-use
-    async def handle_option(
-        self,
-        # pylint: disable=unused-argument
-        req: JaxlWebhookRequest,
-    ) -> Optional[JaxlWebhookResponse]:
+    # pylint: disable=no-self-use,unused-argument
+    async def handle_option(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when IVR option is chosen."""
         return None
 
-    # pylint: disable=no-self-use
-    async def handle_teardown(
-        self,
-        # pylint: disable=unused-argument
-        req: JaxlWebhookRequest,
-    ) -> Optional[JaxlWebhookResponse]:
+    # pylint: disable=no-self-use,unused-argument
+    async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a call ends."""
         return None

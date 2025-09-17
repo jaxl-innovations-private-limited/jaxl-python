@@ -9,9 +9,10 @@ with or without modification, is strictly prohibited.
 
 import argparse
 import importlib
-from typing import TYPE_CHECKING, Any, Dict, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, cast
 
 from jaxl.api.base import (
+    HANDLER_RESPONSE,
     BaseJaxlApp,
     JaxlWebhookEvent,
     JaxlWebhookRequest,
@@ -37,11 +38,11 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
     @server.api_route(
         "/webhook/",
         methods=["POST", "DELETE"],
-        response_model=JaxlWebhookResponse,
+        response_model=HANDLER_RESPONSE,
     )
-    async def webhook(req: JaxlWebhookRequest, request: Request) -> JaxlWebhookResponse:
+    async def webhook(req: JaxlWebhookRequest, request: Request) -> HANDLER_RESPONSE:
         """Jaxl Webhook IVR Endpoint."""
-        response: Optional[JaxlWebhookResponse] = None
+        response: HANDLER_RESPONSE = None
         if req.event == JaxlWebhookEvent.SETUP:
             assert request.method == "POST"
             if req.state is None:
