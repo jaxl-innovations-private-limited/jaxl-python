@@ -26,7 +26,7 @@ def _start_server(app: BaseJaxlApp) -> FastAPI:
     server = FastAPI()
 
     @server.api_route(
-        "/webhook",
+        "/webhook/",
         methods=["POST", "DELETE"],
         response_model=JaxlWebhookResponse,
     )
@@ -46,7 +46,7 @@ def _start_server(app: BaseJaxlApp) -> FastAPI:
             return response
         raise NotImplementedError(f"Unhandled event {req.event}")
 
-    @server.websocket("/stream")
+    @server.websocket("/stream/")
     async def stream(ws: WebSocket) -> None:
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
         await ws.accept()
