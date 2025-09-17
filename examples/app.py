@@ -12,34 +12,55 @@ from typing import Optional
 from jaxl.api.base import BaseJaxlApp, JaxlWebhookRequest, JaxlWebhookResponse
 
 
+GREETING_MESSAGE = JaxlWebhookResponse(
+    prompt=["Please enter your code followed by star sign"],
+    num_characters="*",
+    stream=None,
+)
+
+
 class JaxlApp(BaseJaxlApp):
+    async def handle_configure(
+        self, req: JaxlWebhookRequest
+    ) -> Optional[JaxlWebhookResponse]:
+        print(f"[{req.pk}] not a real call setup event")
+        return GREETING_MESSAGE
+
     async def handle_setup(
         self, req: JaxlWebhookRequest
     ) -> Optional[JaxlWebhookResponse]:
-        if req.state is None:
-            print(f"[{req.pk}] not a real call setup event")
-        else:
-            print(f"[{req.pk}] setup event received")
+        assert req.state
+        print(f"[{req.pk}.{req.state.call_id}] setup event received")
+        return GREETING_MESSAGE
+
+    async def handle_user_data(
+        self, req: JaxlWebhookRequest
+    ) -> Optional[JaxlWebhookResponse]:
+        assert req.state and req.data and req.data.endswith("*")
+        print(f"[{req.pk}.{req.state.call_id}] user data received")
+        code = req.data[:-1]
         return JaxlWebhookResponse(
-            prompt=["Please enter code followed by star"],
-            num_characters=1,
+            prompt=["Thank you.", f"Your code is {code}"],
+            num_characters=0,
             stream=None,
         )
 
     async def handle_option(
         self, req: JaxlWebhookRequest
     ) -> Optional[JaxlWebhookResponse]:
-        print(f"[{req.pk}] dtmf input event")
+        assert req.state
+        print(f"[{req.pk}.{req.state.call_id}] ivr option {req.option} chosen event")
         return JaxlWebhookResponse(
-            prompt=["Hello", "World"],
-            num_characters=1,
+            prompt=["Thank you and bye"],
+            num_characters=0,
             stream=None,
         )
 
     async def handle_teardown(
         self, req: JaxlWebhookRequest
     ) -> Optional[JaxlWebhookResponse]:
-        print(f"[{req.pk}] teardown event received")
+        assert req.state
+        print(f"[{req.pk}.{req.state.call_id}] teardown event received")
         return JaxlWebhookResponse(
             prompt=["Hello", "World"],
             num_characters=1,
