@@ -64,7 +64,7 @@ class JaxlCtaResponse(BaseModel):
     webhook: Optional[str] = None
 
     @model_validator(mode="after")
-    def ensure_only_one_key(self):
+    def ensure_only_one_key(self) -> "JaxlCtaResponse":
         non_null_keys = [k for k, v in self.__dict__.items() if v is not None]
         if len(non_null_keys) == 0:
             raise ValueError(f"At least one of {IVR_CTA_KEYS} must be provided")
