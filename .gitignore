@@ -9,7 +9,7 @@ dist/
 
 # Environments
 .env
-.venv
+.venv*
 
 # mypy
 .mypy_cache/
