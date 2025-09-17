@@ -360,15 +360,23 @@ webhook before proceeding further.
 
 To control flow of outgoing calls, use webhook IVR ID when placing an outbound call. See [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
 
-See [examples/app.py](./examples/app.py) for a working webhook example.
+See [examples/app.py](./examples/app.py) for working webhook examples.
 
 ### Realtime Streaming Audio
 
+Refer to [examples/app.py](./examples/app.py) for working streaming audio examples.
+
 ### Realtime Streaming Speech Segments
+
+Refer to [examples/app.py](./examples/app.py) for working streaming speech segments examples.
 
 ### Realtime Streaming Transcriptions per Speech Segment
 
+Refer to [examples/app.py](./examples/app.py) for working streaming transcription per speech segment examples.
+
 ### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
+
+Refer to [examples/app.py](./examples/app.py) for working AI Agent examples.
 
 ```bash
 jaxl calls create \

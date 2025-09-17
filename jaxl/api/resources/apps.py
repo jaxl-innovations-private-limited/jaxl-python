@@ -50,6 +50,16 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
         elif req.event == JaxlWebhookEvent.TEARDOWN:
             assert request.method == "DELETE"
             response = await app.handle_teardown(req)
+            if response is None:
+                # Teardown request doesn't really expect any response,
+                # atleast currently its not even being processed at Jaxl servers.
+                # Just mock a dummy response for now, allowing module developers
+                # to not override handle_teardown if they wish not to use it.
+                response = JaxlWebhookResponse(
+                    prompt=[" . "],
+                    num_characters=0,
+                    stream=None,
+                )
         if response is not None:
             return response
         raise NotImplementedError(f"Unhandled event {req.event}")
