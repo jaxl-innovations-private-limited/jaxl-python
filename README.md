@@ -4,7 +4,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 
 1. [Install](#install)
 2. [JAXL CLI](#jaxl-cli)
-   - [CLI Example Usage](#cli-example-usage)
+   - [Setup](#setup)
    - [Verify API Credentials & Auth Token](#verify-api-credentials--auth-token)
    - [Check Account Balance](#check-account-balance)
    - [Create an IVR](#create-an-ivr)
@@ -42,45 +42,50 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 
 ## Install
 
-`pip install jaxl-python`
+`pip install -U jaxl-python`
 
 ## JAXL CLI
 
 ```bash
 jaxl -h
-usage: jaxl [-h] {calls} ...
+usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,payments,phones,teams} ...
 
 Jaxl CLI
 
 positional arguments:
-  {phones,calls,members,teams,ivrs,devices,payments,accounts,kycs,messages,campaigns,notifications}
-    phones              Manage Phones
-    calls               Manage Calls (Domestic & International Cellular, VoIP audio/video)
-    members             Manage Members
-    teams               Manage Teams
-    ivrs                Manage IVRs (Interactive Voice Response)
-    devices             Manage Devices
-    payments            Manage Payments
+  {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,payments,phones,teams}
     accounts            Manage Accounts
-    kycs                Manage KYCs
-    messages            Manage Messages (SMS, WA, RCS, Email, App-to-App)
+    apps                Manage Apps for Webhooks and Streaming audio/speech/transcriptions.
+    calls               Manage Calls (Domestic & International Cellular, App-to-App)
     campaigns           Manage Campaigns
-    notifications       Manage Notifications (iOS, Android, Web)
+    devices             Manage Devices
+    ivrs                Manage IVRs (Interactive Voice Response)
+    kycs                Manage KYCs
+    members             Manage Members
+    messages            Manage Messages (SMS, WA, RCS, Email, App-to-App)
+    notifications       Manage Notifications (Android, iOS, Web)
+    payments            Manage Payments
+    phones              Manage Phones (Landline, Mobile, TollFree)
+    teams               Manage Teams (Managers, Phones)
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
 ```
 
-### CLI Example Usage
+### Setup
+
+You will require the following to successfully run `jaxl` command line tool:
+
+- `JAXL_API_CREDENTIALS`: Required to connect with Jaxl API Infrastructure
+- `JAXL_API_AUTH_TOKEN`: Ensure necessary permissions are added to generated auth token.
+
+Please visit [Jaxl Business Website](https://business.jaxl.com) or download the [Jaxl Business Android](https://play.google.com/store/apps/details?id=com.jaxl.business) or [Jaxl Business iOS](https://apps.apple.com/app/id6451118240) mobile application to access your credentials and auth tokens.
+
+Finally, setup following environment variables when trying `jaxl` command line.
 
 ```bash
 export JAXL_API_CREDENTIALS=/path/to/jaxl-api-credentials.json
-
-export JAXL_API_AUTH_TOKEN="....authentication token..."
-
-jaxl accounts me
-
-Response(status_code=<HTTPStatus.OK: 200>, content=b'... [redacted] ...')
+export JAXL_API_AUTH_TOKEN="....authentication token...."
 ```
 
 ### Verify API Credentials & Auth Token
@@ -166,7 +171,7 @@ jaxl phones ivrs \
 
 Below command will execute the following flow:
 
-- Places a call to <Callee Number>
+- Places a call to &lt;Callee Number&gt;
 - When answered sends them to an existing IVR ID
 - Once IVR finishes, call continues to CTA returned by IVR
 
