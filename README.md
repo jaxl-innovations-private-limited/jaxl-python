@@ -383,28 +383,6 @@ Refer to [examples/app.py](./examples/app.py) for working streaming transcriptio
 
 Refer to [examples/app.py](./examples/app.py) for working AI Agent examples.
 
-```bash
-jaxl calls create \
-  --to "+91<Callee>"
-  --from "+91<Purchased Jaxl Number>" \
-  --transcribe
-```
-
-When `--pipeline` flag is used, Jaxl SDK will:
-
-- Start a local HTTP server for signaling
-- Starts [grout](https://github.com/abhinavsingh/proxy.py?tab=readme-ov-file#grout-ngrok-alternative) so that Jaxl servers can reach our signaling server
-- Pipeline framework will:
-  - Receive raw audio packets from callee and start to perform silence detection
-  - Starts STT conversion for detected speech segments
-  - Use local CPU (or GPUs if available for Silence detection & STT)
-  - Invokes pipeline module's `on_transcription` asynchronously as STT finishes
-
-Within our pipeline module we can then:
-
-- Feed transcription with prior knowledge base to LLM of choice e.g. ChatGPT, Ollama Models etc
-- Send back response from LLM back to the callee
-
 ### List Subscriptions Payments
 
 ```bash
