@@ -27,7 +27,7 @@ def resolve_code_to_target_phone_number(_code: str) -> str:
 
     TODO: Please complete me with real implementation.
     """
-    return "+919919273495"
+    return "+YYXXXXXXXXXX"
 
 
 class JaxlAppRequestCodeAndSendToCellular(BaseJaxlApp):

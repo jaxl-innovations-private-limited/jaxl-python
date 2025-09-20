@@ -72,6 +72,6 @@ class JaxlAppConfirmRequestedCodeAndSendToCellular(BaseJaxlApp):
         if req.option == "1":
             # return _thankyou_response(self._codes[req.state.call_id])
             # TODO: Fetch target number from your database
-            return JaxlCtaResponse(phone="+919919273495")
+            return JaxlCtaResponse(phone="+YYXXXXXXXXXX")
         # For any other input than "1" we simply take user to re-enter code flow.
         return ASK_FOR_CODE_RESPONSE
