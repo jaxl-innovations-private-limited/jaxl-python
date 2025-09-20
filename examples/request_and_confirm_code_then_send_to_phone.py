@@ -57,9 +57,6 @@ class JaxlAppConfirmRequestedCodeAndSendToCellular(BaseJaxlApp):
     def __init__(self) -> None:
         self._codes: Dict[int, str] = {}
 
-    async def handle_configure(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
-        return ASK_FOR_CODE_RESPONSE
-
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return ASK_FOR_CODE_RESPONSE
 
