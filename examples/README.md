@@ -1,8 +1,6 @@
 # Jaxl Python SDK Examples
 
-Jaxl SDK Apps implements [`BaseJaxlApp`](https://github.com/jaxl-innovations-private-limited/jaxl-python/blob/main/jaxl/api/base.py#L79) class. See `BaseJaxlApp` documentation for all possible lifecycle methods. Implement the lifecycle method you expect your custom calling flows to hit.
-
-`examples` python module contains variety of use cases for you to quickly get started.
+Jaxl SDK Apps implements [`BaseJaxlApp`](https://github.com/jaxl-innovations-private-limited/jaxl-python/blob/main/jaxl/api/base.py#L79) class. See `BaseJaxlApp` documentation for all possible lifecycle methods. Implement the lifecycle method you expect your custom call flows to hit.
 
 1. [Setup](#setup)
    - [Development Setup](#development-setup)
@@ -13,6 +11,7 @@ Jaxl SDK Apps implements [`BaseJaxlApp`](https://github.com/jaxl-innovations-pri
    - [Send To Phone](#send-to-phone)
    - [Request Code and Send To Phone](#request-code-and-send-to-phone)
    - [Request Code, Ask for Confirmation and Send To Phone](#request-code-ask-for-confirmation-and-send-to-phone)
+4. [Production](#production)
 
 ## Setup
 
@@ -36,8 +35,6 @@ pip install -U jaxl-python[grout]
 jaxl apps run --app <Module:ClassName>
 ```
 
-> `JAXL_SDK_PLACEHOLDER_CTA_PHONE` is only used by example code. You will not need this variable for your own production Jaxl SDK Apps
-
 ### Grout for Development
 
 You will need to expose your IVR app publicly so that Jaxl servers can reach your app.
@@ -57,23 +54,43 @@ Next go ahead and:
 
 ## Examples
 
-### Send To Phone
+`examples` python module contains variety of use cases for you to quickly get started. Copy and paste the provided examples in your own code base and modify as needed.
+
+- In example apps, `JAXL_SDK_PLACEHOLDER_CTA_PHONE` is only used for demonstration purposes.
+- In your Jaxl SDK production apps, you will likely fetch target phone number from your databases.
 
 ```bash
 export JAXL_SDK_PLACEHOLDER_CTA_PHONE=+USE-A-REAL-NUMBER-HERE
+```
+
+### Send To Phone
+
+```bash
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppSendToCellular
 ```
 
 ### Request Code and Send To Phone
 
 ```bash
-export JAXL_SDK_PLACEHOLDER_CTA_PHONE=+USE-A-REAL-NUMBER-HERE
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppSendToCellular
 ```
 
 ### Request Code, Ask for Confirmation and Send To Phone
 
 ```bash
-export JAXL_SDK_PLACEHOLDER_CTA_PHONE=+USE-A-REAL-NUMBER-HERE
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppSendToCellular
 ```
+
+## Production
+
+- In production, if not using grout, configure your load balancer to point to your Jaxl App instance IP:PORT service endpoint.
+
+- You can also continue using `grout` in production environments but we highly recommended to reserve a dedicated grout url for your Jaxl App. This will make sure your `grout` public URL remains consistent across restarts.
+
+  To reserve a `grout` url simply provide a custom URL to use e.g.
+
+  ```bash
+  grout http://127.0.0.1:9919 https://my-company-delivery-driver-app.jaxl.io
+  ```
+
+  For more instructions and dedicated domain setup refer to `Grout` documentation
