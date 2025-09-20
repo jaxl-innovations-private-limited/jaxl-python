@@ -365,23 +365,23 @@ webhook before proceeding further.
 
 To control flow of outgoing calls, use webhook IVR ID when placing an outbound call. See [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
 
-See [examples/app.py](./examples/app.py) for working webhook examples.
+See [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working webhook examples.
 
 ### Realtime Streaming Audio
 
-Refer to [examples/app.py](./examples/app.py) for working streaming audio examples.
+Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working streaming audio examples.
 
 ### Realtime Streaming Speech Segments
 
-Refer to [examples/app.py](./examples/app.py) for working streaming speech segments examples.
+Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working streaming speech segments examples.
 
 ### Realtime Streaming Transcriptions per Speech Segment
 
-Refer to [examples/app.py](./examples/app.py) for working streaming transcription per speech segment examples.
+Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working streaming transcription per speech segment examples.
 
 ### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
 
-Refer to [examples/app.py](./examples/app.py) for working AI Agent examples.
+Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working AI Agent examples.
 
 ### List Subscriptions Payments
 
