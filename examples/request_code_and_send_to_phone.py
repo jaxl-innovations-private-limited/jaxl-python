@@ -7,6 +7,8 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+import os
+
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
@@ -27,7 +29,10 @@ def resolve_code_to_target_phone_number(_code: str) -> str:
 
     TODO: Please complete me with real implementation.
     """
-    return "+YYXXXXXXXXXX"
+    return os.environ.get(
+        "JAXL_SDK_PLACEHOLDER_CTA_PHONE",
+        "+YYXXXXXXXXXX",
+    )
 
 
 class JaxlAppRequestCodeAndSendToCellular(BaseJaxlApp):

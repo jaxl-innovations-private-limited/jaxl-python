@@ -10,7 +10,7 @@ with or without modification, is strictly prohibited.
 from .request_and_confirm_code_then_send_to_phone import (
     JaxlAppConfirmRequestedCodeAndSendToCellular,
 )
-from .request_then_send_to_phone import JaxlAppRequestCodeAndSendToCellular
+from .request_code_and_send_to_phone import JaxlAppRequestCodeAndSendToCellular
 from .send_to_phone import JaxlAppSendToCellular
 
 
