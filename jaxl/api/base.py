@@ -70,6 +70,13 @@ class JaxlCtaResponse(BaseModel):
             raise ValueError(
                 f"Only one of {IVR_CTA_KEYS} can be non-null, got {non_null_keys}"
             )
+        if non_null_keys[0] == "phone":
+            if not (
+                self.phone is not None
+                and self.phone.startswith("+")
+                and self.phone.split("+")[1].isdigit()
+            ):
+                raise ValueError("Invalid phone value, provide e164")
         return self
 
 
