@@ -37,8 +37,9 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [List Consumable Payments](#list-consumable-payments)
 3. [Jaxl Python SDK](#jaxl-python-sdk)
    - [SDK Example Usage](#sdk-example-usage)
-4. [Documentation](#documentation)
-5. [Status](#status)
+4. [JAXL HTTP Webhook Protocol](./SPECIFICATION.md)
+5. [SDK Documentation](#sdk-documentation)
+6. [Status](#status)
 
 ## Install
 
@@ -419,7 +420,7 @@ response = v1_calls_list.sync_detailed(
 )
 ```
 
-## Documentation
+## SDK Documentation
 
 ```
 # Clone this repository
