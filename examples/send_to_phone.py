@@ -13,6 +13,7 @@ from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
     JaxlCtaResponse,
+    JaxlPhoneCta,
     JaxlWebhookRequest,
 )
 
@@ -22,8 +23,11 @@ class JaxlAppSendToCellular(BaseJaxlApp):
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return JaxlCtaResponse(
-            phone=os.environ.get(
-                "JAXL_SDK_PLACEHOLDER_CTA_PHONE",
-                "+YYXXXXXXXXXX",
+            phone=JaxlPhoneCta(
+                to_number=os.environ.get(
+                    "JAXL_SDK_PLACEHOLDER_CTA_PHONE",
+                    "+YYXXXXXXXXXX",
+                ),
+                from_number=None,
             )
         )

@@ -54,9 +54,14 @@ class JaxlWebhookResponse(BaseModel):
     num_characters: Union[int, str]
 
 
+class JaxlPhoneCta(BaseModel):
+    to_number: str
+    from_number: Optional[str]
+
+
 class JaxlCtaResponse(BaseModel):
     next: Optional[int] = None
-    phone: Optional[str] = None
+    phone: Optional[JaxlPhoneCta] = None
     devices: Optional[List[int]] = None
     appusers: Optional[List[int]] = None
     teams: Optional[List[int]] = None
@@ -73,8 +78,16 @@ class JaxlCtaResponse(BaseModel):
         if non_null_keys[0] == "phone":
             if not (
                 self.phone is not None
-                and self.phone.startswith("+")
-                and self.phone.split("+")[1].isdigit()
+                and self.phone.to_number is not None
+                and self.phone.to_number.startswith("+")
+                and self.phone.to_number.split("+")[1].isdigit()
+                and (
+                    self.phone.from_number is None
+                    or (
+                        self.phone.from_number.startswith("+")
+                        and self.phone.from_number.split("+")[1].isdigit()
+                    )
+                )
             ):
                 raise ValueError("Invalid phone value, provide e164")
         return self

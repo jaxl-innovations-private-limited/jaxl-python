@@ -72,13 +72,13 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppSendToCellular
 ### Request Code and Send To Phone
 
 ```bash
-PYTHONPATH=. jaxl apps run --app examples:JaxlAppSendToCellular
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppRequestCodeAndSendToCellular
 ```
 
 ### Request Code, Ask for Confirmation and Send To Phone
 
 ```bash
-PYTHONPATH=. jaxl apps run --app examples:JaxlAppSendToCellular
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppConfirmRequestedCodeAndSendToCellular
 ```
 
 ## Production

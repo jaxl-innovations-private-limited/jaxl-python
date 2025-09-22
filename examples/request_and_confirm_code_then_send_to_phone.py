@@ -14,6 +14,7 @@ from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
     JaxlCtaResponse,
+    JaxlPhoneCta,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
@@ -57,9 +58,6 @@ class JaxlAppConfirmRequestedCodeAndSendToCellular(BaseJaxlApp):
     def __init__(self) -> None:
         self._codes: Dict[int, str] = {}
 
-    async def handle_configure(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
-        return ASK_FOR_CODE_RESPONSE
-
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return ASK_FOR_CODE_RESPONSE
 
@@ -74,9 +72,12 @@ class JaxlAppConfirmRequestedCodeAndSendToCellular(BaseJaxlApp):
             # return _thankyou_response(self._codes[req.state.call_id])
             # TODO: Fetch target number from your database
             return JaxlCtaResponse(
-                phone=os.environ.get(
-                    "JAXL_SDK_PLACEHOLDER_CTA_PHONE",
-                    "+YYXXXXXXXXXX",
+                phone=JaxlPhoneCta(
+                    to_number=os.environ.get(
+                        "JAXL_SDK_PLACEHOLDER_CTA_PHONE",
+                        "+YYXXXXXXXXXX",
+                    ),
+                    from_number=None,
                 )
             )
         # For any other input than "1" we simply take user to re-enter code flow.

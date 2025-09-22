@@ -13,6 +13,7 @@ from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
     JaxlCtaResponse,
+    JaxlPhoneCta,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
@@ -48,4 +49,9 @@ class JaxlAppRequestCodeAndSendToCellular(BaseJaxlApp):
 
     async def handle_user_data(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         assert req.state and req.data and req.data.endswith("*")
-        return JaxlCtaResponse(phone=resolve_code_to_target_phone_number(req.data[:-1]))
+        return JaxlCtaResponse(
+            phone=JaxlPhoneCta(
+                to_number=resolve_code_to_target_phone_number(req.data[:-1]),
+                from_number=None,
+            )
+        )
