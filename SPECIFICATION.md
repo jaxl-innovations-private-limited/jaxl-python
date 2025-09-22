@@ -4,13 +4,23 @@ Jaxl Apps are simply an implementation of Jaxl HTTP Webhook Specification. If yo
 `jaxl-python` based apps, feel free to implement the below protocol in your existing HTTP
 services to build custom call flows.
 
-1. [Setup Event (1)](#setup-event-1)
-2. [Setup User Data Event (1)](#setup-user-data-event-1)
-3. [IVR Option Event (2)](#ivr-option-event-2)
-4. [IVR Option Data Event (2)](#ivr-option-data-event-2)
-5. [Teardown Event (3)](#teardown-event-3)
+1. [Jaxl Webhook Requests](#requests)
+   - [Setup Event (1)](#setup-event-1)
+   - [Setup User Data Event (1)](#setup-user-data-event-1)
+   - [IVR Option Event (2)](#ivr-option-event-2)
+   - [IVR Option Data Event (2)](#ivr-option-data-event-2)
+   - [Teardown Event (3)](#teardown-event-3)
+2. [Jaxl Webhook Responses](#jaxl-webhook-responses)
+   - [Prompts](#prompts)
+     - [Prompt user to enter a numeric input followed by a star sign](#prompt-user-to-enter-a-numeric-input-followed-by-a-star-sign)
+     - [Prompt user to choose one of the option](#prompt-user-to-choose-one-of-the-option)
+     - [Speak and hangup](#speak-and-hangup)
+   - [CTAs](#ctas)
+     - [Send to phone](#send-to-phone)
 
-## Setup Event (1)
+## Jaxl Webhook Requests
+
+### Setup Event (1)
 
 - Triggered when a call enters your Webhook/IVR Flow ID.
 - Webhook endpoint will receive following POST request:
@@ -33,7 +43,7 @@ services to build custom call flows.
   }
   ```
 
-## Setup User Data Event (1)
+### Setup User Data Event (1)
 
 - Triggered when setup prompts for user data via DTMF inputs
 
@@ -55,7 +65,7 @@ services to build custom call flows.
   }
   ```
 
-## IVR Option Event (2)
+### IVR Option Event (2)
 
 - Triggered when a single digit is received via DTMF input from the caller
 
@@ -77,7 +87,7 @@ services to build custom call flows.
   }
   ```
 
-## IVR Option Data Event (2)
+### IVR Option Data Event (2)
 
 - Triggered when data via DTMF inputs is received while within an IVR option
 
@@ -99,7 +109,7 @@ services to build custom call flows.
   }
   ```
 
-## Teardown Event (3)
+### Teardown Event (3)
 
 - Triggered when an incoming call ends.
 - Webhook endpoint will receive following POST request:
@@ -121,3 +131,62 @@ services to build custom call flows.
     "data": null
   }
   ```
+
+## Jaxl Webhook Responses
+
+You can return one of the following JSON objects as responses:
+
+### Prompts
+
+Prompts is a way to speak back to the user e.g.
+
+#### Prompt user to enter a numeric input followed by a star sign
+
+```json
+{
+  "prompt": ["Please enter your code followed by star sign"],
+  "num_characters": "*"
+}
+```
+
+#### Prompt user to choose one of the option
+
+```json
+{
+  "prompt": [
+    "You entered 657.",
+    "Press 1 to confirm.",
+    "Press 2 to re-enter your code."
+  ],
+  "num_characters": 1
+}
+```
+
+#### Speak and hangup
+
+```json
+{
+  "prompt": [
+    "Thank you for calling Jaxl Innovations Private Limited.",
+    "We are currently closed.",
+    "Our team will get back to you as soon as possible"
+  ],
+  "num_characters": 0
+}
+```
+
+### CTAs
+
+CTA objects are a way to tell the Jaxl system that no more user input is expected and sends user to provided CTA.
+
+#### Send to phone
+
+```json
+{
+  "next": null,
+  "phone": { "to_number": "+919919273495", "from_number": null },
+  "devices": null,
+  "appusers": null,
+  "teams": null
+}
+```
