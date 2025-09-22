@@ -184,7 +184,7 @@ CTA objects are a way to tell the Jaxl system that no more user input is expecte
 ```json
 {
   "next": null,
-  "phone": { "to_number": "+919919273495", "from_number": null },
+  "phone": { "to_number": "+91XXXXXXXXXX", "from_number": null },
   "devices": null,
   "appusers": null,
   "teams": null
