@@ -77,9 +77,17 @@ class JaxlCtaResponse(BaseModel):
             )
         if non_null_keys[0] == "phone":
             if not (
-                self.phone.to_number is not None
+                self.phone is not None
+                and self.phone.to_number is not None
                 and self.phone.to_number.startswith("+")
                 and self.phone.to_number.split("+")[1].isdigit()
+                and (
+                    self.phone.from_number is None
+                    or (
+                        self.phone.from_number.startswith("+")
+                        and self.phone.from_number.split("+")[1].isdigit()
+                    )
+                )
             ):
                 raise ValueError("Invalid phone value, provide e164")
         return self
