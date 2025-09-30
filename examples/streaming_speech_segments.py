@@ -7,8 +7,18 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from jaxl.api.base import BaseJaxlApp
+from jaxl.api.base import (
+    HANDLER_RESPONSE,
+    BaseJaxlApp,
+    JaxlWebhookRequest,
+    JaxlWebhookResponse,
+)
 
 
 class JaxlAppStreamingSpeechSegment(BaseJaxlApp):
-    pass
+
+    async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
+        return JaxlWebhookResponse(
+            prompt=["Welcome to streaming speech audio segments demo"],
+            num_characters=1,
+        )

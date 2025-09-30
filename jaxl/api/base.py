@@ -123,3 +123,12 @@ class BaseJaxlApp:
     async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a call ends."""
         return None
+
+    async def handle_audio_chunk(self, slin16: bytes) -> None:
+        pass
+
+    async def handle_speech_segment(self, slin16s: List[bytes]) -> None:
+        pass
+
+    async def handle_transcription(self, transcription: str) -> None:
+        pass

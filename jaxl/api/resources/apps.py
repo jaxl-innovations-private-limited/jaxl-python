@@ -8,8 +8,13 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
+import base64
 import importlib
+import json
+import logging
 from typing import TYPE_CHECKING, Any, Dict, cast
+
+from starlette.websockets import WebSocketDisconnect
 
 from jaxl.api.base import (
     HANDLER_RESPONSE,
@@ -18,12 +23,15 @@ from jaxl.api.base import (
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
+from jaxl.api.resources.silence import SilenceDetector
 
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
 DUMMY_RESPONSE = JaxlWebhookResponse(prompt=[" . "], num_characters=0)
+
+logger = logging.getLogger(__name__)
 
 
 def _start_server(app: BaseJaxlApp) -> "FastAPI":
@@ -75,10 +83,29 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
     @server.websocket("/stream/")
     async def stream(ws: WebSocket) -> None:
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
+        sdetector = SilenceDetector()
         await ws.accept()
         while True:
-            data = await ws.receive_text()
-            await ws.send_text(f"Echo: {data}")
+            try:
+                data = json.loads(await ws.receive_text())
+                ev = data["event"]
+                if ev == "media":
+                    base64_encoded_slin16 = data[ev]["payload"]
+                    slin16 = base64.b64decode(base64_encoded_slin16)
+                    change = sdetector.process(slin16)
+                    if change is True:
+                        print("🎙️")
+                    elif change is False:
+                        print("🤐")
+                    else:
+                        assert change is None
+                    await app.handle_audio_chunk(base64_encoded_slin16)
+                elif ev == "connected":
+                    pass
+                else:
+                    logger.warning(f"UNHANDLED STREAMING EVENT {ev}")
+            except WebSocketDisconnect:
+                break
 
     return server
 
