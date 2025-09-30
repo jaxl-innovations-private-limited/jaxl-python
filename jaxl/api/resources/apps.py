@@ -13,6 +13,7 @@ import base64
 import importlib
 import json
 import logging
+import os
 import tempfile
 import uuid
 import wave
@@ -44,7 +45,7 @@ logger = logging.getLogger(__name__)
 def _start_server(
     app: BaseJaxlApp,
     transcribe: bool = False,
-    transcribe_model: str = "tiny",
+    transcribe_model_size: str = "small",
     transcribe_language: str = "en",
     transcribe_device: str = "cpu",
     transcribe_temperature: float = 0.3,
@@ -61,7 +62,7 @@ def _start_server(
     if transcribe:
         import whisper
 
-        model = whisper.load_model(transcribe_model, device=transcribe_device)
+        model = whisper.load_model(transcribe_model_size, device=transcribe_device)
 
     def _save_raw_audio_as_wav(slin16s: List[bytes]) -> str:
         """Stores raw chunks to a wav file on disk"""
@@ -76,13 +77,23 @@ def _start_server(
             wf.writeframes(audio_data)
         return wav_file.name
 
-    async def _transcribe(slin16s: List[bytes]) -> str:
-        async with mlock:
-            return model.transcribe(
-                audio=_save_raw_audio_as_wav(slin16s),
-                language=transcribe_language,
-                temperature=transcribe_temperature,
-            )
+    async def _transcribe(slin16s: List[bytes]) -> Dict[str, Any]:
+        assert model is not None
+        wav_path: Optional[str] = None
+        try:
+            async with mlock:
+                wav_path = _save_raw_audio_as_wav(slin16s)
+                return cast(
+                    Dict[str, Any],
+                    model.transcribe(
+                        audio=wav_path,
+                        language=transcribe_language,
+                        temperature=transcribe_temperature,
+                    ),
+                )
+        finally:
+            if wav_path:
+                os.unlink(wav_path)
 
     async def _ttask_done_callback_async(
         req: JaxlStreamRequest,
@@ -226,7 +237,7 @@ def apps_run(args: Dict[str, Any]) -> str:
     app = _start_server(
         _load_app(args["app"]),
         transcribe=args["transcribe"],
-        transcribe_model=args["transcribe_model"],
+        transcribe_model_size=args["transcribe_model_size"],
         transcribe_language=args["transcribe_language"],
         transcribe_device=args["transcribe_device"],
     )
@@ -269,9 +280,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="This flag is required to enable realtime transcription pipeline",
     )
     apps_run_parser.add_argument(
-        "--transcribe-model",
+        "--transcribe-model-size",
         type=str,
-        default="tiny",
+        default="small",
         help="Options are: tiny, base, small, medium, large",
     )
     apps_run_parser.add_argument(
@@ -295,7 +306,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "host",
             "port",
             "transcribe",
-            "transcribe_model",
+            "transcribe_model_size",
             "transcribe_language",
             "transcribe_device",
         ],
