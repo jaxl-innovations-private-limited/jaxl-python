@@ -12,7 +12,7 @@ import base64
 import importlib
 import json
 import logging
-from typing import TYPE_CHECKING, Any, Dict, cast
+from typing import TYPE_CHECKING, Any, Dict, List, cast
 
 from starlette.websockets import WebSocketDisconnect
 
@@ -86,35 +86,49 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
     async def stream(ws: WebSocket) -> None:
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
         sdetector = SilenceDetector()
+        slin16s: List[bytes] = []
+        speaking: bool = False
         await ws.accept()
         while True:
             try:
                 data = json.loads(await ws.receive_text())
                 ev = data["event"]
                 if ev == "media":
+                    req = JaxlStreamRequest(
+                        pk=0,
+                        state=JaxlWebhookState(
+                            call_id=0,
+                            from_number="",
+                            to_number="",
+                            direction=1,
+                            org=None,
+                            metadata=None,
+                            greeting_message=None,
+                        ),
+                    )
                     slin16 = base64.b64decode(data[ev]["payload"])
+                    # Invoke audio chunk handlers
+                    await app.handle_audio_chunk(req, slin16)
+                    # Detect start/end of speech
                     change = sdetector.process(slin16)
+                    # Manage speech segments
                     if change is True:
-                        print("🎙️")
+                        # print("🎙️")
+                        speaking = change
+                        slin16s.append(slin16)
                     elif change is False:
-                        print("🤐")
+                        # print("🤐")
+                        speaking = change
+                        if len(slin16s) > 0:
+                            # Invoke speech segment handlers
+                            await app.handle_speech_segment(req, slin16s)
+                        slin16s = []
                     else:
                         assert change is None
-                    await app.handle_audio_chunk(
-                        JaxlStreamRequest(
-                            pk=0,
-                            state=JaxlWebhookState(
-                                call_id=0,
-                                from_number="",
-                                to_number="",
-                                direction=1,
-                                org=None,
-                                metadata=None,
-                                greeting_message=None,
-                            ),
-                        ),
-                        slin16,
-                    )
+                        if speaking is True:
+                            slin16s.append(slin16)
+                        else:
+                            assert speaking is False
                 elif ev == "connected":
                     pass
                 else:

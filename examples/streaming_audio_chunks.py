@@ -24,6 +24,10 @@ class JaxlAppStreamingAudioChunk(BaseJaxlApp):
             num_characters=1,
         )
 
-    async def handle_audio_chunk(self, req: JaxlStreamRequest, slin16: bytes) -> None:
-        # print(slin16)
-        pass
+    async def handle_audio_chunk(
+        self,
+        req: JaxlStreamRequest,
+        slin16: bytes,
+    ) -> HANDLER_RESPONSE:
+        print(f"Received {len(slin16)} bytes of raw audio")
+        return None

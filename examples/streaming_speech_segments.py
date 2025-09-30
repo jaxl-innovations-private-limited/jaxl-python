@@ -30,6 +30,6 @@ class JaxlAppStreamingSpeechSegment(BaseJaxlApp):
         self,
         req: JaxlStreamRequest,
         slin16s: List[bytes],
-    ) -> None:
-        # print(slin16s)
-        pass
+    ) -> HANDLER_RESPONSE:
+        print(f"Received {len(slin16s)} chunks in speech segment")
+        return None

@@ -28,5 +28,6 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
         self,
         req: JaxlStreamRequest,
         transcription: str,
-    ) -> None:
+    ) -> HANDLER_RESPONSE:
         print(transcription)
+        return None
