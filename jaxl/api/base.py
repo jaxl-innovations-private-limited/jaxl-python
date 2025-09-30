@@ -211,4 +211,4 @@ class BaseJaxlApp:
                 await on_response_chunk_callback(json.loads(chunk))
             # pylint: disable=broad-exception-caught
             except Exception as exc:
-                print(f"Unable to process ollama response: {exc}")
+                logger.warning(f"Unable to process ollama response: {exc}")

@@ -84,7 +84,10 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         if self._ctask is not None:
             # TODO: Ideally we should also carry forward previous
             # speech phrase transcription into the next chat with agent task.
-            print("😢", "Canceling previous agent chat due to new transcription event")
+            logger.debug(
+                "😢 %s",
+                "Canceling previous agent chat due to new transcription event",
+            )
             self._ctask.cancel()
             self._ctask = None
         self._ctask = asyncio.create_task(self._chat_with_llm(transcription["text"]))
@@ -95,7 +98,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         assert url is not None
         self._messages.append({"role": "user", "content": transcription})
 
-        print("💬", transcription)
+        logger.debug("💬 %s", transcription)
         await self.chat_with_ollama(
             on_response_chunk_callback=self._on_llm_response_chunk,
             url=url,
@@ -104,11 +107,11 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
 
     async def _on_llm_response_chunk(self, response: Optional[Dict[str, Any]]) -> None:
         if response is None:
-            print("❌", "Unable to get agent response")
+            logger.warning("❌ %s", "Unable to get agent response")
             self._ctask = None
             return
         if response["done"]:
-            print("🎭", "End of agent response")
+            logger.debug("🎭 %s", "End of agent response")
             self._ctask = None
             return
-        print("🕵️", response["message"]["content"])
+        logger.debug("🕵️ %s", response["message"]["content"])

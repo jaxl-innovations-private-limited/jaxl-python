@@ -139,7 +139,6 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
 def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
     """List calls"""
     args = args or {}
-    # print("Listing calls...", args)
     return v1_calls_list.sync_detailed(
         client=jaxl_api_client(JaxlApiModule.CALL),
         currency=args.get("currency", DEFAULT_CURRENCY),
