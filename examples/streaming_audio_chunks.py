@@ -10,6 +10,7 @@ with or without modification, is strictly prohibited.
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamRequest,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
@@ -23,6 +24,6 @@ class JaxlAppStreamingAudioChunk(BaseJaxlApp):
             num_characters=1,
         )
 
-    async def handle_audio_chunk(self, slin16: bytes) -> None:
+    async def handle_audio_chunk(self, req: JaxlStreamRequest, slin16: bytes) -> None:
         # print(slin16)
         pass

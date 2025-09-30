@@ -10,6 +10,7 @@ with or without modification, is strictly prohibited.
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamRequest,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
@@ -22,3 +23,10 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
             prompt=["Welcome to streaming transcriptions demo"],
             num_characters=1,
         )
+
+    async def handle_transcription(
+        self,
+        req: JaxlStreamRequest,
+        transcription: str,
+    ) -> None:
+        print(transcription)

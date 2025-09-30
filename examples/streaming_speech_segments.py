@@ -7,9 +7,12 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+from typing import List
+
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamRequest,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
@@ -22,3 +25,11 @@ class JaxlAppStreamingSpeechSegment(BaseJaxlApp):
             prompt=["Welcome to streaming speech audio segments demo"],
             num_characters=1,
         )
+
+    async def handle_speech_segment(
+        self,
+        req: JaxlStreamRequest,
+        slin16s: List[bytes],
+    ) -> None:
+        # print(slin16s)
+        pass

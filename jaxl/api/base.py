@@ -54,6 +54,13 @@ class JaxlWebhookResponse(BaseModel):
     num_characters: Union[int, str]
 
 
+class JaxlStreamRequest(BaseModel):
+    # IVR ID
+    pk: int
+    # Webhook state
+    state: Optional[JaxlWebhookState]
+
+
 class JaxlPhoneCta(BaseModel):
     to_number: str
     from_number: Optional[str]
@@ -124,11 +131,23 @@ class BaseJaxlApp:
         """Invoked when a call ends."""
         return None
 
-    async def handle_audio_chunk(self, slin16: bytes) -> None:
-        pass
+    async def handle_audio_chunk(
+        self,
+        req: JaxlStreamRequest,
+        slin16: bytes,
+    ) -> HANDLER_RESPONSE:
+        return None
 
-    async def handle_speech_segment(self, slin16s: List[bytes]) -> None:
-        pass
+    async def handle_speech_segment(
+        self,
+        req: JaxlStreamRequest,
+        slin16s: List[bytes],
+    ) -> HANDLER_RESPONSE:
+        return None
 
-    async def handle_transcription(self, transcription: str) -> None:
-        pass
+    async def handle_transcription(
+        self,
+        req: JaxlStreamRequest,
+        transcription: str,
+    ) -> HANDLER_RESPONSE:
+        return None

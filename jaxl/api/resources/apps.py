@@ -19,9 +19,11 @@ from starlette.websockets import WebSocketDisconnect
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamRequest,
     JaxlWebhookEvent,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
+    JaxlWebhookState,
 )
 from jaxl.api.resources.silence import SilenceDetector
 
@@ -90,8 +92,7 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
                 data = json.loads(await ws.receive_text())
                 ev = data["event"]
                 if ev == "media":
-                    base64_encoded_slin16 = data[ev]["payload"]
-                    slin16 = base64.b64decode(base64_encoded_slin16)
+                    slin16 = base64.b64decode(data[ev]["payload"])
                     change = sdetector.process(slin16)
                     if change is True:
                         print("🎙️")
@@ -99,7 +100,21 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
                         print("🤐")
                     else:
                         assert change is None
-                    await app.handle_audio_chunk(base64_encoded_slin16)
+                    await app.handle_audio_chunk(
+                        JaxlStreamRequest(
+                            pk=0,
+                            state=JaxlWebhookState(
+                                call_id=0,
+                                from_number="",
+                                to_number="",
+                                direction=1,
+                                org=None,
+                                metadata=None,
+                                greeting_message=None,
+                            ),
+                        ),
+                        slin16,
+                    )
                 elif ev == "connected":
                     pass
                 else:
