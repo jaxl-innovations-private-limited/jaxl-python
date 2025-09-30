@@ -12,6 +12,7 @@ from .request_and_confirm_code_then_send_to_phone import (
 )
 from .request_code_and_send_to_phone import JaxlAppRequestCodeAndSendToCellular
 from .send_to_phone import JaxlAppSendToCellular
+from .streaming_aiagent import JaxlAppStreamingAIAgent
 from .streaming_audio_chunks import JaxlAppStreamingAudioChunk
 from .streaming_speech_segments import JaxlAppStreamingSpeechSegment
 from .streaming_transcriptions import JaxlAppStreamingTranscription
@@ -24,4 +25,5 @@ __all__ = [
     "JaxlAppStreamingAudioChunk",
     "JaxlAppStreamingSpeechSegment",
     "JaxlAppStreamingTranscription",
+    "JaxlAppStreamingAIAgent",
 ]
