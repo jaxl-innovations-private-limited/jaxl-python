@@ -148,6 +148,7 @@ class BaseJaxlApp:
     async def handle_transcription(
         self,
         req: JaxlStreamRequest,
-        transcription: str,
+        transcription: Dict[str, Any],
+        num_inflight_transcribe_requests: int,
     ) -> HANDLER_RESPONSE:
         return None

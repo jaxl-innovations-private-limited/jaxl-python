@@ -7,6 +7,8 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+from typing import Any, Dict
+
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
@@ -27,7 +29,8 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
     async def handle_transcription(
         self,
         req: JaxlStreamRequest,
-        transcription: str,
+        transcription: Dict[str, Any],
+        num_inflight_transcribe_requests: int,
     ) -> HANDLER_RESPONSE:
-        print(transcription)
+        print(transcription["text"], num_inflight_transcribe_requests)
         return None
