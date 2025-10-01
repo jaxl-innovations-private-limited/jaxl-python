@@ -61,7 +61,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return JaxlWebhookResponse(
             prompt=["Welcome to AI agent demo"],
-            num_characters=1,
+            num_characters=-1,
         )
 
     async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
