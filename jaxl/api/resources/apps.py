@@ -46,6 +46,10 @@ warnings.filterwarnings(
     "ignore",
     message="FP16 is not supported on CPU; using FP32 instead",
 )
+warnings.filterwarnings(
+    "ignore",
+    message="pkg_resources is deprecated as an API",
+)
 
 
 def _start_server(
