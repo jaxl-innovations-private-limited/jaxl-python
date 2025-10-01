@@ -18,7 +18,8 @@ import tempfile
 import uuid
 import warnings
 import wave
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from collections import deque
+from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, cast
 
 from starlette.websockets import WebSocketDisconnect
 
@@ -176,6 +177,7 @@ def _start_server(
         # Speech detector, Speech state & Segment buffer
         sdetector = SilenceDetector()
         speaking: bool = False
+        buffer: Deque[bytes] = deque(maxlen=sdetector.speech_frame_threshold)
         slin16s: List[bytes] = []
 
         await ws.accept()
@@ -191,15 +193,21 @@ def _start_server(
                     # Invoke audio chunk handlers
                     await app.handle_audio_chunk(req, slin16)
                     # Detect start/end of speech
+                    buffer.append(slin16)
                     change = sdetector.process(slin16)
                     # Manage speech segments
                     if change is True:
-                        # print("🎙️")
                         speaking = change
+                        if len(slin16s) == 0:
+                            # Silence just got detected, copy over
+                            # last speech_frame_threshold of frames
+                            slin16s = list(buffer)
+                            # print("💿")
+                        # print("🎙️")
                         slin16s.append(slin16)
                     elif change is False:
-                        # print("🤐")
                         speaking = change
+                        # print("🤐")
                         if len(slin16s) > 0:
                             # Invoke speech segment handlers
                             await app.handle_speech_segment(req, slin16s)
