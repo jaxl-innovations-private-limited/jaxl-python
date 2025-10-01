@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
 import attr
 from dateutil.parser import isoparse
 
-
 if TYPE_CHECKING:
     from ..models.emoji_reaction import EmojiReaction
 

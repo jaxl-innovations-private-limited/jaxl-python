@@ -16,7 +16,6 @@ from dateutil.parser import isoparse
 from ..models.canceled_by_enum import CanceledByEnum
 from ..types import UNSET, Unset
 
-
 T = TypeVar("T", bound="PlanCancelInfo")
 
 

@@ -8,17 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union, cast
 
 import attr
 from dateutil.parser import isoparse
@@ -29,12 +19,9 @@ from ..models.customer_order_subscriptions_serializer_v2_status_enum import (
 from ..models.order_status_enum import OrderStatusEnum
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.can_user_resubscribe_plan import CanUserResubscribePlan
-    from ..models.customer_provider_serializer_v2 import (
-        CustomerProviderSerializerV2,
-    )
+    from ..models.customer_provider_serializer_v2 import CustomerProviderSerializerV2
     from ..models.item import Item
     from ..models.payment_gateway_fees_info import PaymentGatewayFeesInfo
     from ..models.plan import Plan

@@ -13,7 +13,6 @@ import attr
 
 from ..models.period_enum import PeriodEnum
 
-
 T = TypeVar("T", bound="PlanTypeCycle")
 
 

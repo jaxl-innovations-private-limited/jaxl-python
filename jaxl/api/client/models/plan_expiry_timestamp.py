@@ -13,11 +13,8 @@ from typing import Any, Dict, List, Type, TypeVar, Union
 import attr
 from dateutil.parser import isoparse
 
-from ..models.plan_expiry_timestamp_type_enum import (
-    PlanExpiryTimestampTypeEnum,
-)
+from ..models.plan_expiry_timestamp_type_enum import PlanExpiryTimestampTypeEnum
 from ..types import UNSET, Unset
-
 
 T = TypeVar("T", bound="PlanExpiryTimestamp")
 

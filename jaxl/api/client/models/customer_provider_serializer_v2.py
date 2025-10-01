@@ -14,7 +14,6 @@ import attr
 from ..models.currency_enum import CurrencyEnum
 from ..types import UNSET, Unset
 
-
 T = TypeVar("T", bound="CustomerProviderSerializerV2")
 
 

@@ -14,7 +14,6 @@ import attr
 from ..models.platform_enum import PlatformEnum
 from ..types import UNSET, Unset
 
-
 T = TypeVar("T", bound="AppUser")
 
 

@@ -15,7 +15,6 @@ from dateutil.parser import isoparse
 
 from ..models.campaign_response_status_enum import CampaignResponseStatusEnum
 
-
 if TYPE_CHECKING:
     from ..models.campaign_stats import CampaignStats
     from ..models.campaign_tag import CampaignTag

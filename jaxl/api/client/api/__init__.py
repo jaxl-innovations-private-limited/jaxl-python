@@ -7,4 +7,4 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-""" Contains methods for accessing the API """
+"""Contains methods for accessing the API"""

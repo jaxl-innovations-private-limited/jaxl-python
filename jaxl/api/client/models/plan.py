@@ -13,7 +13,6 @@ import attr
 
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.app_price import AppPrice
     from ..models.payment_gateway_fees_info import PaymentGatewayFeesInfo

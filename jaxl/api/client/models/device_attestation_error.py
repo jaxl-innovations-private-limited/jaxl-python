@@ -15,7 +15,6 @@ from ..models.device_attestation_error_reason_enum import (
     DeviceAttestationErrorReasonEnum,
 )
 
-
 T = TypeVar("T", bound="DeviceAttestationError")
 
 

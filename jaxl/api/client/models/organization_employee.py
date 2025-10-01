@@ -7,25 +7,12 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union, cast
 
 import attr
 
-from ..models.organization_employee_status_enum import (
-    OrganizationEmployeeStatusEnum,
-)
+from ..models.organization_employee_status_enum import OrganizationEmployeeStatusEnum
 from ..types import UNSET, Unset
-
 
 if TYPE_CHECKING:
     from ..models.organization_employee_preferences import (

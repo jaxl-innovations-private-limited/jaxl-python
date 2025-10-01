@@ -14,7 +14,6 @@ import attr
 from ..models.id_enum import IdEnum
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.plan_type_cycle import PlanTypeCycle
 

@@ -13,7 +13,6 @@ import attr
 
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.user_agent_browser import UserAgentBrowser
     from ..models.user_agent_device import UserAgentDevice
@@ -69,9 +68,7 @@ class UserAgent:
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.user_agent_browser import UserAgentBrowser
         from ..models.user_agent_device import UserAgentDevice
-        from ..models.user_agent_operating_system import (
-            UserAgentOperatingSystem,
-        )
+        from ..models.user_agent_operating_system import UserAgentOperatingSystem
         from ..models.user_agent_platform import UserAgentPlatform
 
         d = src_dict.copy()

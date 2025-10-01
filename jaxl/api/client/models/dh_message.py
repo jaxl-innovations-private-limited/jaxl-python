@@ -8,23 +8,13 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
 
 import attr
 from dateutil.parser import isoparse
 
 from ..models.dh_message_type_enum import DHMessageTypeEnum
 from ..types import UNSET, Unset
-
 
 if TYPE_CHECKING:
     from ..models.dh_message_attachment import DHMessageAttachment

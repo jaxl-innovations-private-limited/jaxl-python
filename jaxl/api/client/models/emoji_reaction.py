@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
 
 import attr
 
-
 if TYPE_CHECKING:
     from ..models.emoji import Emoji
     from ..models.reaction_by import ReactionBy
