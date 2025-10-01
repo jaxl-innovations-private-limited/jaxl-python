@@ -10,6 +10,7 @@ with or without modification, is strictly prohibited.
 import argparse
 import importlib
 import inspect
+import logging
 import pkgutil
 
 from jaxl.api import resources
@@ -40,6 +41,7 @@ def _init_subparsers(
 
 def main() -> None:
     """CLI Main"""
+    logging.getLogger("examples").setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser(prog="jaxl", description="Jaxl CLI")
     _init_subparsers(parser.add_subparsers(dest="resource", required=True))
     args = parser.parse_args()
