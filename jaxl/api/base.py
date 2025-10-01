@@ -141,14 +141,14 @@ class BaseJaxlApp:
         self,
         req: JaxlStreamRequest,
         slin16: bytes,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         return None
 
     async def handle_speech_segment(
         self,
         req: JaxlStreamRequest,
         slin16s: List[bytes],
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         return None
 
     async def handle_transcription(
@@ -156,7 +156,7 @@ class BaseJaxlApp:
         req: JaxlStreamRequest,
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         return None
 
     async def chat_with_ollama(

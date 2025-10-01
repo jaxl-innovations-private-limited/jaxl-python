@@ -75,7 +75,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         req: JaxlStreamRequest,
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         logging.debug(
             "📝 %s %d",
             transcription["text"],
