@@ -35,6 +35,29 @@ pip install -U jaxl-python[grout]
 
 ## Run
 
+View available flags:
+
+```bash
+jaxl apps run -h
+usage: jaxl apps run [-h] [--app APP] [--host HOST] [--port PORT] [--transcribe] [--transcribe-model-size TRANSCRIBE_MODEL_SIZE] [--transcribe-language TRANSCRIBE_LANGUAGE]
+                     [--transcribe-device TRANSCRIBE_DEVICE]
+
+options:
+  -h, --help            show this help message and exit
+  --app APP             Dotted path to Jaxl SDK App module to run e.g. examples.app:JaxlApp
+  --host HOST           Defaults to 127.0.0.1
+  --port PORT           Defaults to 9919
+  --transcribe          This flag is required to enable realtime transcription pipeline
+  --transcribe-model-size TRANSCRIBE_MODEL_SIZE
+                        Options are: tiny, base, small, medium, large
+  --transcribe-language TRANSCRIBE_LANGUAGE
+                        Options are: auto, ar, bg, bn, cs, da, de, el, en, es, et, fi, fil, fr, gu, he, hi, hr, hu, id, it, ja, kn, ko, lt, lv, ml, mr, nl, no, pa, pl, pt, ro, ru, sk, sl, sr, sv, ta, te, th, tr, uk, ur, vi, zh
+  --transcribe-device TRANSCRIBE_DEVICE
+                        Options are: auto, cpu, cuda, cuda:N, mps
+```
+
+Run your Jaxl SDK app:
+
 ```bash
 jaxl apps run --app <Module:ClassName>
 ```
@@ -43,9 +66,10 @@ jaxl apps run --app <Module:ClassName>
 
 You will need to expose your IVR app publicly so that Jaxl servers can reach your app.
 
-In a separate terminal, start `grout` to get a public URL:
+In a separate terminal, start [`grout`](https://github.com/abhinavsingh/proxy.py?tab=readme-ov-file#grout-ngrok-alternative) to get a public URL:
 
 ```bash
+pip install -U jaxl-python[grout]
 grout http://127.0.0.1:9919
 ```
 
@@ -94,19 +118,23 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAudioChunk
 ### Realtime Streaming Speech Segments
 
 ```bash
+pip install -U jaxl-python[silence]
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingSpeechSegment
 ```
 
 ### Realtime Streaming Transcriptions per Speech Segment
 
 ```bash
-PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingTranscription
+pip install -U jaxl-python[silence,transcribe]
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingTranscription --transcribe
 ```
 
 ### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
 
 ```bash
-PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAIAgent
+pip install -U jaxl-python[silence,transcribe]
+export JAXL_OLLAMA_URL=https://<llm.domain>/api/chat
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAIAgent --transcribe
 ```
 
 ## Production
