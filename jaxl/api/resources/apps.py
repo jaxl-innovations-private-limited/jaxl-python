@@ -158,9 +158,16 @@ def _start_server(
     @server.websocket("/stream/")
     async def stream(ws: WebSocket) -> None:
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
+        _ivr_id = ws.query_params.get("ivr_id")
+        _state = ws.query_params.get("state")
+        if _state is None or _ivr_id is None:
+            await ws.close(code=1008)
+            return
+
+        ivr_id = int(_ivr_id)
+        state = json.loads(base64.b64decode(_state))
+
         # Speech detector, Speech state & Segment buffer
-        state = json.loads(base64.b64decode(ws.query_params.get("state")))
-        ivr_id = ws.query_params.get("ivr_id")
         sdetector = SilenceDetector()
         speaking: bool = False
         slin16s: List[bytes] = []
