@@ -16,6 +16,7 @@ import logging
 import os
 import tempfile
 import uuid
+import warnings
 import wave
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 
@@ -39,6 +40,11 @@ if TYPE_CHECKING:
 DUMMY_RESPONSE = JaxlWebhookResponse(prompt=[" . "], num_characters=0)
 
 logger = logging.getLogger(__name__)
+
+warnings.filterwarnings(
+    "ignore",
+    message="FP16 is not supported on CPU; using FP32 instead",
+)
 
 
 def _start_server(
