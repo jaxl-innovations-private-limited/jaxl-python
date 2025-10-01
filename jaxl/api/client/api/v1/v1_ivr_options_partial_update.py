@@ -16,9 +16,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.ivr_options_invalid_response import IVROptionsInvalidResponse
 from ...models.ivr_options_response import IVROptionsResponse
-from ...models.patched_ivr_options_update_request import (
-    PatchedIVROptionsUpdateRequest,
-)
+from ...models.patched_ivr_options_update_request import PatchedIVROptionsUpdateRequest
 from ...types import Response
 
 

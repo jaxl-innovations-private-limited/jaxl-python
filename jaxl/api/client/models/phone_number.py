@@ -8,16 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
 
 import attr
 from dateutil.parser import isoparse
@@ -27,8 +18,8 @@ from ..models.phone_number_status_enum import PhoneNumberStatusEnum
 from ..models.resource_enum import ResourceEnum
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
+    from ..models.phone_number_attributes import PhoneNumberAttributes
     from ..models.phone_number_capabilities import PhoneNumberCapabilities
 
 
@@ -53,6 +44,7 @@ class PhoneNumber:
         resource (ResourceEnum):
         ivr (Union[Unset, None, int]): Optional IVR for all incoming calls to this number
         registered_from_device (Optional[int]):
+        attributes (Optional[PhoneNumberAttributes]):
         jaxlid (Optional[str]):
     """
 
@@ -65,6 +57,7 @@ class PhoneNumber:
     capabilities: "PhoneNumberCapabilities"
     resource: ResourceEnum
     registered_from_device: Optional[int]
+    attributes: Optional["PhoneNumberAttributes"]
     jaxlid: Optional[str]
     verified: bool = False
     ivr: Union[Unset, None, int] = UNSET
@@ -87,6 +80,8 @@ class PhoneNumber:
 
         ivr = self.ivr
         registered_from_device = self.registered_from_device
+        attributes = self.attributes.to_dict() if self.attributes else None
+
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -103,6 +98,7 @@ class PhoneNumber:
                 "capabilities": capabilities,
                 "resource": resource,
                 "registered_from_device": registered_from_device,
+                "attributes": attributes,
                 "jaxlid": jaxlid,
             }
         )
@@ -113,6 +109,7 @@ class PhoneNumber:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.phone_number_attributes import PhoneNumberAttributes
         from ..models.phone_number_capabilities import PhoneNumberCapabilities
 
         d = src_dict.copy()
@@ -138,6 +135,13 @@ class PhoneNumber:
 
         registered_from_device = d.pop("registered_from_device")
 
+        _attributes = d.pop("attributes")
+        attributes: Optional[PhoneNumberAttributes]
+        if _attributes is None:
+            attributes = None
+        else:
+            attributes = PhoneNumberAttributes.from_dict(_attributes)
+
         jaxlid = d.pop("jaxlid")
 
         phone_number = cls(
@@ -152,6 +156,7 @@ class PhoneNumber:
             resource=resource,
             ivr=ivr,
             registered_from_device=registered_from_device,
+            attributes=attributes,
             jaxlid=jaxlid,
         )
 

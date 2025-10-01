@@ -14,9 +14,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.paginated_ivr_menu_response_list import (
-    PaginatedIVRMenuResponseList,
-)
+from ...models.paginated_ivr_menu_response_list import PaginatedIVRMenuResponseList
 from ...models.v1_ivr_list_duration import V1IvrListDuration
 from ...types import UNSET, Response, Unset
 

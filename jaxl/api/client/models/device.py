@@ -8,24 +8,13 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union, cast
 
 import attr
 from dateutil.parser import isoparse
 
 from ..models.platform_enum import PlatformEnum
 from ..types import UNSET, Unset
-
 
 if TYPE_CHECKING:
     from ..models.connection import Connection

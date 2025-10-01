@@ -13,7 +13,6 @@ import attr
 
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.organization_group_response import OrganizationGroupResponse
 
@@ -65,9 +64,7 @@ class PaginatedOrganizationGroupResponseList:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from ..models.organization_group_response import (
-            OrganizationGroupResponse,
-        )
+        from ..models.organization_group_response import OrganizationGroupResponse
 
         d = src_dict.copy()
         count = d.pop("count")

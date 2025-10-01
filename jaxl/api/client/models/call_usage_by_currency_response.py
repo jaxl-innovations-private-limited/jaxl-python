@@ -15,7 +15,6 @@ from dateutil.parser import isoparse
 
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.call_usage_stats_response import CallUsageStatsResponse
 

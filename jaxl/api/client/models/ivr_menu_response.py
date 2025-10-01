@@ -14,7 +14,6 @@ import attr
 from ..models.ivr_menu_response_status_enum import IVRMenuResponseStatusEnum
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.analytic import Analytic
 

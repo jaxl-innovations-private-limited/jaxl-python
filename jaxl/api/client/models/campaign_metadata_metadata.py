@@ -11,7 +11,6 @@ from typing import Any, Dict, List, Type, TypeVar
 
 import attr
 
-
 T = TypeVar("T", bound="CampaignMetadataMetadata")
 
 

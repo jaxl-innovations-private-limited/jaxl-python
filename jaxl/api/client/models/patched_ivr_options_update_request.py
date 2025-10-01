@@ -13,7 +13,6 @@ import attr
 
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.next_or_cta_request import NextOrCTARequest
 
@@ -32,6 +31,8 @@ class PatchedIVROptionsUpdateRequest:
         next_or_cta (Union[Unset, NextOrCTARequest]):
         confirmation (Union[Unset, None, bool]): Whether to ask for confirmation to verify input data. Can only be
             enabled when needs_data_prompt is non-null.
+        webhook_url (Union[Unset, None, str]): When provided, Jaxl IVR system will make a POST API on this URL, return
+            200 OK to execute configure CTA, return any other response code to hangup the call.
     """
 
     name: Union[Unset, str] = UNSET
@@ -39,6 +40,7 @@ class PatchedIVROptionsUpdateRequest:
     needs_data_prompt: Union[Unset, None, str] = UNSET
     next_or_cta: Union[Unset, "NextOrCTARequest"] = UNSET
     confirmation: Union[Unset, None, bool] = UNSET
+    webhook_url: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -50,6 +52,7 @@ class PatchedIVROptionsUpdateRequest:
             next_or_cta = self.next_or_cta.to_dict()
 
         confirmation = self.confirmation
+        webhook_url = self.webhook_url
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -64,6 +67,8 @@ class PatchedIVROptionsUpdateRequest:
             field_dict["next_or_cta"] = next_or_cta
         if confirmation is not UNSET:
             field_dict["confirmation"] = confirmation
+        if webhook_url is not UNSET:
+            field_dict["webhook_url"] = webhook_url
 
         return field_dict
 
@@ -87,12 +92,15 @@ class PatchedIVROptionsUpdateRequest:
 
         confirmation = d.pop("confirmation", UNSET)
 
+        webhook_url = d.pop("webhook_url", UNSET)
+
         patched_ivr_options_update_request = cls(
             name=name,
             enabled=enabled,
             needs_data_prompt=needs_data_prompt,
             next_or_cta=next_or_cta,
             confirmation=confirmation,
+            webhook_url=webhook_url,
         )
 
         patched_ivr_options_update_request.additional_properties = d

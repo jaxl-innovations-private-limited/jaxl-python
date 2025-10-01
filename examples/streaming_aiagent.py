@@ -10,7 +10,7 @@ with or without modification, is strictly prohibited.
 import asyncio
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from jaxl.api.base import (
     HANDLER_RESPONSE,
@@ -57,6 +57,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
                 "content": _get_system_prompt("Example Company", "example.com"),
             },
         ]
+        self._chunks: List[str] = []
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return JaxlWebhookResponse(
@@ -75,7 +76,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         req: JaxlStreamRequest,
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         logging.debug(
             "📝 %s %d",
             transcription["text"],
@@ -90,22 +91,32 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
             )
             self._ctask.cancel()
             self._ctask = None
-        self._ctask = asyncio.create_task(self._chat_with_llm(transcription["text"]))
+        self._ctask = asyncio.create_task(
+            self._chat_with_llm(req, transcription["text"])
+        )
         return None
 
-    async def _chat_with_llm(self, transcription: str) -> None:
+    async def _chat_with_llm(self, req: JaxlStreamRequest, transcription: str) -> None:
         url = os.environ.get("JAXL_OLLAMA_URL", None)
         assert url is not None
         self._messages.append({"role": "user", "content": transcription})
 
+        async def _on_llm_response_chunk(response: Optional[Dict[str, Any]]) -> None:
+            await self._on_llm_response_chunk(req, response)
+
         logger.debug("💬 %s", transcription)
         await self.chat_with_ollama(
-            on_response_chunk_callback=self._on_llm_response_chunk,
+            on_response_chunk_callback=_on_llm_response_chunk,
             url=url,
             messages=self._messages,
         )
 
-    async def _on_llm_response_chunk(self, response: Optional[Dict[str, Any]]) -> None:
+    async def _on_llm_response_chunk(
+        self,
+        req: JaxlStreamRequest,
+        response: Optional[Dict[str, Any]],
+    ) -> None:
+        assert req.state
         if response is None:
             logger.warning("❌ %s", "Unable to get agent response")
             self._ctask = None
@@ -113,5 +124,9 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         if response["done"]:
             logger.debug("🎭 %s", "End of agent response")
             self._ctask = None
+            reply = "".join(self._chunks)
+            print(reply)
+            await self.tts(req.state.call_id, prompts=[reply])
+            self._chunks = []
             return
-        logger.debug("🕵️ %s", response["message"]["content"])
+        self._chunks.append(response["message"]["content"])

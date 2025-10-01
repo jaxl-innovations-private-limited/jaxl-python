@@ -7,21 +7,11 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
 
 import attr
 
 from ..types import UNSET, Unset
-
 
 if TYPE_CHECKING:
     from ..models.campaign_metadata_metadata import CampaignMetadataMetadata
@@ -63,9 +53,7 @@ class CampaignMetadata:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from ..models.campaign_metadata_metadata import (
-            CampaignMetadataMetadata,
-        )
+        from ..models.campaign_metadata_metadata import CampaignMetadataMetadata
 
         d = src_dict.copy()
         _metadata = d.pop("metadata", UNSET)

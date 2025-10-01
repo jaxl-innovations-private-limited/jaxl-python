@@ -14,7 +14,6 @@ import attr
 from ..models.call_type_enum import CallTypeEnum
 from ..types import UNSET, Unset
 
-
 T = TypeVar("T", bound="CallTokenRequest")
 
 

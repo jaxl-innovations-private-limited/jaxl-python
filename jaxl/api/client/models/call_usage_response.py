@@ -13,11 +13,8 @@ import attr
 
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
-    from ..models.call_usage_by_currency_response import (
-        CallUsageByCurrencyResponse,
-    )
+    from ..models.call_usage_by_currency_response import CallUsageByCurrencyResponse
 
 
 T = TypeVar("T", bound="CallUsageResponse")
@@ -58,9 +55,7 @@ class CallUsageResponse:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from ..models.call_usage_by_currency_response import (
-            CallUsageByCurrencyResponse,
-        )
+        from ..models.call_usage_by_currency_response import CallUsageByCurrencyResponse
 
         d = src_dict.copy()
         results = []

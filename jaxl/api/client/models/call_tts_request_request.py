@@ -7,35 +7,31 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar
+from typing import Any, Dict, List, Type, TypeVar, cast
 
 import attr
 
-T = TypeVar("T", bound="UserAgentDevice")
+T = TypeVar("T", bound="CallTtsRequestRequest")
 
 
 @attr.s(auto_attribs=True)
-class UserAgentDevice:
+class CallTtsRequestRequest:
     """
     Attributes:
-        manufacturer (str):
-        model (str):
+        prompts (List[str]):
     """
 
-    manufacturer: str
-    model: str
+    prompts: List[str]
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        manufacturer = self.manufacturer
-        model = self.model
+        prompts = self.prompts
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "manufacturer": manufacturer,
-                "model": model,
+                "prompts": prompts,
             }
         )
 
@@ -44,17 +40,14 @@ class UserAgentDevice:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        manufacturer = d.pop("manufacturer")
+        prompts = cast(List[str], d.pop("prompts"))
 
-        model = d.pop("model")
-
-        user_agent_device = cls(
-            manufacturer=manufacturer,
-            model=model,
+        call_tts_request_request = cls(
+            prompts=prompts,
         )
 
-        user_agent_device.additional_properties = d
-        return user_agent_device
+        call_tts_request_request.additional_properties = d
+        return call_tts_request_request
 
     @property
     def additional_keys(self) -> List[str]:

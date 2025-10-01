@@ -13,7 +13,6 @@ import attr
 
 from ..models.id_enum import IdEnum
 
-
 T = TypeVar("T", bound="IVRCollection")
 
 

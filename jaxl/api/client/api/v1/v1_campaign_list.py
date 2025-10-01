@@ -14,9 +14,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.paginated_campaign_response_list import (
-    PaginatedCampaignResponseList,
-)
+from ...models.paginated_campaign_response_list import PaginatedCampaignResponseList
 from ...models.v1_campaign_list_status_item import V1CampaignListStatusItem
 from ...types import UNSET, Response, Unset
 

@@ -16,9 +16,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.paginated_kyc_list import PaginatedKycList
 from ...models.v1_kyc_list_iso_country import V1KycListIsoCountry
-from ...models.v1_kyc_list_provider_status_item import (
-    V1KycListProviderStatusItem,
-)
+from ...models.v1_kyc_list_provider_status_item import V1KycListProviderStatusItem
 from ...models.v1_kyc_list_resource import V1KycListResource
 from ...models.v1_kyc_list_status import V1KycListStatus
 from ...types import UNSET, Response, Unset

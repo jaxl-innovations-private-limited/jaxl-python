@@ -26,6 +26,8 @@ _scm_version.py
 *.log
 .DS_Store
 license.py
+schema.py
+schema.yaml
 
 jaxl-api-credentials*.json
 docs

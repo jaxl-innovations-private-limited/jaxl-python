@@ -11,7 +11,6 @@ from typing import Any, Dict, List, Optional, Type, TypeVar, cast
 
 import attr
 
-
 T = TypeVar("T", bound="OrganizationGroupResponse")
 
 

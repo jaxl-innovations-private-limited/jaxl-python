@@ -15,6 +15,11 @@ from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 import requests
 from pydantic import BaseModel, model_validator
 
+from jaxl.api._client import JaxlApiModule, jaxl_api_client
+from jaxl.api.client.api.v1 import v1_calls_tts_create
+from jaxl.api.client.models.call_tts_request_request import (
+    CallTtsRequestRequest,
+)
 from jaxl.api.resources.ivrs import IVR_CTA_KEYS
 
 
@@ -141,14 +146,14 @@ class BaseJaxlApp:
         self,
         req: JaxlStreamRequest,
         slin16: bytes,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         return None
 
     async def handle_speech_segment(
         self,
         req: JaxlStreamRequest,
         slin16s: List[bytes],
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         return None
 
     async def handle_transcription(
@@ -156,7 +161,7 @@ class BaseJaxlApp:
         req: JaxlStreamRequest,
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         return None
 
     async def chat_with_ollama(
@@ -212,3 +217,10 @@ class BaseJaxlApp:
             # pylint: disable=broad-exception-caught
             except Exception as exc:
                 logger.warning(f"Unable to process ollama response: {exc}")
+
+    async def tts(self, call_id: int, prompts: List[str]) -> None:
+        v1_calls_tts_create.sync_detailed(
+            id=call_id,
+            client=jaxl_api_client(JaxlApiModule.CALL),
+            json_body=CallTtsRequestRequest(prompts=prompts),
+        )

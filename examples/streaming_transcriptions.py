@@ -31,6 +31,6 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
         req: JaxlStreamRequest,
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
-    ) -> HANDLER_RESPONSE:
+    ) -> None:
         print(transcription["text"], num_inflight_transcribe_requests)
         return None

@@ -13,7 +13,6 @@ import attr
 
 from ..models.resource_enum import ResourceEnum
 
-
 if TYPE_CHECKING:
     from ..models.available_phone_number import AvailablePhoneNumber
 

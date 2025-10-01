@@ -19,7 +19,6 @@ from ..models.rental_currency_enum import RentalCurrencyEnum
 from ..models.resource_enum import ResourceEnum
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.available_phone_number_capabilities import (
         AvailablePhoneNumberCapabilities,

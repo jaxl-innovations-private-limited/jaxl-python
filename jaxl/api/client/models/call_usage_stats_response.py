@@ -13,7 +13,6 @@ from typing import Any, Dict, List, Type, TypeVar
 import attr
 from dateutil.parser import isoparse
 
-
 T = TypeVar("T", bound="CallUsageStatsResponse")
 
 

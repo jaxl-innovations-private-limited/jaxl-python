@@ -14,7 +14,6 @@ import attr
 from ..models.iso_country_enum import IsoCountryEnum
 from ..types import UNSET, Unset
 
-
 if TYPE_CHECKING:
     from ..models.kyc_upload_metadata import KycUploadMetadata
 

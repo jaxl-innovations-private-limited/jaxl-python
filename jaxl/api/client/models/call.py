@@ -8,16 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
 
 import attr
 from dateutil.parser import isoparse
@@ -25,7 +16,6 @@ from dateutil.parser import isoparse
 from ..models.call_type_enum import CallTypeEnum
 from ..models.direction_enum import DirectionEnum
 from ..types import UNSET, Unset
-
 
 if TYPE_CHECKING:
     from ..models.call_cost import CallCost
