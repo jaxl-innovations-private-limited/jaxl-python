@@ -28,7 +28,6 @@ from jaxl.api.base import (
     JaxlWebhookEvent,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
-    JaxlWebhookState,
 )
 from jaxl.api.resources.silence import SilenceDetector
 
@@ -160,6 +159,8 @@ def _start_server(
     async def stream(ws: WebSocket) -> None:
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
         # Speech detector, Speech state & Segment buffer
+        state = json.loads(base64.b64decode(ws.query_params.get("state")))
+        ivr_id = ws.query_params.get("ivr_id")
         sdetector = SilenceDetector()
         speaking: bool = False
         slin16s: List[bytes] = []
@@ -172,18 +173,7 @@ def _start_server(
                 data = json.loads(await ws.receive_text())
                 ev = data["event"]
                 if ev == "media":
-                    req = JaxlStreamRequest(
-                        pk=0,
-                        state=JaxlWebhookState(
-                            call_id=0,
-                            from_number="",
-                            to_number="",
-                            direction=1,
-                            org=None,
-                            metadata=None,
-                            greeting_message=None,
-                        ),
-                    )
+                    req = JaxlStreamRequest(pk=ivr_id, state=state)
                     slin16 = base64.b64decode(data[ev]["payload"])
                     # Invoke audio chunk handlers
                     await app.handle_audio_chunk(req, slin16)
