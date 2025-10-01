@@ -165,6 +165,8 @@ def _start_server(
         slin16s: List[bytes] = []
 
         await ws.accept()
+
+        # pylint: disable=too-many-nested-blocks
         while True:
             try:
                 data = json.loads(await ws.receive_text())
