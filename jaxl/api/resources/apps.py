@@ -8,28 +8,111 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
+import asyncio
+import base64
 import importlib
-from typing import TYPE_CHECKING, Any, Dict, cast
+import json
+import logging
+import os
+import tempfile
+import uuid
+import wave
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+
+from starlette.websockets import WebSocketDisconnect
 
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamRequest,
     JaxlWebhookEvent,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
+from jaxl.api.resources.silence import SilenceDetector
 
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
+
 DUMMY_RESPONSE = JaxlWebhookResponse(prompt=[" . "], num_characters=0)
 
+logger = logging.getLogger(__name__)
 
-def _start_server(app: BaseJaxlApp) -> "FastAPI":
+
+def _start_server(
+    app: BaseJaxlApp,
+    transcribe: bool = False,
+    transcribe_model_size: str = "small",
+    transcribe_language: str = "en",
+    transcribe_device: str = "cpu",
+    transcribe_temperature: float = 0.3,
+) -> "FastAPI":
     from fastapi import FastAPI, Request, WebSocket
 
     server = FastAPI()
+
+    # Transcription tasks
+    model: Optional["whisper.Whisper"] = None
+    mlock = asyncio.Lock()
+    ttasks: Dict[str, asyncio.Task[Dict[str, Any]]] = {}
+
+    if transcribe:
+        import whisper
+
+        model = whisper.load_model(transcribe_model_size, device=transcribe_device)
+
+    def _save_raw_audio_as_wav(slin16s: List[bytes]) -> str:
+        """Stores raw chunks to a wav file on disk"""
+        audio_data = b"".join(slin16s)
+        # pylint: disable=consider-using-with
+        wav_file = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+        with wave.open(wav_file, "wb") as wf:
+            # pylint: disable=no-member
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(8000)
+            wf.writeframes(audio_data)
+        return wav_file.name
+
+    async def _transcribe(slin16s: List[bytes]) -> Dict[str, Any]:
+        assert model is not None
+        wav_path: Optional[str] = None
+        try:
+            async with mlock:
+                wav_path = _save_raw_audio_as_wav(slin16s)
+                return cast(
+                    Dict[str, Any],
+                    model.transcribe(
+                        audio=wav_path,
+                        language=transcribe_language,
+                        temperature=transcribe_temperature,
+                    ),
+                )
+        finally:
+            if wav_path:
+                os.unlink(wav_path)
+
+    async def _ttask_done_callback_async(
+        req: JaxlStreamRequest,
+        ttask: asyncio.Task[Dict[str, Any]],
+        tsid: str,
+    ) -> None:
+        try:
+            await app.handle_transcription(req, ttask.result(), len(ttasks) - 1)
+        # pylint: disable=broad-exception-caught
+        except Exception as exc:
+            logger.warning(f"Transcription task failed: {exc}")
+        finally:
+            del ttasks[tsid]
+
+    def _ttask_done_callback(
+        req: JaxlStreamRequest,
+        task: asyncio.Task[Dict[str, Any]],
+        tsid: str,
+    ) -> None:
+        asyncio.create_task(_ttask_done_callback_async(req, task, tsid))
 
     @server.api_route(
         "/webhook/",
@@ -75,10 +158,69 @@ def _start_server(app: BaseJaxlApp) -> "FastAPI":
     @server.websocket("/stream/")
     async def stream(ws: WebSocket) -> None:
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
+        _ivr_id = ws.query_params.get("ivr_id")
+        _state = ws.query_params.get("state")
+        if _state is None or _ivr_id is None:
+            await ws.close(code=1008)
+            return
+
+        ivr_id = int(_ivr_id)
+        state = json.loads(base64.b64decode(_state))
+
+        # Speech detector, Speech state & Segment buffer
+        sdetector = SilenceDetector()
+        speaking: bool = False
+        slin16s: List[bytes] = []
+
         await ws.accept()
+
+        # pylint: disable=too-many-nested-blocks
         while True:
-            data = await ws.receive_text()
-            await ws.send_text(f"Echo: {data}")
+            try:
+                data = json.loads(await ws.receive_text())
+                ev = data["event"]
+                if ev == "media":
+                    req = JaxlStreamRequest(pk=ivr_id, state=state)
+                    slin16 = base64.b64decode(data[ev]["payload"])
+                    # Invoke audio chunk handlers
+                    await app.handle_audio_chunk(req, slin16)
+                    # Detect start/end of speech
+                    change = sdetector.process(slin16)
+                    # Manage speech segments
+                    if change is True:
+                        # print("🎙️")
+                        speaking = change
+                        slin16s.append(slin16)
+                    elif change is False:
+                        # print("🤐")
+                        speaking = change
+                        if len(slin16s) > 0:
+                            # Invoke speech segment handlers
+                            await app.handle_speech_segment(req, slin16s)
+                            if model:
+                                tsid = uuid.uuid4().hex
+                                ttask = asyncio.create_task(_transcribe(slin16s))
+                                ttasks[tsid] = ttask
+                                ttask.add_done_callback(
+                                    lambda task: _ttask_done_callback(
+                                        req,
+                                        task,
+                                        tsid,
+                                    )
+                                )
+                        slin16s = []
+                    else:
+                        assert change is None
+                        if speaking is True:
+                            slin16s.append(slin16)
+                        else:
+                            assert speaking is False
+                elif ev == "connected":
+                    pass
+                else:
+                    logger.warning(f"UNHANDLED STREAMING EVENT {ev}")
+            except WebSocketDisconnect:
+                break
 
     return server
 
@@ -91,7 +233,13 @@ def _load_app(dotted_path: str) -> BaseJaxlApp:
 
 
 def apps_run(args: Dict[str, Any]) -> str:
-    app = _start_server(_load_app(args["app"]))
+    app = _start_server(
+        _load_app(args["app"]),
+        transcribe=args["transcribe"],
+        transcribe_model_size=args["transcribe_model_size"],
+        transcribe_language=args["transcribe_language"],
+        transcribe_device=args["transcribe_device"],
+    )
 
     import uvicorn
 
@@ -124,4 +272,41 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         default=9919,
         help="Defaults to 9919",
     )
-    apps_run_parser.set_defaults(func=apps_run, _arg_keys=["app", "host", "port"])
+    apps_run_parser.add_argument(
+        "--transcribe",
+        action="store_true",
+        required=False,
+        help="This flag is required to enable realtime transcription pipeline",
+    )
+    apps_run_parser.add_argument(
+        "--transcribe-model-size",
+        type=str,
+        default="small",
+        help="Options are: tiny, base, small, medium, large",
+    )
+    apps_run_parser.add_argument(
+        "--transcribe-language",
+        type=str,
+        default="en",
+        help="Options are: auto, ar, bg, bn, cs, da, de, el, en, es, et, fi, fil, "
+        "fr, gu, he, hi, hr, hu, id, it, ja, kn, ko, lt, lv, ml, mr, nl, no, "
+        "pa, pl, pt, ro, ru, sk, sl, sr, sv, ta, te, th, tr, uk, ur, vi, zh",
+    )
+    apps_run_parser.add_argument(
+        "--transcribe-device",
+        type=str,
+        default="cpu",
+        help="Options are: auto, cpu, cuda, cuda:N, mps",
+    )
+    apps_run_parser.set_defaults(
+        func=apps_run,
+        _arg_keys=[
+            "app",
+            "host",
+            "port",
+            "transcribe",
+            "transcribe_model_size",
+            "transcribe_language",
+            "transcribe_device",
+        ],
+    )

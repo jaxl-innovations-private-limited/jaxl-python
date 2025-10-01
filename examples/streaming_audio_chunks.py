@@ -7,8 +7,27 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from jaxl.api.base import BaseJaxlApp
+from jaxl.api.base import (
+    HANDLER_RESPONSE,
+    BaseJaxlApp,
+    JaxlStreamRequest,
+    JaxlWebhookRequest,
+    JaxlWebhookResponse,
+)
 
 
 class JaxlAppStreamingAudioChunk(BaseJaxlApp):
-    pass
+
+    async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
+        return JaxlWebhookResponse(
+            prompt=["Welcome to streaming audio chunk demo"],
+            num_characters=1,
+        )
+
+    async def handle_audio_chunk(
+        self,
+        req: JaxlStreamRequest,
+        slin16: bytes,
+    ) -> HANDLER_RESPONSE:
+        print(f"Received {len(slin16)} bytes of raw audio")
+        return None

@@ -7,12 +7,18 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+import json
+import logging
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 
+import requests
 from pydantic import BaseModel, model_validator
 
 from jaxl.api.resources.ivrs import IVR_CTA_KEYS
+
+
+logger = logging.getLogger(__name__)
 
 
 class JaxlWebhookEvent(Enum):
@@ -52,6 +58,13 @@ class JaxlWebhookRequest(BaseModel):
 class JaxlWebhookResponse(BaseModel):
     prompt: List[str]
     num_characters: Union[int, str]
+
+
+class JaxlStreamRequest(BaseModel):
+    # IVR ID
+    pk: int
+    # Webhook state
+    state: Optional[JaxlWebhookState]
 
 
 class JaxlPhoneCta(BaseModel):
@@ -123,3 +136,79 @@ class BaseJaxlApp:
     async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a call ends."""
         return None
+
+    async def handle_audio_chunk(
+        self,
+        req: JaxlStreamRequest,
+        slin16: bytes,
+    ) -> HANDLER_RESPONSE:
+        return None
+
+    async def handle_speech_segment(
+        self,
+        req: JaxlStreamRequest,
+        slin16s: List[bytes],
+    ) -> HANDLER_RESPONSE:
+        return None
+
+    async def handle_transcription(
+        self,
+        req: JaxlStreamRequest,
+        transcription: Dict[str, Any],
+        num_inflight_transcribe_requests: int,
+    ) -> HANDLER_RESPONSE:
+        return None
+
+    async def chat_with_ollama(
+        self,
+        on_response_chunk_callback: Callable[..., Coroutine[Any, Any, Any]],
+        url: str,
+        messages: List[Dict[str, Any]],
+        model: str = "gemma3:1b",
+        stream: bool = True,
+        timeout: int = 270,
+        # Model tuning params
+        #
+        # Controls the randomness of the model's output.
+        # A lower value (e.g., 0.0) makes the model more deterministic,
+        # while a higher value (e.g., 1.0) introduces more randomness.
+        # This is often used to control creativity vs. coherence.
+        temperature: float = 0.7,
+        # Defines the maximum number of tokens (words or characters)
+        # the model can generate in the response. If not provided,
+        # the model will typically generate as much as it can.
+        # max_tokens: int = 150,
+        # (Nucleus Sampling) (top_p): This parameter uses nucleus sampling
+        # to control the diversity of the output. Setting top_p to a value
+        # between 0 and 1 helps restrict the choices the model can make to
+        # a smaller, higher-probability set of options.
+        top_p: float = 1.0,
+        # Reduces the likelihood of the model repeating the same phrases.
+        # A higher value means less repetition.
+        frequency_penalty: float = 0.5,
+        # Encourages the model to talk about new topics by penalizing repeated ideas or concepts.
+        presence_penalty: float = 0.5,
+    ) -> None:
+        payload = {
+            "model": model,
+            "messages": messages,
+            "stream": stream,
+            "temperature": temperature,
+            # "max_tokens": max_tokens,
+            "top_p": top_p,
+            "frequency_penalty": frequency_penalty,
+            "presence_penalty": presence_penalty,
+        }
+        response = requests.post(url, json=payload, timeout=timeout)
+        if response.status_code != 200:
+            await on_response_chunk_callback(None)
+        # Parse streaming ollama response
+        for chunk in response.iter_lines(decode_unicode=True):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            try:
+                await on_response_chunk_callback(json.loads(chunk))
+            # pylint: disable=broad-exception-caught
+            except Exception as exc:
+                logger.warning(f"Unable to process ollama response: {exc}")

@@ -11,6 +11,10 @@ Jaxl SDK Apps implements [`BaseJaxlApp`](https://github.com/jaxl-innovations-pri
    - [Send To Phone](#send-to-phone)
    - [Request Code and Send To Phone](#request-code-and-send-to-phone)
    - [Request Code, Ask for Confirmation and Send To Phone](#request-code-ask-for-confirmation-and-send-to-phone)
+   - [Realtime Streaming Audio](#realtime-streaming-audio)
+   - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
+   - [Realtime Streaming Transcriptions per Speech Segment](#realtime-streaming-transcriptions-per-speech-segment)
+   - [AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS](#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts)
 4. [Production](#production)
 
 ## Setup
@@ -79,6 +83,30 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppRequestCodeAndSendToCellular
 
 ```bash
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppConfirmRequestedCodeAndSendToCellular
+```
+
+### Realtime Streaming Audio
+
+```bash
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAudioChunk
+```
+
+### Realtime Streaming Speech Segments
+
+```bash
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingSpeechSegment
+```
+
+### Realtime Streaming Transcriptions per Speech Segment
+
+```bash
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingTranscription
+```
+
+### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
+
+```bash
+PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAIAgent
 ```
 
 ## Production
