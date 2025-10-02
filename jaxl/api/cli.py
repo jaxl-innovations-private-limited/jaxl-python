@@ -36,7 +36,7 @@ def _init_subparsers(
                 mod._subparser(parser)
         # pylint: disable=broad-exception-caught
         except Exception as e:
-            print(f"Skipping {full_module_name} due to error: {e}")
+            logging.info(f"Skipping {full_module_name} due to error: {e}")
 
 
 def main() -> None:

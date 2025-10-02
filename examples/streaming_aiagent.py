@@ -125,7 +125,6 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
             logger.debug("🎭 %s", "End of agent response")
             self._ctask = None
             reply = "".join(self._chunks)
-            print(reply)
             await self.tts(req.state.call_id, prompts=[reply])
             self._chunks = []
             return

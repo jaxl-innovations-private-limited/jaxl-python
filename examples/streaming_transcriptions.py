@@ -7,6 +7,7 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+import logging
 from typing import Any, Dict
 
 from jaxl.api.base import (
@@ -32,5 +33,5 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
     ) -> None:
-        print(transcription["text"], num_inflight_transcribe_requests)
+        logging.info(transcription["text"], num_inflight_transcribe_requests)
         return None
