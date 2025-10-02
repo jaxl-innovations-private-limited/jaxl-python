@@ -33,5 +33,7 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
     ) -> None:
+        assert req.state
         logging.info(transcription["text"], num_inflight_transcribe_requests)
+        await self.tts(req.state.call_id, prompts=[transcription["text"]])
         return None
