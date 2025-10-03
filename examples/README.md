@@ -79,6 +79,7 @@ Next go ahead and:
 
 1. [Create a webhook IVR](https://github.com/jaxl-innovations-private-limited/jaxl-python?tab=readme-ov-file#receive-call-events-via-webhook-ivrs). Use your public url as `--message`.
 2. [Assign a number to webhook IVR](https://github.com/jaxl-innovations-private-limited/jaxl-python?tab=readme-ov-file#assign-a-phone-number-to-ivr-by-id) app.
+3. For enable streaming apps, you must add `?stream` to your registered webhook IVR url.
 
 ## Examples
 

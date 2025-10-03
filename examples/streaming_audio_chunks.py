@@ -7,8 +7,6 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-import logging
-
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
@@ -31,5 +29,5 @@ class JaxlAppStreamingAudioChunk(BaseJaxlApp):
         req: JaxlStreamRequest,
         slin16: bytes,
     ) -> None:
-        logging.info(f"Received {len(slin16)} bytes of raw audio")
+        print(f"Received {len(slin16)} bytes of raw audio")
         return None

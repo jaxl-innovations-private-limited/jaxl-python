@@ -7,7 +7,6 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-import logging
 from typing import List
 
 from jaxl.api.base import (
@@ -32,5 +31,5 @@ class JaxlAppStreamingSpeechSegment(BaseJaxlApp):
         req: JaxlStreamRequest,
         slin16s: List[bytes],
     ) -> None:
-        logging.info(f"Received {len(slin16s)} chunks in speech segment")
+        print(f"Received {len(slin16s)} chunks in speech segment")
         return None

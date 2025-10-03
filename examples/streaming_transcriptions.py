@@ -7,8 +7,7 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-import logging
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 from jaxl.api.base import (
     HANDLER_RESPONSE,
@@ -23,9 +22,12 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return JaxlWebhookResponse(
-            prompt=["Welcome to streaming transcriptions demo"],
+            prompt=["Hello, I am a echo bot, I will repeat after you, try me out."],
             num_characters=-1,
         )
+
+    async def handle_speech_detection(self, speaking: bool) -> None:
+        print("🎙️" if speaking else "🤐")
 
     async def handle_transcription(
         self,
@@ -34,6 +36,12 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
         num_inflight_transcribe_requests: int,
     ) -> None:
         assert req.state
-        logging.info(transcription["text"], num_inflight_transcribe_requests)
-        await self.tts(req.state.call_id, prompts=[transcription["text"]])
+        text = cast(str, transcription["text"]).strip()
+        if len(text) == 0:
+            print(
+                f"🫙 Empty transcription received, {num_inflight_transcribe_requests}"
+            )
+            return None
+        print(f"📝 {text}, {num_inflight_transcribe_requests}")
+        await self.tts(req.state.call_id, prompts=[text])
         return None
