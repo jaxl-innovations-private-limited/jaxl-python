@@ -26,6 +26,9 @@ class JaxlAppStreamingSpeechSegment(BaseJaxlApp):
             num_characters=-1,
         )
 
+    async def handle_speech_detection(self, speaking: bool) -> None:
+        print("🎙️" if speaking else "🤐")
+
     async def handle_speech_segment(
         self,
         req: JaxlStreamRequest,
