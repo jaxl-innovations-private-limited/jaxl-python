@@ -43,5 +43,5 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
             )
             return None
         print(f"📝 {text}, {num_inflight_transcribe_requests}")
-        await self.tts(req.state.call_id, prompts=[text])
+        await self.tts(req.state.call_id, prompts=text.split("."))
         return None
