@@ -9,7 +9,7 @@ with or without modification, is strictly prohibited.
 
 import asyncio
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from jaxl.api.base import (
     HANDLER_RESPONSE,
@@ -76,7 +76,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         transcription: Dict[str, Any],
         num_inflight_transcribe_requests: int,
     ) -> None:
-        text = transcription["text"]
+        text = cast(str, transcription["text"]).strip()
         if len(text) == 0:
             print(
                 f"🫙 Empty transcription received, {num_inflight_transcribe_requests}"
