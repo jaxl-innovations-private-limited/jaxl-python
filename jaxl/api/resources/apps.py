@@ -14,6 +14,8 @@ import importlib
 import json
 import logging
 import os
+import shutil
+import sys
 import tempfile
 import uuid
 import warnings
@@ -253,6 +255,14 @@ def _load_app(dotted_path: str) -> BaseJaxlApp:
 
 
 def apps_run(args: Dict[str, Any]) -> str:
+    if args["transcribe"]:
+        # Ensure ffmpeg is in path
+        name = "ffmpeg"
+        if shutil.which(name) is None:
+            sys.exit(
+                f"❌ {name} not found. Please install {name} and ensure it's in your PATH."
+            )
+
     app = _start_server(
         _load_app(args["app"]),
         transcribe=args["transcribe"],
