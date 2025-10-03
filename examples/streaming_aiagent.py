@@ -123,7 +123,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
             self._ctask = None
             reply = "".join(self._chunks)
             print(f"💬 {reply}")
-            await self.tts(req.state.call_id, prompts=[reply])
+            await self.tts(req.state.call_id, prompt=reply)
             self._chunks = []
             return
         self._chunks.append(response["message"]["content"])

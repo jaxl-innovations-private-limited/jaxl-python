@@ -222,9 +222,9 @@ class BaseJaxlApp:
             except Exception as exc:
                 logger.warning(f"Unable to process ollama response: {exc}")
 
-    async def tts(self, call_id: int, prompts: List[str]) -> None:
+    async def tts(self, call_id: int, prompt: str) -> None:
         v1_calls_tts_create.sync_detailed(
             id=call_id,
             client=jaxl_api_client(JaxlApiModule.CALL),
-            json_body=CallTtsRequestRequest(prompts=prompts),
+            json_body=CallTtsRequestRequest(prompts=prompt.split(".")),
         )
