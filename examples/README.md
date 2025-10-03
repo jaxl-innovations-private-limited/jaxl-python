@@ -126,6 +126,7 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingSpeechSegment
 ### Realtime Streaming Transcriptions per Speech Segment
 
 ```bash
+# Requires ffmpeg installed on your system
 pip install -U jaxl-python[silence,transcribe]
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingTranscription --transcribe
 ```
@@ -133,6 +134,7 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingTranscription --transc
 ### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
 
 ```bash
+# Requires ffmpeg installed on your system
 pip install -U jaxl-python[silence,transcribe]
 export JAXL_OLLAMA_URL=https://<llm.domain>/api/chat
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAIAgent --transcribe
