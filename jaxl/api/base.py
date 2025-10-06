@@ -226,5 +226,7 @@ class BaseJaxlApp:
         v1_calls_tts_create.sync_detailed(
             id=call_id,
             client=jaxl_api_client(JaxlApiModule.CALL),
-            json_body=CallTtsRequestRequest(prompts=prompt.split(".")),
+            json_body=CallTtsRequestRequest(
+                prompts=[pro for pro in prompt.split(".") if len(pro.strip()) > 0]
+            ),
         )
