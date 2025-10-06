@@ -136,6 +136,7 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingTranscription --transc
 ```bash
 # Requires ffmpeg installed on your system
 pip install -U jaxl-python[silence,transcribe]
+# Defaults to gemma3:1b model, ensure you have the model installed
 export JAXL_OLLAMA_URL=https://<llm.domain>/api/chat
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAIAgent --transcribe
 ```
