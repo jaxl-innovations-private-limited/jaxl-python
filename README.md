@@ -447,6 +447,10 @@ open docs/jaxl/index.html
 
 ## Status
 
-[![Python 3.x](https://img.shields.io/static/v1?label=Python&message=3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12&color=blue&style=flat-square)](https://www.python.org/)
+[![pypi version](https://img.shields.io/pypi/v/jaxl-python)](https://pypi.org/project/jaxl-python/)
 
-[![Checked with mypy](https://img.shields.io/static/v1?label=MyPy&message=checked&color=blue&style=flat-square)](http://mypy-lang.org/)
+[![PyPi Monthly](https://img.shields.io/pypi/dm/jaxl-python)](https://pypi.org/project/jaxl-python/)
+
+[![Python 3.x](https://img.shields.io/static/v1?label=Python&message=3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12&color=blue)](https://www.python.org/)
+
+[![Checked with mypy](https://img.shields.io/static/v1?label=MyPy&message=checked&color=blue)](http://mypy-lang.org/)
