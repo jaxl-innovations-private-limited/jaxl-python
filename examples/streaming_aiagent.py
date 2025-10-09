@@ -9,6 +9,7 @@ with or without modification, is strictly prohibited.
 
 import asyncio
 import os
+from pathlib import Path
 from typing import Any, Dict, List, Optional, TypedDict, cast
 
 from jaxl.api.base import (
@@ -21,29 +22,12 @@ from jaxl.api.base import (
 
 
 def _get_system_prompt(brand_name: str, domain: str) -> str:
-    return (
-        "You are a concise and precise virtual assistant "
-        f"for the domain {domain}, "
-        f"representing the brand '{brand_name}'. "
-        "Always reply in plain text."
-        "\n\n"
-        f"User may mispronounce '{brand_name}'. "
-        "Try to infer the mispronunciations and treat all such variants "
-        f"as references to '{brand_name}' and "
-        f"always refer to the name correctly as '{brand_name}' in your responses."
-        "\n\n"
-        "Keep your responses short (one or two sentences) "
-        "and to the point, unless the user asks for more details. "
-        "Avoid unnecessary elaboration. When appropriate, follow this template: "
-        "provide a brief answer, and ask a clarifying question. "
-        "Your primary goal is to be concise, precise, clear and efficient."
-        "\n\n"
-        "Use the system role context in following messages to answer queries related "
-        f"to {domain}."
-    )
-
-
-GREETING = "Welcome to AI agent demo"
+    prompt = (
+        Path(__file__).parent
+        / "prompts"
+        / os.environ.get("JAXL_SYSTEM_PROMPT", "example.txt")
+    ).read_text(encoding="utf-8")
+    return prompt.format(brand_name=brand_name, domain=domain)
 
 
 class AIAgentCallState(TypedDict):
@@ -61,6 +45,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         assert req.state
+        greeting = os.environ.get("JAXL_SYSTEM_GREETING", "Welcome to AI agent demo")
         # Initialize state for this call
         self._states[req.state.call_id] = AIAgentCallState(
             ctask=None,
@@ -71,13 +56,13 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
                 },
                 {
                     "role": "assistant",
-                    "content": GREETING,
+                    "content": greeting,
                 },
             ],
             chunks=[],
         )
         return JaxlWebhookResponse(
-            prompt=[GREETING],
+            prompt=[greeting],
             # Since we expect no input from the user, use -1
             num_characters=-1,
         )
@@ -115,8 +100,6 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         )
         assert req.state
         if self._states[req.state.call_id]["ctask"] is not None:
-            # TODO: Ideally we should also carry forward previous
-            # speech phrase transcription into the next chat with agent task.
             print("😢 Canceling previous agent chat due to new transcription event")
             ctask = self._states[req.state.call_id]["ctask"]
             assert ctask is not None
