@@ -9,7 +9,7 @@ with or without modification, is strictly prohibited.
 
 import asyncio
 import os
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, TypedDict, cast
 
 from jaxl.api.base import (
     HANDLER_RESPONSE,
@@ -43,28 +43,55 @@ def _get_system_prompt(brand_name: str, domain: str) -> str:
     )
 
 
+GREETING = "Welcome to AI agent demo"
+
+
+class AIAgentCallState(TypedDict):
+    ctask: Optional[asyncio.Task[None]]
+    messages: List[Dict[str, Any]]
+    chunks: List[str]
+
+
 class JaxlAppStreamingAIAgent(BaseJaxlApp):
 
     def __init__(self) -> None:
-        self._ctask: Optional[asyncio.Task[None]] = None
-        self._messages = [
-            {
-                "role": "system",
-                "content": _get_system_prompt("Example Company", "example.com"),
-            },
-        ]
-        self._chunks: List[str] = []
+        # A single instance of JaxlAppStreamingAIAgent is created which handles
+        # all the calls.  Hence, we manage states in a dictionary keyed by call id.
+        self._states: Dict[int, AIAgentCallState] = {}
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
+        assert req.state
+        # Initialize state for this call
+        self._states[req.state.call_id] = AIAgentCallState(
+            ctask=None,
+            messages=[
+                {
+                    "role": "system",
+                    "content": _get_system_prompt("Example Company", "example.com"),
+                },
+                {
+                    "role": "assistant",
+                    "content": GREETING,
+                },
+            ],
+            chunks=[],
+        )
         return JaxlWebhookResponse(
-            prompt=["Welcome to AI agent demo"],
+            prompt=[GREETING],
             num_characters=-1,
         )
 
     async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
-        if self._ctask is not None:
-            self._ctask.cancel()
-            self._ctask = None
+        assert req.state
+        # Cleanup pending tasks
+        if self._states[req.state.call_id]["ctask"] is not None:
+            ctask = self._states[req.state.call_id]["ctask"]
+            assert ctask is not None
+            ctask.cancel()
+            self._states[req.state.call_id]["ctask"] = None
+        # Cleanup internal state
+        if req.state.call_id in self._states:
+            del self._states[req.state.call_id]
         return None
 
     async def handle_speech_detection(self, speaking: bool) -> None:
@@ -85,19 +112,26 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         print(
             f"📝 {text} {num_inflight_transcribe_requests}",
         )
-        if self._ctask is not None:
+        assert req.state
+        if self._states[req.state.call_id]["ctask"] is not None:
             # TODO: Ideally we should also carry forward previous
             # speech phrase transcription into the next chat with agent task.
             print("😢 Canceling previous agent chat due to new transcription event")
-            self._ctask.cancel()
-            self._ctask = None
-        self._ctask = asyncio.create_task(self._chat_with_llm(req, text))
+            ctask = self._states[req.state.call_id]["ctask"]
+            assert ctask is not None
+            ctask.cancel()
+            self._states[req.state.call_id]["ctask"] = None
+        self._states[req.state.call_id]["ctask"] = asyncio.create_task(
+            self._chat_with_llm(req, text)
+        )
         return None
 
     async def _chat_with_llm(self, req: JaxlStreamRequest, transcription: str) -> None:
         url = os.environ.get("JAXL_OLLAMA_URL", None)
-        assert url is not None
-        self._messages.append({"role": "user", "content": transcription})
+        assert url is not None and req.state
+        self._states[req.state.call_id]["messages"].append(
+            {"role": "user", "content": transcription}
+        )
 
         async def _on_llm_response_chunk(response: Optional[Dict[str, Any]]) -> None:
             await self._on_llm_response_chunk(req, response)
@@ -105,7 +139,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         await self.chat_with_ollama(
             on_response_chunk_callback=_on_llm_response_chunk,
             url=url,
-            messages=self._messages,
+            messages=self._states[req.state.call_id]["messages"],
         )
 
     async def _on_llm_response_chunk(
@@ -116,14 +150,17 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         assert req.state
         if response is None:
             print("❌ Unable to get agent response")
-            self._ctask = None
+            self._states[req.state.call_id]["ctask"] = None
             return
         if response["done"]:
             # print("🎭 End of agent response")
-            self._ctask = None
-            reply = "".join(self._chunks)
+            self._states[req.state.call_id]["ctask"] = None
+            reply = "".join(self._states[req.state.call_id]["chunks"])
             print(f"💬 {reply}")
+            self._states[req.state.call_id]["messages"].append(
+                {"role": "assistant", "content": reply}
+            )
             await self.tts(req.state.call_id, prompt=reply)
-            self._chunks = []
+            self._states[req.state.call_id]["chunks"] = []
             return
-        self._chunks.append(response["message"]["content"])
+        self._states[req.state.call_id]["chunks"].append(response["message"]["content"])
