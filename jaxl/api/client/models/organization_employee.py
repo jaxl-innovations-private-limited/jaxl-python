@@ -39,6 +39,7 @@ class OrganizationEmployee:
         preferences (Union[Unset, OrganizationEmployeePreferences]):
         invited_by (Union[Unset, None, int]): Organization employee who invited this employee to their organization
         removed_by (Union[Unset, None, int]): Organization employee who remove this employee from the organization
+        phone_number (Union[Unset, None, str]): Employee cellular number provided by organization
         jaxlid (Optional[str]):
     """
 
@@ -53,6 +54,7 @@ class OrganizationEmployee:
     preferences: Union[Unset, "OrganizationEmployeePreferences"] = UNSET
     invited_by: Union[Unset, None, int] = UNSET
     removed_by: Union[Unset, None, int] = UNSET
+    phone_number: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -76,6 +78,7 @@ class OrganizationEmployee:
 
         invited_by = self.invited_by
         removed_by = self.removed_by
+        phone_number = self.phone_number
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -98,6 +101,8 @@ class OrganizationEmployee:
             field_dict["invited_by"] = invited_by
         if removed_by is not UNSET:
             field_dict["removed_by"] = removed_by
+        if phone_number is not UNSET:
+            field_dict["phone_number"] = phone_number
 
         return field_dict
 
@@ -139,6 +144,8 @@ class OrganizationEmployee:
 
         removed_by = d.pop("removed_by", UNSET)
 
+        phone_number = d.pop("phone_number", UNSET)
+
         jaxlid = d.pop("jaxlid")
 
         organization_employee = cls(
@@ -152,6 +159,7 @@ class OrganizationEmployee:
             preferences=preferences,
             invited_by=invited_by,
             removed_by=removed_by,
+            phone_number=phone_number,
             jaxlid=jaxlid,
         )
 
