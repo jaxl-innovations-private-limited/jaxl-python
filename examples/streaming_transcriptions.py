@@ -23,6 +23,7 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return JaxlWebhookResponse(
             prompt=["Hello, I am a echo bot, I will repeat after you, try me out."],
+            # Since we expect no input from the user, use -1
             num_characters=-1,
         )
 

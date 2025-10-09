@@ -21,6 +21,7 @@ class JaxlAppStreamingAudioChunk(BaseJaxlApp):
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         return JaxlWebhookResponse(
             prompt=["Welcome to streaming audio chunk demo"],
+            # Since we expect no input from the user, use -1
             num_characters=-1,
         )
 

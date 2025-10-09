@@ -22,6 +22,8 @@ class JaxlAppSendToCellular(BaseJaxlApp):
     """This Jaxl App example bridges the user with another cellular user."""
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
+        # As soon as someone calls this call flow,
+        # place another outgoing call and bridge them together.
         return JaxlCtaResponse(
             phone=JaxlPhoneCta(
                 to_number=os.environ.get(

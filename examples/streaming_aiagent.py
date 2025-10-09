@@ -55,8 +55,8 @@ class AIAgentCallState(TypedDict):
 class JaxlAppStreamingAIAgent(BaseJaxlApp):
 
     def __init__(self) -> None:
-        # A single instance of JaxlAppStreamingAIAgent is created which handles
-        # all the calls.  Hence, we manage states in a dictionary keyed by call id.
+        # A single instance of JaxlAppStreamingAIAgent is created for all the calls.
+        # Hence, we manage states in a dictionary keyed by call id.
         self._states: Dict[int, AIAgentCallState] = {}
 
     async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
@@ -78,6 +78,7 @@ class JaxlAppStreamingAIAgent(BaseJaxlApp):
         )
         return JaxlWebhookResponse(
             prompt=[GREETING],
+            # Since we expect no input from the user, use -1
             num_characters=-1,
         )
 

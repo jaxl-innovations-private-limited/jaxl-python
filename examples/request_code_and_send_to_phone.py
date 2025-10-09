@@ -21,6 +21,8 @@ from jaxl.api.base import (
 
 ASK_FOR_CODE_RESPONSE = JaxlWebhookResponse(
     prompt=["Please enter your code followed by star sign"],
+    # Because we expect user to end their input with a star sign,
+    # we will use num_characters="*".  Only other option is "#".
     num_characters="*",
 )
 
