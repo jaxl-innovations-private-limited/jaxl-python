@@ -220,7 +220,7 @@ class BaseJaxlApp:
                 await on_response_chunk_callback(json.loads(chunk))
             # pylint: disable=broad-exception-caught
             except Exception as exc:
-                logger.warning(f"Unable to process ollama response: {exc}")
+                logger.warning(f"Unable to process ollama response: {exc}, {chunk}")
 
     async def tts(self, call_id: int, prompt: str) -> None:
         v1_calls_tts_create.sync_detailed(
