@@ -16,12 +16,17 @@ from jaxl.api.client.api.v1 import (
     v1_calls_list,
     v1_calls_token_create,
     v1_calls_usage_retrieve,
+    v1_calls_add_create,
 )
 from jaxl.api.client.models.call_token_request import CallTokenRequest
 from jaxl.api.client.models.call_token_response import CallTokenResponse
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
+
+from jaxl.api.client.models.cta_request import CTARequest
+from jaxl.api.client.models.next_or_cta_request import NextOrCTARequest
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
+from jaxl.api.client.models.call_add_request_request import CallAddRequestRequest
 from jaxl.api.client.types import Response
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
@@ -145,7 +150,16 @@ def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallL
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
     )
 
+def calls_add(args: Dict[str, Any]) ->Any:
+    """Add call"""
+    phone = args["phone"]
+    call_id = args["call_id"]
 
+    return v1_calls_add_create.sync_detailed(
+        id=call_id,
+        client=jaxl_api_client(JaxlApiModule.CALL),
+        json_body=CallAddRequestRequest(next_or_cta=NextOrCTARequest(cta=CTARequest(phone_number=phone))),
+    )
 # def calls_hangup(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
 #     pass
 
@@ -227,6 +241,20 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     # transfer
 
     # add
+    calls_add_parser = subparsers.add_parser("add", help="Add to active call")
+    calls_add_parser.add_argument(
+        "--phone",
+        type=str,
+        required=True,
+        help="Phone number which need to be added",
+    )
+    calls_add_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call id which need to be added",
+    )
+    calls_add_parser.set_defaults(func=calls_add, _arg_keys=["phone","call_id"],)
     # remove
 
     # mute/unmute
