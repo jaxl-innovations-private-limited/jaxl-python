@@ -161,7 +161,7 @@ from .v3_orders_subscriptions_list_currency import V3OrdersSubscriptionsListCurr
 from .v3_orders_subscriptions_list_status_item import (
     V3OrdersSubscriptionsListStatusItem,
 )
-
+from .call_add_request_request import CallAddRequestRequest
 __all__ = (
     "AddressProvider",
     "AddressProviderStatusEnum",
@@ -295,4 +295,5 @@ __all__ = (
     "V2AppOrganizationsEmployeesListStatusItem",
     "V3OrdersSubscriptionsListCurrency",
     "V3OrdersSubscriptionsListStatusItem",
+    "CallAddRequestRequest",
 )
