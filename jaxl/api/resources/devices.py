@@ -18,7 +18,13 @@ from jaxl.api.client.types import Response
 
 # pylint: disable=unused-argument
 def devices_list(args: Dict[str, Any]) -> Response[PaginatedDeviceList]:
-    return v1_devices_list.sync_detailed(client=jaxl_api_client(JaxlApiModule.ACCOUNT))
+    return v1_devices_list.sync_detailed(
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        )
+    )
 
 
 def _subparser(parser: argparse.ArgumentParser) -> None:

@@ -29,7 +29,11 @@ def members_list(
         statuses.append(V2AppOrganizationsEmployeesListStatusItem[status.upper()])
     return v2_app_organizations_employees_list.sync_detailed(
         org_id="1",
-        client=jaxl_api_client(JaxlApiModule.ACCOUNT),
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         status=statuses,
     )
 

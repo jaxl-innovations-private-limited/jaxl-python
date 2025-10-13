@@ -344,5 +344,5 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
 
 class JaxlAppsSDK:
     # pylint: disable=no-self-use
-    def run(self, **kwargs: Any) -> None:
+    def run(self, **kwargs: Any) -> str:
         return apps_run(kwargs)

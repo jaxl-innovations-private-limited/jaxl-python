@@ -30,7 +30,11 @@ def payments_get_total_recharge(
     args: Dict[str, Any],
 ) -> Response[CustomerConsumableTotal]:
     return v1_customer_consumables_retrieve.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.PAYMENT),
+        client=jaxl_api_client(
+            JaxlApiModule.PAYMENT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         currency=V1CustomerConsumablesRetrieveCurrency[f"VALUE_{args['currency']}"],
     )
 
@@ -39,7 +43,11 @@ def payments_subscriptions_list(
     args: Dict[str, Any],
 ) -> Response[PaginatedCustomerOrderSubscriptionsSerializerV2List]:
     return v3_orders_subscriptions_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.PAYMENT),
+        client=jaxl_api_client(
+            JaxlApiModule.PAYMENT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         currency=args.get("currency", None),
         item=None,
         status=None,

@@ -42,7 +42,11 @@ from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
 
 def ivrs_list(args: Dict[str, Any]) -> Response[PaginatedIVRMenuResponseList]:
     return v1_ivr_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         assigned=args.get("assigned", False),
         duration=V1IvrListDuration.ONE_WEEK,
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
@@ -52,7 +56,11 @@ def ivrs_list(args: Dict[str, Any]) -> Response[PaginatedIVRMenuResponseList]:
 
 def ivrs_create(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
     return v1_ivr_create.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         json_body=IVRMenuRequest(
             name=args["message"],
             hangup=args.get("hangup", False),
@@ -63,7 +71,11 @@ def ivrs_create(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
 def ivrs_options_create(
     args: Dict[str, Any],
 ) -> Response[Union[IVROptionsInvalidResponse, IVROptionsResponse]]:
-    client = jaxl_api_client(JaxlApiModule.CALL)
+    client = jaxl_api_client(
+        JaxlApiModule.CALL,
+        credentials=args.get("credentials", None),
+        auth_token=args.get("auth_token", None),
+    )
     next_or_cta = (
         NextOrCTARequest(next_=args["next_"], cta=None)
         if args.get("next_", None) is not None
@@ -273,7 +285,7 @@ class JaxlIVROptionsSDK:
 
 class JaxlIVRsSDK:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.options = JaxlIVROptionsSDK()
 
     # pylint: disable=no-self-use

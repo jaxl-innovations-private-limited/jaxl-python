@@ -307,11 +307,15 @@ class JaxlApiModule(Enum):
     PAYMENT = 5
 
 
-def jaxl_api_client(module: JaxlApiModule) -> "AuthenticatedClient":
+def jaxl_api_client(
+    module: JaxlApiModule,
+    credentials: Optional[ApiCredentials] = None,
+    auth_token: Optional[str] = None,
+) -> "AuthenticatedClient":
     """Returns JaxlApiClient with auth token and device id preset."""
     attestation = attest()
-    auth_token = os.environ.get("JAXL_API_AUTH_TOKEN", None)
-    client = JaxlApiClient(_api_root(module))
+    auth_token = auth_token or os.environ.get("JAXL_API_AUTH_TOKEN", None)
+    client = JaxlApiClient(_api_root(module), credentials=credentials)
     assert attestation is not None, "Missing attestation"
     assert auth_token is not None, "Missing JAXL_API_AUTH_TOKEN"
     client.set_device_id(attestation["id"])

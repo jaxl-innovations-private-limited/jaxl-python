@@ -21,7 +21,11 @@ from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
 
 def campaigns_list(args: Dict[str, Any]) -> Response[PaginatedCampaignResponseList]:
     return v1_campaign_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
         offset=None,
         status=None,

@@ -19,9 +19,13 @@ from jaxl.api.resources.calls import calls_usage
 from jaxl.api.resources.payments import payments_get_total_recharge
 
 
-def accounts_me(_args: Dict[str, Any]) -> Response[AppUser]:
+def accounts_me(args: Dict[str, Any]) -> Response[AppUser]:
     return v1_appusers_me_retrieve.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.ACCOUNT)
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        )
     )
 
 

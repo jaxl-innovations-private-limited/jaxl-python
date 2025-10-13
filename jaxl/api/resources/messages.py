@@ -28,7 +28,11 @@ def _sha256(data: str) -> str:
 
 def messages_list(args: Dict[str, Any]) -> Response[PaginatedDHMessageList]:
     return v1_messages_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.MESSAGE),
+        client=jaxl_api_client(
+            JaxlApiModule.MESSAGE,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
         okey=[_sha256(member_email) for member_email in args.get("member_email", [])],
         mid=None,

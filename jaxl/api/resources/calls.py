@@ -35,7 +35,11 @@ from jaxl.api.resources.payments import payments_get_total_recharge
 
 def calls_usage(args: Dict[str, Any]) -> Response[CallUsageResponse]:
     return v1_calls_usage_retrieve.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         currency=args.get("currency", DEFAULT_CURRENCY),
     )
 
@@ -120,7 +124,11 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
                 raise ValueError("Unable to create ad-hoc IVR")
     to_number = to_numbers[0]
     return v1_calls_token_create.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         json_body=CallTokenRequest(
             from_number=args["from_"],
             to_number=to_number,
@@ -140,7 +148,11 @@ def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallL
     """List calls"""
     args = args or {}
     return v1_calls_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         currency=args.get("currency", DEFAULT_CURRENCY),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
     )

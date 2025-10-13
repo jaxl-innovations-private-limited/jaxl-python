@@ -23,7 +23,11 @@ def teams_list(
 ) -> Response[PaginatedOrganizationGroupResponseList]:
     return v2_app_organizations_groups_list.sync_detailed(
         org_id="0",
-        client=jaxl_api_client(JaxlApiModule.ACCOUNT),
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         empty=args.get("empty", True),
     )
 

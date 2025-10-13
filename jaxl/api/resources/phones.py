@@ -60,7 +60,11 @@ def phones_ivrs(args: Dict[str, Any]) -> Response[PhoneNumber]:
     ):
         raise ValueError(f"Unable to fetch details for {args['e164']}")
     return v1_phonenumbers_partial_update.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         id=existing.parsed.results[0].id,
         json_body=PatchedPhoneNumberRequest(ivr=args["ivr"]),
     )
@@ -68,7 +72,11 @@ def phones_ivrs(args: Dict[str, Any]) -> Response[PhoneNumber]:
 
 def phones_search(args: Dict[str, Any]) -> Response[PhoneNumberSearchResponse]:
     return v1_phonenumbers_search_retrieve.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         iso_country_code=V1PhonenumbersSearchRetrieveIsoCountryCode[args["country"]],
         resource=_phone_type(args["type"]),
         region=args.get("region", None),
@@ -83,7 +91,11 @@ def phones_search(args: Dict[str, Any]) -> Response[PhoneNumberSearchResponse]:
 
 def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
     ctype = args.get("type", "active")
-    client = jaxl_api_client(JaxlApiModule.CALL)
+    client = jaxl_api_client(
+        JaxlApiModule.CALL,
+        credentials=args.get("credentials", None),
+        auth_token=args.get("auth_token", None),
+    )
     e164 = args.get("e164")
     if ctype == "all":
         return v1_phonenumbers_list.sync_detailed(
@@ -92,7 +104,11 @@ def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
         )
     if ctype == "active":
         return v1_phonenumbers_list.sync_detailed(
-            client=jaxl_api_client(JaxlApiModule.CALL),
+            client=jaxl_api_client(
+                JaxlApiModule.CALL,
+                credentials=args.get("credentials", None),
+                auth_token=args.get("auth_token", None),
+            ),
             status=V1PhonenumbersListStatus.SUCCESS,
             additional_status=[
                 V1PhonenumbersListAdditionalStatusItem.SCHEDULED_FOR_RELEASE
@@ -101,7 +117,11 @@ def phones_list(args: Dict[str, Any]) -> Response[PaginatedPhoneNumberList]:
         )
     if ctype == "inactive":
         return v1_phonenumbers_list.sync_detailed(
-            client=jaxl_api_client(JaxlApiModule.CALL),
+            client=jaxl_api_client(
+                JaxlApiModule.CALL,
+                credentials=args.get("credentials", None),
+                auth_token=args.get("auth_token", None),
+            ),
             status=V1PhonenumbersListStatus.RELEASED_TO_PROVIDER,
             additional_status=[
                 V1PhonenumbersListAdditionalStatusItem.RELEASED_BY_PROVIDER
@@ -198,3 +218,7 @@ class JaxlPhonesSDK:
     # pylint: disable=no-self-use
     def search(self, **kwargs: Any) -> Response[PhoneNumberSearchResponse]:
         return phones_search(kwargs)
+
+    # pylint: disable=no-self-use
+    def ivrs(self, **kwargs: Any) -> Response[PhoneNumber]:
+        return phones_ivrs(kwargs)
