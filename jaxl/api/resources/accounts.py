@@ -19,9 +19,13 @@ from jaxl.api.resources.calls import calls_usage
 from jaxl.api.resources.payments import payments_get_total_recharge
 
 
-def accounts_me(_args: Dict[str, Any]) -> Response[AppUser]:
+def accounts_me(args: Dict[str, Any]) -> Response[AppUser]:
     return v1_appusers_me_retrieve.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.ACCOUNT)
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        )
     )
 
 
@@ -64,3 +68,13 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         func=accounts_balance,
         _arg_keys=["currency"],
     )
+
+
+class JaxlAccountsSDK:
+
+    # pylint: disable=no-self-use
+    def me(self, **kwargs: Any) -> Response[AppUser]:
+        return accounts_me(kwargs)
+
+    def balance(self, **kwargs: Any) -> Tuple[str, float]:
+        return accounts_balance(kwargs)

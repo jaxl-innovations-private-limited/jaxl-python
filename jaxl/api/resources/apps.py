@@ -340,3 +340,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "transcribe_device",
         ],
     )
+
+
+class JaxlAppsSDK:
+    # pylint: disable=no-self-use
+    def run(self, **kwargs: Any) -> str:
+        return apps_run(kwargs)
