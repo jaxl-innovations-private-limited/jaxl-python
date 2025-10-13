@@ -59,3 +59,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     messages_list_parser.set_defaults(
         func=messages_list, _arg_keys=["limit", "member_email"]
     )
+
+
+class JaxlMessagesSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedDHMessageList]:
+        return messages_list(kwargs)

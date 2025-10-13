@@ -8,6 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
+from typing import Any, Dict
 
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import v1_devices_list
@@ -15,7 +16,8 @@ from jaxl.api.client.models.paginated_device_list import PaginatedDeviceList
 from jaxl.api.client.types import Response
 
 
-def devices_list() -> Response[PaginatedDeviceList]:
+# pylint: disable=unused-argument
+def devices_list(args: Dict[str, Any]) -> Response[PaginatedDeviceList]:
     return v1_devices_list.sync_detailed(client=jaxl_api_client(JaxlApiModule.ACCOUNT))
 
 
@@ -26,3 +28,10 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     # list
     devices_list_parser = subparsers.add_parser("list", help="List all devices")
     devices_list_parser.set_defaults(func=devices_list, _arg_keys=[])
+
+
+class JaxlDevicesSDK:
+
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedDeviceList]:
+        return devices_list(kwargs)

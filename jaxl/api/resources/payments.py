@@ -108,3 +108,23 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             help="Manage Consumables",
         )
     )
+
+
+class JaxlPaymentSubscriptionsSDK:
+    # pylint: disable=no-self-use
+    def list(
+        self, **kwargs: Any
+    ) -> Response[PaginatedCustomerOrderSubscriptionsSerializerV2List]:
+        return payments_subscriptions_list(kwargs)
+
+
+class JaxlPaymentConsumablesSDK:
+    # pylint: disable=no-self-use
+    def total(self, **kwargs: Any) -> Response[CustomerConsumableTotal]:
+        return payments_get_total_recharge(kwargs)
+
+
+class JaxlPaymentsSDK:
+    def __init__(self) -> None:
+        self.subscriptions = JaxlPaymentSubscriptionsSDK()
+        self.consumables = JaxlPaymentConsumablesSDK()

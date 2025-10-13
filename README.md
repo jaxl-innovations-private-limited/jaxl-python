@@ -399,25 +399,21 @@ jaxl payments consumables total
 ## Jaxl Python SDK
 
 - Jaxl APIs is built upon [OpenAPI specification](https://www.openapis.org/)
-- `jaxl-python` contains following Python modules:
-  - `jaxl.api.client`: Generated OpenAPI SDK
-  - `jaxl.api.resources`: Wrapper methods written to support `jaxl` CLI
-  - `jaxl_api_client`: Helper function to retrieve an instance of `JaxlApiClient`
 
 ### SDK Example Usage:
 
 ```python
-from jaxl.api import JaxlApiModule, jaxl_api_client
-from jaxl.api.client.api.v1 import v1_calls_list
+from jaxl.api import JaxlSDK
 
 os.environ.setdefault("JAXL_API_CREDENTIALS", "/path/to/jaxl-api-credentials.json")
 
 os.environ.setdefault("JAXL_API_AUTH_TOKEN", "....authentication token...")
 
-response = v1_calls_list.sync_detailed(
-    client=jaxl_api_client(JaxlApiModule.CALL),
-    currency=2, # 1=USD, 2=INR
-)
+sdk = JaxlSDK()
+
+response = sdk.calls.create(to="+91<Callee Number>", from_="+91<Purchased Jaxl Number>", ivr=1234)
+response = sdk.calls.list(currency=2) # 1=USD, 2=INR
+response = sdk.accounts.me()
 ```
 
 ## SDK Documentation

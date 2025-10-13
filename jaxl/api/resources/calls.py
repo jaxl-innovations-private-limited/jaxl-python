@@ -256,3 +256,13 @@ def _unique_comma_separated(value: str) -> list[str]:
         seen.add(item)
         unique_items.append(item)
     return unique_items
+
+
+class JaxlCallsSDK:
+
+    # pylint: disable=no-self-use
+    def create(self, **kwargs: Any) -> Response[CallTokenResponse]:
+        return calls_create(kwargs)
+
+    def list(self, **kwargs: Any) -> Response[PaginatedCallList]:
+        return calls_list(kwargs)

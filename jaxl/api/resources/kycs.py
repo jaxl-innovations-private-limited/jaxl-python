@@ -43,3 +43,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="KYC page size. Defaults to 1.",
     )
     kyc_list_parser.set_defaults(func=kycs_list, _arg_keys=["limit"])
+
+
+class JaxlKYCsSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedKycList]:
+        return kycs_list(kwargs)

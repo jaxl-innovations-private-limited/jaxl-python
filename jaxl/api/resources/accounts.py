@@ -64,3 +64,13 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         func=accounts_balance,
         _arg_keys=["currency"],
     )
+
+
+class JaxlAccountsSDK:
+
+    # pylint: disable=no-self-use
+    def me(self, **kwargs: Any) -> Response[AppUser]:
+        return accounts_me(kwargs)
+
+    def balance(self, **kwargs: Any) -> Tuple[str, float]:
+        return accounts_balance(kwargs)

@@ -42,3 +42,10 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Campaign page size. Defaults to 1.",
     )
     campaign_list_parser.set_defaults(func=campaigns_list, _arg_keys=["limit"])
+
+
+class JaxlCampaignsSDK:
+
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedCampaignResponseList]:
+        return campaigns_list(kwargs)

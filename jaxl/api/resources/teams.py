@@ -40,3 +40,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Whether to also list empty teams",
     )
     teams_list_parser.set_defaults(func=teams_list, _arg_keys=["empty"])
+
+
+class JaxlTeamsSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedOrganizationGroupResponseList]:
+        return teams_list(kwargs)

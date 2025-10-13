@@ -261,3 +261,25 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
 
     # create ivr options subparser
     _options_subparser(subparsers.add_parser("options", help="Manage IVR Options"))
+
+
+class JaxlIVROptionsSDK:
+    # pylint: disable=no-self-use
+    def configure(
+        self, **kwargs: Any
+    ) -> Response[Union[IVROptionsInvalidResponse, IVROptionsResponse]]:
+        return ivrs_options_create(kwargs)
+
+
+class JaxlIVRsSDK:
+
+    def __init__(self):
+        self.options = JaxlIVROptionsSDK()
+
+    # pylint: disable=no-self-use
+    def create(self, **kwargs: Any) -> Response[IVRMenuResponse]:
+        return ivrs_create(kwargs)
+
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedIVRMenuResponseList]:
+        return ivrs_list(kwargs)

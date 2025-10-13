@@ -188,3 +188,13 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         func=phones_search,
         _arg_keys=["country", "type", "region", "locality"],
     )
+
+
+class JaxlPhonesSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedPhoneNumberList]:
+        return phones_list(kwargs)
+
+    # pylint: disable=no-self-use
+    def search(self, **kwargs: Any) -> Response[PhoneNumberSearchResponse]:
+        return phones_search(kwargs)
