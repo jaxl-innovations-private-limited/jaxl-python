@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Module jaxl.api.base - Jaxl Python</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Module jaxl.api.base";
+        var mkdocs_page_input_path = "jaxl/api/base.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../.." class="icon icon-home"> Jaxl Python
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">Jaxl Python</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Module jaxl.api.base</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="module-jaxlapibase">Module jaxl.api.base</h1>
+<p>Copyright (c) 2010-present by Jaxl Innovations Private Limited.</p>
+<p>All rights reserved.</p>
+<p>Redistribution and use in source and binary forms,
+with or without modification, is strictly prohibited.</p>
+<h2 id="classes">Classes</h2>
+<p><code>BaseJaxlApp()</code>
+:   </p>
+<pre><code>### Methods
+
+`chat_with_ollama(self, on_response_chunk_callback: Callable[..., Coroutine[Any, Any, Any]], url: str, messages: List[Dict[str, Any]], model: str = 'gemma3:1b', stream: bool = True, timeout: int = 270, temperature: float = 0.7, top_p: float = 1.0, frequency_penalty: float = 0.5, presence_penalty: float = 0.5) ‑&gt; None`
+:
+
+`handle_audio_chunk(self, req: jaxl.api.base.JaxlStreamRequest, slin16: bytes) ‑&gt; None`
+:
+
+`handle_configure(self, req: jaxl.api.base.JaxlWebhookRequest) ‑&gt; jaxl.api.base.JaxlWebhookResponse | jaxl.api.base.JaxlCtaResponse | None`
+:   Invoked when a phone number gets assigned to IVR.
+
+`handle_option(self, req: jaxl.api.base.JaxlWebhookRequest) ‑&gt; jaxl.api.base.JaxlWebhookResponse | jaxl.api.base.JaxlCtaResponse | None`
+:   Invoked when IVR option is chosen.
+
+`handle_setup(self, req: jaxl.api.base.JaxlWebhookRequest) ‑&gt; jaxl.api.base.JaxlWebhookResponse | jaxl.api.base.JaxlCtaResponse | None`
+:   Invoked when IVR starts.
+
+`handle_speech_detection(self, speaking: bool) ‑&gt; None`
+:   Invoked when speech starts and ends.
+
+`handle_speech_segment(self, req: jaxl.api.base.JaxlStreamRequest, slin16s: List[bytes]) ‑&gt; None`
+:
+
+`handle_teardown(self, req: jaxl.api.base.JaxlWebhookRequest) ‑&gt; jaxl.api.base.JaxlWebhookResponse | jaxl.api.base.JaxlCtaResponse | None`
+:   Invoked when a call ends.
+
+`handle_transcription(self, req: jaxl.api.base.JaxlStreamRequest, transcription: Dict[str, Any], num_inflight_transcribe_requests: int) ‑&gt; None`
+:
+
+`handle_user_data(self, req: jaxl.api.base.JaxlWebhookRequest) ‑&gt; jaxl.api.base.JaxlWebhookResponse | jaxl.api.base.JaxlCtaResponse | None`
+:   Invoked when IVR has received multiple character user input
+    ending in a specified character.
+
+`tts(self, call_id: int, prompt: str, **kwargs: Any) ‑&gt; None`
+:
+</code></pre>
+<p><code>JaxlCtaResponse(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`appusers: List[int] | None`
+:
+
+`devices: List[int] | None`
+:
+
+`model_config`
+:
+
+`next: int | None`
+:
+
+`phone: jaxl.api.base.JaxlPhoneCta | None`
+:
+
+`teams: List[int] | None`
+:
+
+### Methods
+
+`ensure_only_one_key(self) ‑&gt; jaxl.api.base.JaxlCtaResponse`
+:
+</code></pre>
+<p><code>JaxlOrg(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`model_config`
+:
+
+`name: str`
+:
+</code></pre>
+<p><code>JaxlPhoneCta(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`from_number: str | None`
+:
+
+`model_config`
+:
+
+`to_number: str`
+:
+</code></pre>
+<p><code>JaxlStreamRequest(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`model_config`
+:
+
+`pk: int`
+:
+
+`state: jaxl.api.base.JaxlWebhookState | None`
+:
+</code></pre>
+<p><code>JaxlWebhookEvent(*args, **kwds)</code>
+:   Create a collection of name/value pairs.</p>
+<pre><code>Example enumeration:
+
+&gt;&gt;&gt; class Color(Enum):
+...     RED = 1
+...     BLUE = 2
+...     GREEN = 3
+
+Access them by:
+
+- attribute access:
+
+  &gt;&gt;&gt; Color.RED
+  &lt;Color.RED: 1&gt;
+
+- value lookup:
+
+  &gt;&gt;&gt; Color(1)
+  &lt;Color.RED: 1&gt;
+
+- name lookup:
+
+  &gt;&gt;&gt; Color['RED']
+  &lt;Color.RED: 1&gt;
+
+Enumerations can be iterated over, and know how many members they have:
+
+&gt;&gt;&gt; len(Color)
+3
+
+&gt;&gt;&gt; list(Color)
+[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]
+
+Methods can be added to enumerations, and members can have their own
+attributes -- see the documentation for details.
+
+### Ancestors (in MRO)
+
+* enum.Enum
+
+### Class variables
+
+`OPTION`
+:
+
+`SETUP`
+:
+
+`STREAM`
+:
+
+`TEARDOWN`
+:
+</code></pre>
+<p><code>JaxlWebhookRequest(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`data: str | None`
+:
+
+`event: jaxl.api.base.JaxlWebhookEvent`
+:
+
+`model_config`
+:
+
+`option: str | None`
+:
+
+`pk: int`
+:
+
+`state: jaxl.api.base.JaxlWebhookState | None`
+:
+</code></pre>
+<p><code>JaxlWebhookResponse(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`model_config`
+:
+
+`num_characters: int | str`
+:
+
+`prompt: List[str]`
+:
+</code></pre>
+<p><code>JaxlWebhookState(**data: Any)</code>
+:   !!! abstract "Usage Documentation"
+        <a href="../concepts/models.md">Models</a></p>
+<pre><code>A base class for creating Pydantic models.
+
+Attributes:
+    __class_vars__: The names of the class variables defined on the model.
+    __private_attributes__: Metadata about the private attributes of the model.
+    __signature__: The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+    __pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
+    __pydantic_core_schema__: The core schema of the model.
+    __pydantic_custom_init__: Whether the model has a custom `__init__` function.
+    __pydantic_decorators__: Metadata containing the decorators defined on the model.
+        This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+    __pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to
+        __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+    __pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
+    __pydantic_post_init__: The name of the post-init method for the model, if defined.
+    __pydantic_root_model__: Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+    __pydantic_serializer__: The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+    __pydantic_validator__: The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+    __pydantic_fields__: A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+    __pydantic_computed_fields__: A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+    __pydantic_extra__: A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+        is set to `'allow'`.
+    __pydantic_fields_set__: The names of fields explicitly set during instantiation.
+    __pydantic_private__: Values of private attributes set on the model instance.
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`self` is explicitly positional-only to allow `self` as a field name.
+
+### Ancestors (in MRO)
+
+* pydantic.main.BaseModel
+
+### Class variables
+
+`call_id: int`
+:
+
+`direction: int`
+:
+
+`from_number: str`
+:
+
+`greeting_message: str | None`
+:
+
+`metadata: Dict[str, Any] | None`
+:
+
+`model_config`
+:
+
+`org: jaxl.api.base.JaxlOrg | None`
+:
+
+`to_number: str`
+:
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

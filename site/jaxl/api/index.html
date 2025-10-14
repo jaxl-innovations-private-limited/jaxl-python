@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Module jaxl.api - Jaxl Python</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Module jaxl.api";
+        var mkdocs_page_input_path = "jaxl/api/index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Jaxl Python
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Jaxl Python</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Module jaxl.api</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="module-jaxlapi">Module jaxl.api</h1>
+<p>Copyright (c) 2010-present by Jaxl Innovations Private Limited.</p>
+<p>All rights reserved.</p>
+<p>Redistribution and use in source and binary forms,
+with or without modification, is strictly prohibited.</p>
+<h1 id="jaxl-cli-jaxl-python-api-client">Jaxl CLI &amp; Jaxl Python API Client</h1>
+<p>Use Jaxl from Python code or directly via the <code>jaxl</code> command-line tool.</p>
+<ol>
+<li><a href="#install">Install</a></li>
+<li><a href="#jaxl-cli">JAXL CLI</a></li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#verify-api-credentials--auth-token">Verify API Credentials &amp; Auth Token</a></li>
+<li><a href="#check-account-balance">Check Account Balance</a></li>
+<li><a href="#create-an-ivr">Create an IVR</a></li>
+<li><a href="#create-a-hangup-ivr">Create a hangup IVR</a></li>
+<li><a href="#configure-ivr-options">Configure IVR Options</a></li>
+<li><a href="#list-ivrs">List IVRs</a></li>
+<li><a href="#list-purchased-jaxl-numbers">List Purchased Jaxl Numbers</a></li>
+<li><a href="#assign-a-phone-number-to-ivr-by-id">Assign a Phone Number to IVR by ID</a></li>
+<li><a href="#place-outgoing-cellular-call-with-existing-ivr">Place Outgoing Cellular Call with Existing IVR</a></li>
+<li><a href="#place-outgoing-cellular-call-with-ad-hoc-ivr">Place Outgoing Cellular Call with Ad-hoc IVR</a></li>
+<li><a href="#dial-out-multi-party-conference-between-cellular-numbers">Dial-out Multi-Party Conference between Cellular Numbers</a></li>
+<li><a href="#dial-out-agent-team-and-cellular-numbers">Dial-out Agent Team and Cellular Numbers</a></li>
+<li><a href="#dial-out-2-party-conference-with-ad-hoc-ivr">Dial-out 2-Party Conference with Ad-hoc IVR</a></li>
+<li><a href="#add-external-phone-number-to-an-active-call">Add External Phone Number to an Active Call</a></li>
+<li><a href="#add-agent-to-an-active-call">Add Agent to an Active Call</a></li>
+<li><a href="#remove-external-phone-number-from-an-active-call">Remove External Phone Number from an Active Call</a></li>
+<li><a href="#remove-agent-from-an-active-call">Remove Agent from an Active Call</a></li>
+<li><a href="#send-text-prompts-tts-in-an-active-call">Send Text Prompts (TTS) in an Active Call</a></li>
+<li><a href="#play-audio-file-in-an-active-call">Play Audio File in an Active Call</a></li>
+<li><a href="#mute-a-participant-in-an-active-call">Mute a Participant in an Active Call</a></li>
+<li><a href="#unmute-a-participant-in-an-active-call">Unmute a Participant in an Active Call</a></li>
+<li><a href="#hold-a-participant-in-an-active-call">Hold a Participant in an Active Call</a></li>
+<li><a href="#unhold-a-participant-in-an-active-call">Unhold a Participant in an Active Call</a></li>
+<li><a href="#receive-call-events-via-webhook-ivrs">Receive Call Events via Webhook IVRs</a></li>
+<li><a href="#realtime-streaming-audio">Realtime Streaming Audio</a></li>
+<li><a href="#realtime-streaming-speech-segments">Realtime Streaming Speech Segments</a></li>
+<li><a href="#realtime-streaming-transcriptions-per-speech-segment">Realtime Streaming Transcriptions per Speech Segment</a></li>
+<li><a href="#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts">AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS</a></li>
+<li><a href="#list-subscriptions-payments">List Subscriptions Payments</a></li>
+<li><a href="#list-consumable-payments">List Consumable Payments</a></li>
+<li><a href="#jaxl-python-sdk">Jaxl Python SDK</a></li>
+<li><a href="#sdk-example-usage">SDK Example Usage</a></li>
+<li><a href="./SPECIFICATION.md">JAXL HTTP Webhook Protocol</a></li>
+<li><a href="#sdk-documentation">SDK Documentation</a></li>
+<li><a href="#status">Status</a></li>
+</ol>
+<h2 id="install">Install</h2>
+<p><code>pip install -U jaxl-python</code></p>
+<h2 id="jaxl-cli">JAXL CLI</h2>
+<pre><code class="language-bash">jaxl -h
+usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,payments,phones,teams} ...
+
+Jaxl CLI
+
+positional arguments:
+  {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,payments,phones,teams}
+    accounts            Manage Accounts
+    apps                Manage Apps for Webhooks and Streaming audio/speech/transcriptions.
+    calls               Manage Calls (Domestic &amp; International Cellular, App-to-App)
+    campaigns           Manage Campaigns
+    devices             Manage Devices
+    ivrs                Manage IVRs (Interactive Voice Response)
+    kycs                Manage KYCs
+    members             Manage Members
+    messages            Manage Messages (SMS, WA, RCS, Email, App-to-App)
+    notifications       Manage Notifications (Android, iOS, Web)
+    payments            Manage Payments
+    phones              Manage Phones (Landline, Mobile, TollFree)
+    teams               Manage Teams (Managers, Phones)
+
+options:
+  -h, --help            show this help message and exit
+</code></pre>
+<h3 id="setup">Setup</h3>
+<p>You will require the following to successfully run <code>jaxl</code> command line tool:</p>
+<ul>
+<li><code>JAXL_API_CREDENTIALS</code>: Required to connect with Jaxl API Infrastructure</li>
+<li><code>JAXL_API_AUTH_TOKEN</code>: Ensure necessary permissions are added to generated auth token.</li>
+</ul>
+<p>Please visit <a href="https://business.jaxl.com">Jaxl Business Website</a> or download the <a href="https://play.google.com/store/apps/details?id=com.jaxl.business">Jaxl Business Android</a> or <a href="https://apps.apple.com/app/id6451118240">Jaxl Business iOS</a> mobile application to access your credentials and auth tokens.</p>
+<p>Finally, setup following environment variables when trying <code>jaxl</code> command line.</p>
+<pre><code class="language-bash">export JAXL_API_CREDENTIALS=/path/to/jaxl-api-credentials.json
+export JAXL_API_AUTH_TOKEN=&quot;....authentication token....&quot;
+</code></pre>
+<h3 id="verify-api-credentials-auth-token">Verify API Credentials &amp; Auth Token</h3>
+<pre><code class="language-bash">jaxl accounts me
+</code></pre>
+<h3 id="check-account-balance">Check Account Balance</h3>
+<pre><code class="language-bash">jaxl accounts balance
+</code></pre>
+<h3 id="create-an-ivr">Create an IVR</h3>
+<pre><code class="language-bash">jaxl ivrs create   --message &quot;Hello, we are calling via Jaxl IVR demo created from CLI&quot;
+</code></pre>
+<h3 id="create-a-hangup-ivr">Create a hangup IVR</h3>
+<p>This IVR will speak the message and then hangup the call.</p>
+<pre><code class="language-bash">jaxl ivrs create   --message &quot;Hello, we are calling via Jaxl IVR demo created from CLI&quot;   --hangup
+</code></pre>
+<h3 id="configure-ivr-options">Configure IVR Options</h3>
+<p>This IVR option uses <code>--next</code> to send user to another IVR.</p>
+<pre><code class="language-bash">jaxl ivrs options configure   --ivr &lt;IVR ID TO CONFIGURE&gt;   --input 0   --message &quot;Press 0 to repeat this menu&quot;   --next &lt;NEXT IVR ID&gt;
+</code></pre>
+<blockquote>
+<p>Use &lt;IVR ID TO CONFIGURE&gt; as the &lt;NEXT IVR ID&gt; to complete the "repeat this menu" experience.</p>
+</blockquote>
+<p>One of the CTA key flag must be provided. Allowed CTA keys are:</p>
+<ul>
+<li><code>--next</code>: Send to another IVR</li>
+<li><code>--phone</code>: Send to an external phone number</li>
+<li><code>--devices</code>: Send to devices by ID</li>
+<li><code>--appusers</code>: Send to app users (org employees) by ID</li>
+<li><code>--teams</code>: Send to teams by ID</li>
+</ul>
+<h3 id="list-ivrs">List IVRs</h3>
+<pre><code class="language-bash">jaxl ivrs list
+</code></pre>
+<h3 id="list-purchased-jaxl-numbers">List Purchased Jaxl Numbers</h3>
+<pre><code class="language-bash">jaxl phones list
+</code></pre>
+<p>You can also search for a specific purchased number:</p>
+<pre><code class="language-bash">jaxl phones list --e164 &quot;+91&lt;Purchased Jaxl Number&gt;&quot;
+</code></pre>
+<h3 id="assign-a-phone-number-to-ivr-by-id">Assign a Phone Number to IVR by ID</h3>
+<p>All incoming calls to this number will send user to the assigned IVR.</p>
+<pre><code class="language-bash">jaxl phones ivrs   --e164 &quot;+91&lt;Purchased Jaxl Number&gt;&quot;   --ivr &lt;IVR ID&gt;
+</code></pre>
+<h3 id="place-outgoing-cellular-call-with-existing-ivr">Place Outgoing Cellular Call with Existing IVR</h3>
+<p>Below command will execute the following flow:</p>
+<ul>
+<li>Places a call to &lt;Callee Number&gt;</li>
+<li>When answered sends them to an existing IVR ID</li>
+<li>Once IVR finishes, call continues to CTA returned by IVR</li>
+</ul>
+<pre><code class="language-bash">jaxl calls create   --to &quot;+91&lt;Callee Number&gt;&quot;   --from &quot;+91&lt;Purchased Jaxl Number&gt;&quot;   --ivr &lt;IVR ID&gt;
+</code></pre>
+<h3 id="place-outgoing-cellular-call-with-ad-hoc-ivr">Place Outgoing Cellular Call with Ad-hoc IVR</h3>
+<p>Below command will execute the following flow:</p>
+<ul>
+<li>Creates an Ad-hoc IVR using <code>--message</code> and <code>--option</code> flags</li>
+<li>Places a call to <Callee Number></li>
+<li>When answered sends callee to the ad-hoc IVR</li>
+<li>Once IVR finishes, call continues to CTA returned by IVR</li>
+</ul>
+<pre><code class="language-bash">jaxl calls create   --to &quot;+91&lt;Callee Number&gt;&quot;   --from &quot;+91&lt;Purchased Jaxl Number&gt;&quot;   --message &quot;Hello, we are calling you from MyCompany&quot;   --option &quot;1=Press 1 for sales:team=&lt;Sales Team ID&gt;&quot;   --option &quot;2=Press 2 for HR department:team=&lt;HR Team ID&gt;
+</code></pre>
+<h2 id="dial-out-multi-party-conference-between-cellular-numbers">Dial-out Multi-Party Conference between Cellular Numbers</h2>
+<p>Below command will execute the following flow:</p>
+<ul>
+<li>Dials out all <code>--to</code> participants in parallel</li>
+<li>Connects them together as they answer the call</li>
+<li>Ends the call when one but all others have hanged up the call</li>
+</ul>
+<pre><code class="language-bash">jaxl calls create   --to &quot;+91&lt;Doctors Number&gt;&quot;   --to &quot;+91&lt;Patient Number&gt;&quot;   --to &quot;+91&lt;Supervisor Number&gt;&quot;   --from &quot;+91&lt;Purchased Jaxl Number&gt;&quot;
+</code></pre>
+<h3 id="dial-out-agent-team-and-cellular-numbers">Dial-out Agent Team and Cellular Numbers</h3>
+<p>Below command will execute the following flow:</p>
+<ul>
+<li>Dials out multiple teams of doctors &amp; patient in parallel</li>
+<li>Connects the patient with first doctor to pick the call from the teams</li>
+<li>Doctors are called on their cellular number first (if added on Jaxl app),
+  followed by an attempt to call on Jaxl app directly (VoIP).</li>
+<li>Calling preference can be controlled per agent (doctor) or team to dictate
+  whether to use cellular or voip first to connect with a doctor.</li>
+</ul>
+<pre><code class="language-bash">jaxl calls create   --to &quot;teams=&lt;Doctors Team ID1&gt;,&lt;Doctors Team ID2&gt;&quot;   --to &quot;+91&lt;Patient Number&gt;&quot;
+</code></pre>
+<h3 id="dial-out-2-party-conference-with-ad-hoc-ivr">Dial-out 2-Party Conference with Ad-hoc IVR</h3>
+<p>Below command will execute the following flow:</p>
+<ul>
+<li>Dials out to Doctor first</li>
+<li>When doctor answers the call, they are asked to press 1 when ready</li>
+<li>If doctor presses 1, a second call is placed to the patient</li>
+<li>Ends the call when one but all others have hanged up the call</li>
+</ul>
+<pre><code class="language-bash">jaxl calls create   --to &quot;+91&lt;Doctors Number&gt;&quot;   --from &quot;+91&lt;Purchased Jaxl Number&gt;&quot;   --message &quot;Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, &quot;   --option &quot;1=Press 1 to connect with the patient:phone=+91&lt;Patient Number&gt;&quot;
+</code></pre>
+<h3 id="add-external-phone-number-to-an-active-call">Add External Phone Number to an Active Call</h3>
+<pre><code class="language-bash">jaxl calls add --call-id 1234 --phone +91&lt;Mobile Number&gt;
+</code></pre>
+<h3 id="add-agent-to-an-active-call">Add Agent to an Active Call</h3>
+<pre><code class="language-bash">jaxl calls add --call-id 1234 --agent &lt;someone@mycompany.com&gt;
+</code></pre>
+<h3 id="remove-external-phone-number-from-an-active-call">Remove External Phone Number from an Active Call</h3>
+<pre><code class="language-bash">jaxl calls remove --call-id 1234 --phone +91&lt;Mobile Number&gt;
+</code></pre>
+<h3 id="remove-agent-from-an-active-call">Remove Agent from an Active Call</h3>
+<pre><code class="language-bash">jaxl calls remove --call-id 1234 --agent &lt;someone@mycompany.com&gt;
+</code></pre>
+<h3 id="send-text-prompts-tts-in-an-active-call">Send Text Prompts (TTS) in an Active Call</h3>
+<pre><code class="language-bash">jaxl calls speak --call-id 1234   --prompt &quot;Hello, this text was injected in the middle of an active call&quot;   --prompt &quot;Yes its possible to pass in multiple prompt flags&quot;   --prompt &quot;Use shorter prompt phrases to keep TTS latency low&quot;   --prompt &quot;Avoid using excessively large sentences&quot;
+</code></pre>
+<h3 id="play-audio-file-in-an-active-call">Play Audio File in an Active Call</h3>
+<pre><code class="language-bash">jaxl calls play --call-id 1234 --audio /path/to/a/file/on/local/disk/or/public/url
+</code></pre>
+<blockquote>
+<p>NOTE: Audio file must be in SLIN16 format i.e. 8KHz Mono 16-bit.</p>
+</blockquote>
+<h3 id="mute-a-participant-in-an-active-call">Mute a Participant in an Active Call</h3>
+<p>Mute a specific cellular user in a call.</p>
+<pre><code class="language-bash">jaxl calls mute --call-id 1234 --phone +91&lt;Mobile Number&gt;
+</code></pre>
+<p>Mute an agent (Jaxl App User) in a call.</p>
+<pre><code class="language-bash">jaxl calls mute --call-id 1235 --agent &lt;someone@mycompany.com&gt;
+</code></pre>
+<h3 id="unmute-a-participant-in-an-active-call">Unmute a Participant in an Active Call</h3>
+<p>Unmute a specific cellular user in a call.</p>
+<pre><code class="language-bash">jaxl calls unmute --call-id 1234 --phone +91&lt;Mobile Number&gt;
+</code></pre>
+<p>Unmute a specific agent (Jaxl App User) in a call.</p>
+<pre><code class="language-bash">jaxl calls unmute --call-id 1235 --agent &lt;someone@mycompany.com&gt;
+</code></pre>
+<h3 id="hold-a-participant-in-an-active-call">Hold a Participant in an Active Call</h3>
+<p>Put a cellular user on-hold in a call</p>
+<pre><code class="language-bash">jaxl calls hold --call-id 1234 --phone +91&lt;Mobile Number&gt;
+</code></pre>
+<p>Put an agent on-hold in a call</p>
+<pre><code class="language-bash">jaxl calls hold --call-id 1235 --agent &lt;someone@mycompany.com&gt;
+</code></pre>
+<h3 id="unhold-a-participant-in-an-active-call">Unhold a Participant in an Active Call</h3>
+<p>Unhold a cellular user in a call</p>
+<pre><code class="language-bash">jaxl calls unhold --call-id 1234 --phone +91&lt;Mobile Number&gt;
+</code></pre>
+<p>Unhold an agent in a call</p>
+<pre><code class="language-bash">jaxl calls unhold --call-id 1235 --agent &lt;someone@mycompany.com&gt;
+</code></pre>
+<h3 id="receive-call-events-via-webhook-ivrs">Receive Call Events via Webhook IVRs</h3>
+<p>Webhook IVRs can be used to programatically control the lifecycle of incoming and outgoing calls.
+Jaxl will invoke configured webhook URL for subscribed call events. Handle the webhook request and
+use Jaxl SDK to continue and customise the call flows.</p>
+<p>To create a webhook IVR, use a <code>https://</code> URL as <code>--message</code> flag e.g.</p>
+<pre><code class="language-bash">jaxl ivrs create --message &quot;https://example.com/jaxl-webhook-ivr&quot;
+</code></pre>
+<p>Next, assign a number to webhook IVR as shown previously under <a href="#assign-a-phone-number-to-ivr-by-id">Assign a Phone Number to IVR by ID</a>. Now, all incoming calls on the number will start with
+webhook before proceeding further.</p>
+<p>To control flow of outgoing calls, use webhook IVR ID when placing an outbound call. See <a href="#place-outgoing-cellular-call-with-existing-ivr">Place Outgoing Cellular Call with Existing IVR</a></p>
+<p>See <a href="https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples">examples</a> directory for working webhook examples.</p>
+<h3 id="realtime-streaming-audio">Realtime Streaming Audio</h3>
+<p>Refer to <a href="https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples">examples</a> directory for working streaming audio examples.</p>
+<h3 id="realtime-streaming-speech-segments">Realtime Streaming Speech Segments</h3>
+<p>Refer to <a href="https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples">examples</a> directory for working streaming speech segments examples.</p>
+<h3 id="realtime-streaming-transcriptions-per-speech-segment">Realtime Streaming Transcriptions per Speech Segment</h3>
+<p>Refer to <a href="https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples">examples</a> directory for working streaming transcription per speech segment examples.</p>
+<h3 id="ai-agent-realtime-transcriptions-stt-llmmcp-tts">AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS</h3>
+<p>Refer to <a href="https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples">examples</a> directory for working AI Agent examples.</p>
+<h3 id="list-subscriptions-payments">List Subscriptions Payments</h3>
+<pre><code class="language-bash">jaxl payments subscriptions list
+</code></pre>
+<h3 id="list-consumable-payments">List Consumable Payments</h3>
+<pre><code class="language-bash">jaxl payments consumables total
+</code></pre>
+<h2 id="jaxl-python-sdk">Jaxl Python SDK</h2>
+<ul>
+<li>Jaxl APIs is built upon <a href="https://www.openapis.org/">OpenAPI specification</a></li>
+<li><code>jaxl-python</code> contains following Python modules:</li>
+<li><code>jaxl.api.client</code>: Generated OpenAPI SDK</li>
+<li><code>jaxl.api.resources</code>: Wrapper methods written to support <code>jaxl</code> CLI</li>
+<li><code>jaxl_api_client</code>: Helper function to retrieve an instance of <code>JaxlApiClient</code></li>
+</ul>
+<h3 id="sdk-example-usage">SDK Example Usage:</h3>
+<pre><code class="language-python">from jaxl.api import JaxlApiModule, jaxl_api_client
+from jaxl.api.client.api.v1 import v1_calls_list
+
+os.environ.setdefault(&quot;JAXL_API_CREDENTIALS&quot;, &quot;/path/to/jaxl-api-credentials.json&quot;)
+
+os.environ.setdefault(&quot;JAXL_API_AUTH_TOKEN&quot;, &quot;....authentication token...&quot;)
+
+response = v1_calls_list.sync_detailed(
+    client=jaxl_api_client(JaxlApiModule.CALL),
+    currency=2, # 1=USD, 2=INR
+)
+</code></pre>
+<h2 id="sdk-documentation">SDK Documentation</h2>
+<pre><code># Clone this repository
+git clone git@github.com:jaxl-innovations-private-limited/jaxl-python.git
+
+# Enter cloned repo directory
+cd jaxl-python
+
+# Create virtual environment
+python3 -m venv .venv
+
+# Activate virtual environment
+source .venv/bin/activate
+
+# Install
+pip install -e &quot;.[dev]&quot;
+
+# Generate documentation
+./docs.sh
+
+# View documentation in browser
+open docs/jaxl/index.html
+</code></pre>
+<h2 id="status">Status</h2>
+<p><a href="https://www.python.org/"><img alt="Python 3.x" src="https://img.shields.io/static/v1?label=Python&amp;message=3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11%20%7C%203.12&amp;color=blue&amp;style=flat-square" /></a></p>
+<p><a href="http://mypy-lang.org/"><img alt="Checked with mypy" src="https://img.shields.io/static/v1?label=MyPy&amp;message=checked&amp;color=blue&amp;style=flat-square" /></a></p>
+<h2 id="sub-modules">Sub-modules</h2>
+<ul>
+<li>jaxl.api.base</li>
+<li>jaxl.api.cli</li>
+<li>jaxl.api.client</li>
+<li>jaxl.api.resources</li>
+</ul>
+<h2 id="functions">Functions</h2>
+<p><code>jaxl_api_client(module: jaxl.api._client.JaxlApiModule, credentials: jaxl.api._client.ApiCredentials | None = None, auth_token: str | None = None) ‑&gt; jaxl.api.client.client.AuthenticatedClient</code>
+:   Returns JaxlApiClient with auth token and device id preset.</p>
+<h2 id="classes">Classes</h2>
+<p><code>JaxlApiModule(*args, **kwds)</code>
+:   Available API Modules</p>
+<pre><code>### Ancestors (in MRO)
+
+* enum.Enum
+
+### Class variables
+
+`ACCOUNT`
+:
+
+`CALL`
+:
+
+`MESSAGE`
+:
+
+`NOTIFICATION`
+:
+
+`PAYMENT`
+:
+</code></pre>
+<p><code>JaxlSDK()</code>
+:</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
