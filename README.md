@@ -397,7 +397,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install
-pip install -e ".[dev]"
+pip install -e ".[dev,docs]"
 
 # Generate documentation
 ./docs.sh
