@@ -13,6 +13,7 @@ import attr
 
 from ..types import UNSET, Unset
 
+
 if TYPE_CHECKING:
     from ..models.cta import CTA
 
@@ -109,7 +110,7 @@ class IVROptionsResponse:
 
         _cta = d.pop("cta", UNSET)
         cta: Union[Unset, CTA]
-        if isinstance(_cta, Unset):
+        if isinstance(_cta, Unset) or _cta is None:
             cta = UNSET
         else:
             cta = CTA.from_dict(_cta)

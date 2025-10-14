@@ -461,9 +461,11 @@ open docs/jaxl/index.html
 """
 
 from ._client import JaxlApiModule, jaxl_api_client
+from ._sdk import JaxlSDK
 
 
 __all__ = [
+    "JaxlSDK",
     "JaxlApiModule",
     "jaxl_api_client",
 ]

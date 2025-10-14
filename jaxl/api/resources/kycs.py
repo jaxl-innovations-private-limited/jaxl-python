@@ -19,7 +19,11 @@ from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
 
 def kycs_list(args: Dict[str, Any]) -> Response[PaginatedKycList]:
     return v1_kyc_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         iso_country=None,
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
         offset=None,
@@ -43,3 +47,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="KYC page size. Defaults to 1.",
     )
     kyc_list_parser.set_defaults(func=kycs_list, _arg_keys=["limit"])
+
+
+class JaxlKYCsSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedKycList]:
+        return kycs_list(kwargs)
