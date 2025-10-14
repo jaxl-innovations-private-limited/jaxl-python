@@ -29,7 +29,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install --upgrade pip
-          pip install -e .[dev,docs,types,app,grout,silence,transcribe]
+          pip install -e .[dev,docs,types,app,grout,silence,transcribe,release]
       - name: Run mypy
         run: |
           source .venv/bin/activate
