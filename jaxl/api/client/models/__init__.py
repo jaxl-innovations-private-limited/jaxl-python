@@ -18,6 +18,7 @@ from .available_phone_number import AvailablePhoneNumber
 from .available_phone_number_capabilities import AvailablePhoneNumberCapabilities
 from .available_phone_number_provider_enum import AvailablePhoneNumberProviderEnum
 from .call import Call
+from .call_add_request_request import CallAddRequestRequest
 from .call_cost import CallCost
 from .call_location_epoch import CallLocationEpoch
 from .call_metadata import CallMetadata
@@ -172,6 +173,7 @@ __all__ = (
     "AvailablePhoneNumberCapabilities",
     "AvailablePhoneNumberProviderEnum",
     "Call",
+    "CallAddRequestRequest",
     "CallCost",
     "CallLocationEpoch",
     "CallMetadata",
