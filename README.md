@@ -404,9 +404,6 @@ pip install -e ".[dev]"
 
 # View documentation in browser
 open docs/jaxl/index.html
-
-# Delete attestation
-rm ~/.jaxl/api/attestation.json
 ```
 
 ## Status
