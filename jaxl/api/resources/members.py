@@ -29,7 +29,11 @@ def members_list(
         statuses.append(V2AppOrganizationsEmployeesListStatusItem[status.upper()])
     return v2_app_organizations_employees_list.sync_detailed(
         org_id="1",
-        client=jaxl_api_client(JaxlApiModule.ACCOUNT),
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         status=statuses,
     )
 
@@ -48,3 +52,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Member statuses. Can be specified multiple times. Default: accepted.",
     )
     members_list_parser.set_defaults(func=members_list, _arg_keys=["status"])
+
+
+class JaxlMembersSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedOrganizationEmployeeList]:
+        return members_list(kwargs)

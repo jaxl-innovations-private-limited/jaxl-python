@@ -23,7 +23,11 @@ def teams_list(
 ) -> Response[PaginatedOrganizationGroupResponseList]:
     return v2_app_organizations_groups_list.sync_detailed(
         org_id="0",
-        client=jaxl_api_client(JaxlApiModule.ACCOUNT),
+        client=jaxl_api_client(
+            JaxlApiModule.ACCOUNT,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         empty=args.get("empty", True),
     )
 
@@ -40,3 +44,9 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Whether to also list empty teams",
     )
     teams_list_parser.set_defaults(func=teams_list, _arg_keys=["empty"])
+
+
+class JaxlTeamsSDK:
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedOrganizationGroupResponseList]:
+        return teams_list(kwargs)

@@ -15,8 +15,6 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id)
    - [Place Outgoing Cellular Call with Existing IVR](#place-outgoing-cellular-call-with-existing-ivr)
    - [Place Outgoing Cellular Call with Ad-hoc IVR](#place-outgoing-cellular-call-with-ad-hoc-ivr)
-   - [Dial-out Multi-Party Conference between Cellular Numbers](#dial-out-multi-party-conference-between-cellular-numbers)
-   - [Dial-out Agent Team and Cellular Numbers](#dial-out-agent-team-and-cellular-numbers)
    - [Dial-out 2-Party Conference with Ad-hoc IVR](#dial-out-2-party-conference-with-ad-hoc-ivr)
    - [Add External Phone Number to an Active Call](#add-external-phone-number-to-an-active-call)
    - [Add Agent to an Active Call](#add-agent-to-an-active-call)
@@ -114,13 +112,13 @@ This IVR will speak the message and then hangup the call.
 
 ```bash
 jaxl ivrs create \
-  --message "Hello, we are calling via Jaxl IVR demo created from CLI" \
+  --message "Hello, we are calling via Jaxl IVR demo created from CLI.  Will hang up after speaking this message." \
   --hangup
 ```
 
 ### Configure IVR Options
 
-This IVR option uses `--next` to send user to another IVR.
+This IVR option uses `--next` to send user to another IVR or to the same IVR for a "repeat this menu" experience.
 
 ```bash
 jaxl ivrs options configure \
@@ -130,7 +128,7 @@ jaxl ivrs options configure \
   --next <NEXT IVR ID>
 ```
 
-> Use &lt;IVR ID TO CONFIGURE&gt; as the &lt;NEXT IVR ID&gt; to complete the "repeat this menu" experience.
+> Use same value for &lt;IVR ID TO CONFIGURE&gt; and &lt;NEXT IVR ID&gt; to complete the "repeat this menu" experience.
 
 One of the CTA key flag must be provided. Allowed CTA keys are:
 
@@ -199,39 +197,6 @@ jaxl calls create \
   --message "Hello, we are calling you from MyCompany" \
   --option "1=Press 1 for sales:team=<Sales Team ID>" \
   --option "2=Press 2 for HR department:team=<HR Team ID>
-```
-
-## Dial-out Multi-Party Conference between Cellular Numbers
-
-Below command will execute the following flow:
-
-- Dials out all `--to` participants in parallel
-- Connects them together as they answer the call
-- Ends the call when one but all others have hanged up the call
-
-```bash
-jaxl calls create \
-  --to "+91<Doctors Number>" \
-  --to "+91<Patient Number>" \
-  --to "+91<Supervisor Number>" \
-  --from "+91<Purchased Jaxl Number>"
-```
-
-### Dial-out Agent Team and Cellular Numbers
-
-Below command will execute the following flow:
-
-- Dials out multiple teams of doctors & patient in parallel
-- Connects the patient with first doctor to pick the call from the teams
-- Doctors are called on their cellular number first (if added on Jaxl app),
-  followed by an attempt to call on Jaxl app directly (VoIP).
-- Calling preference can be controlled per agent (doctor) or team to dictate
-  whether to use cellular or voip first to connect with a doctor.
-
-```bash
-jaxl calls create \
-  --to "teams=<Doctors Team ID1>,<Doctors Team ID2>" \
-  --to "+91<Patient Number>"
 ```
 
 ### Dial-out 2-Party Conference with Ad-hoc IVR
@@ -399,25 +364,21 @@ jaxl payments consumables total
 ## Jaxl Python SDK
 
 - Jaxl APIs is built upon [OpenAPI specification](https://www.openapis.org/)
-- `jaxl-python` contains following Python modules:
-  - `jaxl.api.client`: Generated OpenAPI SDK
-  - `jaxl.api.resources`: Wrapper methods written to support `jaxl` CLI
-  - `jaxl_api_client`: Helper function to retrieve an instance of `JaxlApiClient`
 
 ### SDK Example Usage:
 
 ```python
-from jaxl.api import JaxlApiModule, jaxl_api_client
-from jaxl.api.client.api.v1 import v1_calls_list
+from jaxl.api import JaxlSDK
 
 os.environ.setdefault("JAXL_API_CREDENTIALS", "/path/to/jaxl-api-credentials.json")
 
 os.environ.setdefault("JAXL_API_AUTH_TOKEN", "....authentication token...")
 
-response = v1_calls_list.sync_detailed(
-    client=jaxl_api_client(JaxlApiModule.CALL),
-    currency=2, # 1=USD, 2=INR
-)
+sdk = JaxlSDK()
+
+response = sdk.calls.create(to="+91<Callee Number>", from_="+91<Purchased Jaxl Number>", ivr=1234)
+response = sdk.calls.list(currency=2) # 1=USD, 2=INR
+response = sdk.accounts.me()
 ```
 
 ## SDK Documentation

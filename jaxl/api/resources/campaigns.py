@@ -21,7 +21,11 @@ from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
 
 def campaigns_list(args: Dict[str, Any]) -> Response[PaginatedCampaignResponseList]:
     return v1_campaign_list.sync_detailed(
-        client=jaxl_api_client(JaxlApiModule.CALL),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
         offset=None,
         status=None,
@@ -42,3 +46,10 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Campaign page size. Defaults to 1.",
     )
     campaign_list_parser.set_defaults(func=campaigns_list, _arg_keys=["limit"])
+
+
+class JaxlCampaignsSDK:
+
+    # pylint: disable=no-self-use
+    def list(self, **kwargs: Any) -> Response[PaginatedCampaignResponseList]:
+        return campaigns_list(kwargs)
