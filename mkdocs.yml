@@ -4,7 +4,4 @@ theme:
 nav:
   - "Home": index.md
 plugins:
-  - mkdocstrings:
-      handlers:
-        python:
-          paths: [jaxl]
+  - mkdocstrings
