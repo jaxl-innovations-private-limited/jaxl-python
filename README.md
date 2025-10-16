@@ -17,6 +17,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Place Outgoing Cellular Call with Ad-hoc IVR](#place-outgoing-cellular-call-with-ad-hoc-ivr)
    - [Dial-out 2-Party Conference with Ad-hoc IVR](#dial-out-2-party-conference-with-ad-hoc-ivr)
    - [Add External Phone Number to an Active Call](#add-external-phone-number-to-an-active-call)
+   - [Add External Phone Number via Another Phone Number to an Active Call](#add-external-phone-number-via-another-phone-number-to-an-active-call)
    - [Add Agent to an Active Call](#add-agent-to-an-active-call)
    - [Remove External Phone Number from an Active Call](#remove-external-phone-number-from-an-active-call)
    - [Remove Agent from an Active Call](#remove-agent-from-an-active-call)
@@ -153,7 +154,7 @@ jaxl phones list
 You can also search for a specific purchased number:
 
 ```bash
-jaxl phones list --e164 "+91<Purchased Jaxl Number>"
+jaxl phones list --e164 "+CC<Purchased Jaxl Number>"
 ```
 
 ### Assign a Phone Number to IVR by ID
@@ -162,7 +163,7 @@ All incoming calls to this number will send user to the assigned IVR.
 
 ```bash
 jaxl phones ivrs \
-  --e164 "+91<Purchased Jaxl Number>" \
+  --e164 "+CC<Purchased Jaxl Number>" \
   --ivr <IVR ID>
 ```
 
@@ -176,8 +177,8 @@ Below command will execute the following flow:
 
 ```bash
 jaxl calls create \
-  --to "+91<Callee Number>" \
-  --from "+91<Purchased Jaxl Number>" \
+  --to "+CC<Callee Number>" \
+  --from "+CC<Purchased Jaxl Number>" \
   --ivr <IVR ID>
 ```
 
@@ -192,8 +193,8 @@ Below command will execute the following flow:
 
 ```bash
 jaxl calls create \
-  --to "+91<Callee Number>" \
-  --from "+91<Purchased Jaxl Number>" \
+  --to "+CC<Callee Number>" \
+  --from "+CC<Purchased Jaxl Number>" \
   --message "Hello, we are calling you from MyCompany" \
   --option "1=Press 1 for sales:team=<Sales Team ID>" \
   --option "2=Press 2 for HR department:team=<HR Team ID>
@@ -210,34 +211,40 @@ Below command will execute the following flow:
 
 ```bash
 jaxl calls create \
-  --to "+91<Doctors Number>" \
-  --from "+91<Purchased Jaxl Number>" \
+  --to "+CC<Doctors Number>" \
+  --from "+CC<Purchased Jaxl Number>" \
   --message "Hello Doctor, this is a call from MyCompany regarding your appointment with Mr. Patient Name. When ready please, " \
-  --option "1=Press 1 to connect with the patient:phone=+91<Patient Number>"
+  --option "1=Press 1 to connect with the patient:phone=+CC<Patient Number>"
 ```
 
 ### Add External Phone Number to an Active Call
 
 ```bash
-jaxl calls add --call-id 1234 --phone +91<Mobile Number>
+jaxl calls add --call-id 1234 --e164 +CC<Mobile Number>
+```
+
+### Add External Phone Number via Another Phone Number to an Active Call
+
+```bash
+jaxl calls add --call-id 1234 --e164 +CC<Mobile Number> --from-e164 +CC<Purchased Jaxl Number>
 ```
 
 ### Add Agent to an Active Call
 
 ```bash
-jaxl calls add --call-id 1234 --agent <someone@mycompany.com>
+jaxl calls add --call-id 1234 --email <someone@mycompany.com>
 ```
 
 ### Remove External Phone Number from an Active Call
 
 ```bash
-jaxl calls remove --call-id 1234 --phone +91<Mobile Number>
+jaxl calls remove --call-id 1234 --e164 +CC<Mobile Number>
 ```
 
 ### Remove Agent from an Active Call
 
 ```bash
-jaxl calls remove --call-id 1234 --agent <someone@mycompany.com>
+jaxl calls remove --call-id 1234 --email <someone@mycompany.com>
 ```
 
 ### Send Text Prompts (TTS) in an Active Call
@@ -263,13 +270,13 @@ jaxl calls play --call-id 1234 --audio /path/to/a/file/on/local/disk/or/public/u
 Mute a specific cellular user in a call.
 
 ```bash
-jaxl calls mute --call-id 1234 --phone +91<Mobile Number>
+jaxl calls mute --call-id 1234 --e164 +CC<Mobile Number>
 ```
 
 Mute an agent (Jaxl App User) in a call.
 
 ```bash
-jaxl calls mute --call-id 1235 --agent <someone@mycompany.com>
+jaxl calls mute --call-id 1235 --email <someone@mycompany.com>
 ```
 
 ### Unmute a Participant in an Active Call
@@ -277,13 +284,13 @@ jaxl calls mute --call-id 1235 --agent <someone@mycompany.com>
 Unmute a specific cellular user in a call.
 
 ```bash
-jaxl calls unmute --call-id 1234 --phone +91<Mobile Number>
+jaxl calls unmute --call-id 1234 --e164 +CC<Mobile Number>
 ```
 
 Unmute a specific agent (Jaxl App User) in a call.
 
 ```bash
-jaxl calls unmute --call-id 1235 --agent <someone@mycompany.com>
+jaxl calls unmute --call-id 1235 --email <someone@mycompany.com>
 ```
 
 ### Hold a Participant in an Active Call
@@ -291,13 +298,13 @@ jaxl calls unmute --call-id 1235 --agent <someone@mycompany.com>
 Put a cellular user on-hold in a call
 
 ```bash
-jaxl calls hold --call-id 1234 --phone +91<Mobile Number>
+jaxl calls hold --call-id 1234 --e164 +CC<Mobile Number>
 ```
 
 Put an agent on-hold in a call
 
 ```bash
-jaxl calls hold --call-id 1235 --agent <someone@mycompany.com>
+jaxl calls hold --call-id 1235 --email <someone@mycompany.com>
 ```
 
 ### Unhold a Participant in an Active Call
@@ -305,13 +312,13 @@ jaxl calls hold --call-id 1235 --agent <someone@mycompany.com>
 Unhold a cellular user in a call
 
 ```bash
-jaxl calls unhold --call-id 1234 --phone +91<Mobile Number>
+jaxl calls unhold --call-id 1234 --e164 +CC<Mobile Number>
 ```
 
 Unhold an agent in a call
 
 ```bash
-jaxl calls unhold --call-id 1235 --agent <someone@mycompany.com>
+jaxl calls unhold --call-id 1235 --email <someone@mycompany.com>
 ```
 
 ### Receive Call Events via Webhook IVRs
@@ -376,7 +383,7 @@ os.environ.setdefault("JAXL_API_AUTH_TOKEN", "....authentication token...")
 
 sdk = JaxlSDK()
 
-response = sdk.calls.create(to="+91<Callee Number>", from_="+91<Purchased Jaxl Number>", ivr=1234)
+response = sdk.calls.create(to="+CC<Callee Number>", from_="+CC<Purchased Jaxl Number>", ivr=1234)
 response = sdk.calls.list(currency=2) # 1=USD, 2=INR
 response = sdk.accounts.me()
 ```
