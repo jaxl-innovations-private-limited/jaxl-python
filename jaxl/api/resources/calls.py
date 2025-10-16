@@ -26,7 +26,7 @@ from jaxl.api.client.models.call_token_response import CallTokenResponse
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
-from jaxl.api.client.types import Response
+from jaxl.api.client.types import Response, Unset
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
     IVR_CTA_KEYS,
@@ -162,7 +162,7 @@ def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallL
     )
 
 
-def calls_add(args: Optional[Dict[str, Any]] = None) -> Response[Any]:
+def calls_add(args: Dict[str, Any]) -> Response[Any]:
     return v1_calls_add_create.sync_detailed(
         id=args["call_id"],
         client=jaxl_api_client(
@@ -171,9 +171,9 @@ def calls_add(args: Optional[Dict[str, Any]] = None) -> Response[Any]:
             auth_token=args.get("auth_token", None),
         ),
         json_body=CallAddRequestRequest(
-            e164=args.get("e164"),
-            email=args.get("email"),
-            from_e164=args.get("from_e164"),
+            e164=args.get("e164", Unset),
+            email=args.get("email", Unset),
+            from_e164=args.get("from_e164", Unset),
         ),
     )
 
@@ -336,5 +336,5 @@ class JaxlCallsSDK:
     def list(self, **kwargs: Any) -> Response[PaginatedCallList]:
         return calls_list(kwargs)
 
-    def add(self, **kwargs) -> Response[Any]:
+    def add(self, **kwargs: Any) -> Response[Any]:
         return calls_add(kwargs)
