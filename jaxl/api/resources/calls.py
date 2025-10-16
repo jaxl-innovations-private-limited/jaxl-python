@@ -13,16 +13,20 @@ from typing import Any, Dict, List, Optional, Tuple, cast
 
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
+    v1_calls_add_create,
     v1_calls_list,
     v1_calls_token_create,
     v1_calls_usage_retrieve,
+)
+from jaxl.api.client.models.call_add_request_request import (
+    CallAddRequestRequest,
 )
 from jaxl.api.client.models.call_token_request import CallTokenRequest
 from jaxl.api.client.models.call_token_response import CallTokenResponse
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
-from jaxl.api.client.types import Response
+from jaxl.api.client.types import Response, Unset
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
     IVR_CTA_KEYS,
@@ -158,6 +162,22 @@ def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallL
     )
 
 
+def calls_add(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_add_create.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallAddRequestRequest(
+            e164=args.get("e164", Unset),
+            email=args.get("email", Unset),
+            from_e164=args.get("from_e164", Unset),
+        ),
+    )
+
+
 # def calls_hangup(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
 #     pass
 
@@ -232,6 +252,43 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         func=calls_list, _arg_keys=["currency", "limit", "active"]
     )
 
+    # add
+    calls_add_parser = subparsers.add_parser(
+        "add", help="Add a phone number or email ID to an existing calls"
+    )
+    calls_add_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Current call ID",
+    )
+    group = calls_add_parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "--e164",
+        type=str,
+        help="Phone number that must be called and merged with ongoing call",
+    )
+    group.add_argument(
+        "--email",
+        type=str,
+        help="Org member that must be called and merged with ongoing call",
+    )
+    calls_add_parser.add_argument(
+        "--from-e164",
+        type=str,
+        required=False,
+        help="Optionally, provide a number that must be used to place outgoing call to --e164",
+    )
+    calls_add_parser.set_defaults(
+        func=calls_add,
+        _arg_keys=[
+            "e164",
+            "email",
+            "from_e164",
+            "call_id",
+        ],
+    )
+
     # hangup
     # calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup calls")
     # calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=[])
@@ -278,3 +335,6 @@ class JaxlCallsSDK:
 
     def list(self, **kwargs: Any) -> Response[PaginatedCallList]:
         return calls_list(kwargs)
+
+    def add(self, **kwargs: Any) -> Response[Any]:
+        return calls_add(kwargs)

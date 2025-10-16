@@ -7,13 +7,11 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
+from typing import Any, Dict, List, Type, TypeVar, Union
 
 import attr
 
-if TYPE_CHECKING:
-    from ..models.next_or_cta_request import NextOrCTARequest
-
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CallAddRequestRequest")
 
@@ -22,34 +20,46 @@ T = TypeVar("T", bound="CallAddRequestRequest")
 class CallAddRequestRequest:
     """
     Attributes:
-        next_or_cta (NextOrCTARequest):
+        e164 (Union[Unset, str]): Phone number in E.164 format, e.g. +14155552671
+        from_e164 (Union[Unset, str]): Phone number in E.164 format, e.g. +14155552671
+        email (Union[Unset, str]): Email address of the participant
     """
 
-    next_or_cta: "NextOrCTARequest"
+    e164: Union[Unset, str] = UNSET
+    from_e164: Union[Unset, str] = UNSET
+    email: Union[Unset, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        next_or_cta = self.next_or_cta.to_dict()
+        e164 = self.e164
+        from_e164 = self.from_e164
+        email = self.email
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "next_or_cta": next_or_cta,
-            }
-        )
+        field_dict.update({})
+        if e164 is not UNSET:
+            field_dict["e164"] = e164
+        if from_e164 is not UNSET:
+            field_dict["from_e164"] = from_e164
+        if email is not UNSET:
+            field_dict["email"] = email
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from ..models.next_or_cta_request import NextOrCTARequest
-
         d = src_dict.copy()
-        next_or_cta = NextOrCTARequest.from_dict(d.pop("next_or_cta"))
+        e164 = d.pop("e164", UNSET)
+
+        from_e164 = d.pop("from_e164", UNSET)
+
+        email = d.pop("email", UNSET)
 
         call_add_request_request = cls(
-            next_or_cta=next_or_cta,
+            e164=e164,
+            from_e164=from_e164,
+            email=email,
         )
 
         call_add_request_request.additional_properties = d
