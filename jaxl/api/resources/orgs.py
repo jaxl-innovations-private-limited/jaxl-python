@@ -46,7 +46,7 @@ def orgs_list(
 
 
 def _subparser(parser: argparse.ArgumentParser) -> None:
-    """Manage Accounts"""
+    """Manage Organizations"""
     subparsers = parser.add_subparsers(dest="action", required=True)
 
     orgs_list_parser = subparsers.add_parser("list", help="List organizations")
