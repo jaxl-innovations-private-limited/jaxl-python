@@ -20,14 +20,14 @@ T = TypeVar("T", bound="CallAddRequestRequest")
 class CallAddRequestRequest:
     """
     Attributes:
-        e164 (Union[Unset, str]): Phone number in E.164 format, e.g. +14155552671
-        from_e164 (Union[Unset, str]): Phone number in E.164 format, e.g. +14155552671
-        email (Union[Unset, str]): Email address of the participant
+        e164 (Union[Unset, None, str]): Phone number in E.164 format, e.g. +14155552671
+        from_e164 (Union[Unset, None, str]): Phone number in E.164 format, e.g. +14155552671
+        email (Union[Unset, None, str]): Email address of the participant
     """
 
-    e164: Union[Unset, str] = UNSET
-    from_e164: Union[Unset, str] = UNSET
-    email: Union[Unset, str] = UNSET
+    e164: Union[Unset, None, str] = UNSET
+    from_e164: Union[Unset, None, str] = UNSET
+    email: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
