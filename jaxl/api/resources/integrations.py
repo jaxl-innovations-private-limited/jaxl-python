@@ -16,6 +16,7 @@ from jaxl.api.client.models.integrations_request_provider_enum import (
     IntegrationsRequestProviderEnum,
 )
 from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
+from jaxl.api.resources.orgs import first_org_id
 
 
 def integrations_list(args: Dict[str, Any]) -> Any:
@@ -26,7 +27,7 @@ def integrations_list(args: Dict[str, Any]) -> Any:
             credentials=args.get("credentials", None),
             auth_token=args.get("auth_token", None),
         ),
-        org_id=args.get("org_id"),
+        org_id=str(first_org_id()),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
         offset=None,
     )
@@ -46,21 +47,13 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         "list", help="List all Integrations"
     )
     integration_list_parser.add_argument(
-        "--org-id",
-        type=int,
-        required=True,
-        help="Org ID",
-    )
-    integration_list_parser.add_argument(
         "--limit",
         default=DEFAULT_LIST_LIMIT,
         type=int,
         required=False,
         help="Integration page size. Defaults to 1.",
     )
-    integration_list_parser.set_defaults(
-        func=integrations_list, _arg_keys=["limit", "org_id"]
-    )
+    integration_list_parser.set_defaults(func=integrations_list, _arg_keys=["limit"])
 
     # create
     integration_create_parser = subparsers.add_parser("create", help="Add integration")
