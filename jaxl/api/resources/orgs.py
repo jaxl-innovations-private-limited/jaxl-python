@@ -24,7 +24,7 @@ from jaxl.api.client.types import Response
 
 @functools.lru_cache(maxsize=1)
 def first_org_id() -> int:
-    response = orgs_list()
+    response = orgs_list({"set_org_id": False})
     if response.status_code != 200 or response.parsed is None:
         raise ValueError("Unable to fetch org list")
     return response.parsed.results[0].id
@@ -39,6 +39,7 @@ def orgs_list(
             JaxlApiModule.ACCOUNT,
             credentials=args.get("credentials", None),
             auth_token=args.get("auth_token", None),
+            set_org_id=args.get("set_org_id", True),
         ),
         status=[V1AppOrganizationsListStatusItem.ACCEPTED],
     )
