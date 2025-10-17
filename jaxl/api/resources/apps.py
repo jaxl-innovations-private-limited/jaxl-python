@@ -33,6 +33,7 @@ from jaxl.api.base import (
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
+from jaxl.api.resources.accounts import accounts_me
 from jaxl.api.resources.silence import SilenceDetector
 
 
@@ -255,6 +256,10 @@ def _load_app(dotted_path: str) -> BaseJaxlApp:
 
 
 def apps_run(args: Dict[str, Any]) -> str:
+    account = accounts_me()
+    if account.status_code != 200:
+        raise ValueError("Unable to authenticate")
+
     if args["transcribe"]:
         # Ensure ffmpeg is in path
         name = "ffmpeg"
