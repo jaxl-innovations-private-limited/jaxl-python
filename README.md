@@ -48,12 +48,12 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 
 ```bash
 jaxl -h
-usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,payments,phones,teams} ...
+usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams} ...
 
 Jaxl CLI
 
 positional arguments:
-  {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,payments,phones,teams}
+  {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams}
     accounts            Manage Accounts
     apps                Manage Apps for Webhooks and Streaming audio/speech/transcriptions.
     calls               Manage Calls (Domestic & International Cellular, App-to-App)
@@ -64,6 +64,7 @@ positional arguments:
     members             Manage Members
     messages            Manage Messages (SMS, WA, RCS, Email, App-to-App)
     notifications       Manage Notifications (Android, iOS, Web)
+    orgs                Manage Accounts
     payments            Manage Payments
     phones              Manage Phones (Landline, Mobile, TollFree)
     teams               Manage Teams (Managers, Phones)
