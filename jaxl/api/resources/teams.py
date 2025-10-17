@@ -16,13 +16,14 @@ from jaxl.api.client.models.paginated_organization_group_response_list import (
     PaginatedOrganizationGroupResponseList,
 )
 from jaxl.api.client.types import Response
+from jaxl.api.resources.orgs import first_org_id
 
 
 def teams_list(
     args: Dict[str, Any],
 ) -> Response[PaginatedOrganizationGroupResponseList]:
     return v2_app_organizations_groups_list.sync_detailed(
-        org_id="0",
+        org_id=first_org_id(),
         client=jaxl_api_client(
             JaxlApiModule.ACCOUNT,
             credentials=args.get("credentials", None),

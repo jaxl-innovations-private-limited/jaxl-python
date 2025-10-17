@@ -19,6 +19,7 @@ from jaxl.api.client.models.v2_app_organizations_employees_list_status_item impo
     V2AppOrganizationsEmployeesListStatusItem,
 )
 from jaxl.api.client.types import Response
+from jaxl.api.resources.orgs import first_org_id
 
 
 def members_list(
@@ -28,7 +29,7 @@ def members_list(
     for status in list(set(args.get("status", ["accepted"]))):
         statuses.append(V2AppOrganizationsEmployeesListStatusItem[status.upper()])
     return v2_app_organizations_employees_list.sync_detailed(
-        org_id="1",
+        org_id=first_org_id(),
         client=jaxl_api_client(
             JaxlApiModule.ACCOUNT,
             credentials=args.get("credentials", None),
