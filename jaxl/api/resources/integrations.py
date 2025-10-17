@@ -27,14 +27,21 @@ from jaxl.api.client.models.integrations_request_provider_enum import (
 from jaxl.api.client.models.integrations_request_request import (
     IntegrationsRequestRequest,
 )
+from jaxl.api.client.models.integrations_response import IntegrationsResponse
+from jaxl.api.client.models.paginated_organization_provider_list import (
+    PaginatedOrganizationProviderList,
+)
 from jaxl.api.client.models.shopify_auth_request_request import (
     ShopifyAuthRequestRequest,
 )
+from jaxl.api.client.types import Response
 from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
 from jaxl.api.resources.orgs import first_org_id
 
 
-def integrations_list(args: Dict[str, Any]) -> Any:
+def integrations_list(
+    args: Dict[str, Any],
+) -> Response[PaginatedOrganizationProviderList]:
     print(args)
     return v1_app_organizations_providers_list.sync_detailed(
         client=jaxl_api_client(
@@ -48,7 +55,7 @@ def integrations_list(args: Dict[str, Any]) -> Any:
     )
 
 
-def integrations_create(args: Dict[str, Any]) -> str:
+def integrations_create(args: Dict[str, Any]) -> Response[IntegrationsResponse]:
     print(args)
     success_url = args.get("success_url")
     failure_url = args.get("failure_url")
