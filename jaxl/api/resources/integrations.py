@@ -59,12 +59,13 @@ def integrations_create(args: Dict[str, Any]) -> Response[IntegrationsResponse]:
     print(args)
     success_url = args.get("success_url")
     failure_url = args.get("failure_url")
+    print(f"{success_url=} {failure_url=}")
     if args.get("provider") == "shopify":
         properties = IntegrationsPropertiesRequest(
             shopify=ShopifyAuthRequestRequest(shop_name=args.get("shopify_shop_name"))
         )
         provider = IntegrationsRequestProviderEnum.VALUE_26
-        if not success_url or failure_url:
+        if not success_url or not failure_url:
             raise ValueError("Both success_url and failure_url should be provided.")
     elif args.get("provider") == "exotel":
         api_key = args.get("exotel_api_key")
