@@ -82,6 +82,8 @@ You will require the following to successfully run `jaxl` command line tool:
 
 Please visit [Jaxl Business Website](https://business.jaxl.com) or download the [Jaxl Business Android](https://play.google.com/store/apps/details?id=com.jaxl.business) or [Jaxl Business iOS](https://apps.apple.com/app/id6451118240) mobile application to access your credentials and auth tokens.
 
+[![Setup](https://raw.githubusercontent.com/jaxl-innovations-private-limited/jaxl-python/main/setup.gif)](https://github.com/jaxl-innovations-private-limited/jaxl-python#setup)
+
 Finally, setup following environment variables when trying `jaxl` command line.
 
 ```bash

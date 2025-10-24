@@ -7,7 +7,7 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-"""Contains some shared types for properties"""
+""" Contains some shared types for properties """
 
 from http import HTTPStatus
 from typing import BinaryIO, Generic, MutableMapping, Optional, Tuple, TypeVar
