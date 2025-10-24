@@ -8,7 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
@@ -17,6 +17,9 @@ from jaxl.api.client.api.v1 import (
 )
 from jaxl.api.client.models.exotel_auth_request_request import (
     ExotelAuthRequestRequest,
+)
+from jaxl.api.client.models.integrations_error_response import (
+    IntegrationsErrorResponse,
 )
 from jaxl.api.client.models.integrations_properties_request import (
     IntegrationsPropertiesRequest,
@@ -28,6 +31,9 @@ from jaxl.api.client.models.integrations_request_request import (
     IntegrationsRequestRequest,
 )
 from jaxl.api.client.models.integrations_response import IntegrationsResponse
+from jaxl.api.client.models.invalid_provider_request import (
+    InvalidProviderRequest,
+)
 from jaxl.api.client.models.paginated_organization_provider_list import (
     PaginatedOrganizationProviderList,
 )
@@ -41,7 +47,7 @@ from jaxl.api.resources.orgs import first_org_id
 
 def integrations_list(
     args: Dict[str, Any],
-) -> Response[PaginatedOrganizationProviderList]:
+) -> Response[Union[Any, InvalidProviderRequest, PaginatedOrganizationProviderList]]:
     print(args)
     return v1_app_organizations_providers_list.sync_detailed(
         client=jaxl_api_client(
@@ -55,7 +61,9 @@ def integrations_list(
     )
 
 
-def integrations_create(args: Dict[str, Any]) -> Response[IntegrationsResponse]:
+def integrations_create(
+    args: Dict[str, Any],
+) -> Response[Union[IntegrationsResponse, IntegrationsErrorResponse]]:
     print(args)
     success_url = args.get("success_url")
     failure_url = args.get("failure_url")
@@ -186,5 +194,15 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
 
 class JaxlIntegrationsSDK:
     # pylint: disable=no-self-use
-    def list(self, **kwargs: Any) -> Response[PaginatedOrganizationProviderList]:
+    def list(
+        self, **kwargs: Any
+    ) -> Response[
+        Union[Any, InvalidProviderRequest, PaginatedOrganizationProviderList]
+    ]:
         return integrations_list(kwargs)
+
+    # pylint: disable=no-self-use
+    def create(
+        self, **kwargs: Any
+    ) -> Response[Union[IntegrationsResponse, IntegrationsErrorResponse]]:
+        return integrations_create(kwargs)
