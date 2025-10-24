@@ -186,5 +186,5 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
 
 class JaxlIntegrationsSDK:
     # pylint: disable=no-self-use
-    def list(self, **kwargs: Any) -> str:
+    def list(self, **kwargs: Any) -> Response[PaginatedOrganizationProviderList]:
         return integrations_list(kwargs)
