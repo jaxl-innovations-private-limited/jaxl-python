@@ -1,0 +1,10 @@
+site_name: Jaxl Python
+theme:
+  name: readthedocs
+nav:
+  - "Home": index.md
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [jaxl, examples]

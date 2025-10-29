@@ -1,5 +1,8 @@
 #!/bin/bash
 
-rm -rf docs
-pdoc3 --html -o docs jaxl
-pdoc3 --html -o docs examples
+rm -rf docs site
+pdoc3 -o docs jaxl
+pdoc3 -o docs examples
+cp index.md docs
+PYTHONPATH=. mkdocs build
+open site/index.html
