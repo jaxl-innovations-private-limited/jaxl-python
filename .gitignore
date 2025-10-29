@@ -29,7 +29,7 @@ license.py
 schema.py
 schema.yaml
 *.patch
-site
+/site
 
 jaxl-api-credentials*.json
 docs

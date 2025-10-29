@@ -8,7 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
-from typing import Any, Dict, Tuple, cast
+from typing import Any, Dict, Optional, Tuple, cast
 
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import v1_appusers_me_retrieve
@@ -19,7 +19,8 @@ from jaxl.api.resources.calls import calls_usage
 from jaxl.api.resources.payments import payments_get_total_recharge
 
 
-def accounts_me(args: Dict[str, Any]) -> Response[AppUser]:
+def accounts_me(args: Optional[Dict[str, Any]] = None) -> Response[AppUser]:
+    args = args or {}
     return v1_appusers_me_retrieve.sync_detailed(
         client=jaxl_api_client(
             JaxlApiModule.ACCOUNT,

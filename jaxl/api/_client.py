@@ -311,6 +311,7 @@ def jaxl_api_client(
     module: JaxlApiModule,
     credentials: Optional[ApiCredentials] = None,
     auth_token: Optional[str] = None,
+    set_org_id: bool = True,
 ) -> "AuthenticatedClient":
     """Returns JaxlApiClient with auth token and device id preset."""
     attestation = attest()
@@ -320,6 +321,10 @@ def jaxl_api_client(
     assert auth_token is not None, "Missing JAXL_API_AUTH_TOKEN"
     client.set_device_id(attestation["id"])
     client.set_auth_token(auth_token)
+    if set_org_id:
+        from jaxl.api.resources.orgs import first_org_id
+
+        client.set_org_id(first_org_id())
     return cast(AuthenticatedClient, client)
 
 

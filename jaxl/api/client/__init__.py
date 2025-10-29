@@ -7,7 +7,7 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-"""A client library for accessing JAXL API"""
+""" A client library for accessing JAXL API """
 
 from .client import AuthenticatedClient, Client
 

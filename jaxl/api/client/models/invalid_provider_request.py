@@ -13,57 +13,41 @@ import attr
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="CallAddRequestRequest")
+T = TypeVar("T", bound="InvalidProviderRequest")
 
 
 @attr.s(auto_attribs=True)
-class CallAddRequestRequest:
+class InvalidProviderRequest:
     """
     Attributes:
-        e164 (Union[Unset, None, str]): Phone number in E.164 format, e.g. +14155552671
-        from_e164 (Union[Unset, None, str]): Phone number in E.164 format, e.g. +14155552671
-        email (Union[Unset, None, str]): Email address of the participant
+        reason (Union[Unset, None, str]):
     """
 
-    e164: Union[Unset, None, str] = UNSET
-    from_e164: Union[Unset, None, str] = UNSET
-    email: Union[Unset, None, str] = UNSET
+    reason: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        e164 = self.e164
-        from_e164 = self.from_e164
-        email = self.email
+        reason = self.reason
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if e164 is not UNSET:
-            field_dict["e164"] = e164
-        if from_e164 is not UNSET:
-            field_dict["from_e164"] = from_e164
-        if email is not UNSET:
-            field_dict["email"] = email
+        if reason is not UNSET:
+            field_dict["reason"] = reason
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        e164 = d.pop("e164", UNSET)
+        reason = d.pop("reason", UNSET)
 
-        from_e164 = d.pop("from_e164", UNSET)
-
-        email = d.pop("email", UNSET)
-
-        call_add_request_request = cls(
-            e164=e164,
-            from_e164=from_e164,
-            email=email,
+        invalid_provider_request = cls(
+            reason=reason,
         )
 
-        call_add_request_request.additional_properties = d
-        return call_add_request_request
+        invalid_provider_request.additional_properties = d
+        return invalid_provider_request
 
     @property
     def additional_keys(self) -> List[str]:

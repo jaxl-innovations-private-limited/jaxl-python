@@ -37,7 +37,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     subparsers = parser.add_subparsers(dest="action", required=True)
 
     # list
-    campaign_list_parser = subparsers.add_parser("list", help="List all KYCs")
+    campaign_list_parser = subparsers.add_parser("list", help="List all Campaigns")
     campaign_list_parser.add_argument(
         "--limit",
         default=DEFAULT_LIST_LIMIT,
