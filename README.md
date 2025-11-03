@@ -253,11 +253,8 @@ jaxl calls remove --call-id 1234 --email <someone@mycompany.com>
 ### Send Text Prompts (TTS) in an Active Call
 
 ```bash
-jaxl calls speak --call-id 1234 \
-  --prompt "Hello, this text was injected in the middle of an active call" \
-  --prompt "Yes its possible to pass in multiple prompt flags" \
-  --prompt "Use shorter prompt phrases to keep TTS latency low" \
-  --prompt "Avoid using excessively large sentences"
+jaxl calls tts --call-id 1234 \
+  --prompt "Hello, this text was injected in the middle of an active call"
 ```
 
 ### Play Audio File in an Active Call

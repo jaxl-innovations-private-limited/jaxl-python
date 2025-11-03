@@ -16,6 +16,7 @@ from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
     v1_calls_list,
     v1_calls_token_create,
+    v1_calls_tts_create,
     v1_calls_usage_retrieve,
 )
 from jaxl.api.client.models.call_add_request_request import (
@@ -23,6 +24,9 @@ from jaxl.api.client.models.call_add_request_request import (
 )
 from jaxl.api.client.models.call_token_request import CallTokenRequest
 from jaxl.api.client.models.call_token_response import CallTokenResponse
+from jaxl.api.client.models.call_tts_request_request import (
+    CallTtsRequestRequest,
+)
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
@@ -178,6 +182,20 @@ def calls_add(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+def calls_tts(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_tts_create.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallTtsRequestRequest(
+            prompts=[pro for pro in args["prompt"].split(".") if len(pro.strip()) > 0]
+        ),
+    )
+
+
 # def calls_hangup(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
 #     pass
 
@@ -289,6 +307,22 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         ],
     )
 
+    calls_tts_parser = subparsers.add_parser(
+        "tts", help="Send text prompts in an active call"
+    )
+    calls_tts_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call ID",
+    )
+    calls_tts_parser.add_argument(
+        "--prompt",
+        type=str,
+        required=True,
+    )
+    calls_tts_parser.set_defaults(func=calls_tts, _arg_keys=["call_id", "prompt"])
+
     # hangup
     # calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup calls")
     # calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=[])
@@ -302,7 +336,6 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     # hold/unhold
 
     # play
-    # say
 
     # ivr (send active call into an ivr)
 
@@ -338,3 +371,6 @@ class JaxlCallsSDK:
 
     def add(self, **kwargs: Any) -> Response[Any]:
         return calls_add(kwargs)
+
+    def tts(self, **kwargs: Any) -> Response[Any]:
+        return calls_tts(kwargs)

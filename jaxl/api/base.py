@@ -15,11 +15,8 @@ from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
 import requests
 from pydantic import BaseModel, model_validator
 
-from jaxl.api._client import JaxlApiModule, jaxl_api_client
-from jaxl.api.client.api.v1 import v1_calls_tts_create
-from jaxl.api.client.models.call_tts_request_request import (
-    CallTtsRequestRequest,
-)
+from jaxl.api.client.types import Response
+from jaxl.api.resources.calls import calls_tts
 from jaxl.api.resources.ivrs import IVR_CTA_KEYS
 
 
@@ -222,15 +219,5 @@ class BaseJaxlApp:
             except Exception as exc:
                 logger.warning(f"Unable to process ollama response: {exc}, {chunk}")
 
-    async def tts(self, call_id: int, prompt: str, **kwargs: Any) -> None:
-        v1_calls_tts_create.sync_detailed(
-            id=call_id,
-            client=jaxl_api_client(
-                JaxlApiModule.CALL,
-                credentials=kwargs.get("credentials", None),
-                auth_token=kwargs.get("auth_token", None),
-            ),
-            json_body=CallTtsRequestRequest(
-                prompts=[pro for pro in prompt.split(".") if len(pro.strip()) > 0]
-            ),
-        )
+    async def tts(self, call_id: int, prompt: str, **kwargs: Any) -> Response[Any]:
+        return calls_tts({"call_id": call_id, "prompt": prompt})
