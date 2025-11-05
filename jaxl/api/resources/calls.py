@@ -15,10 +15,12 @@ from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
     v1_calls_list,
+    v1_calls_retrieve,
     v1_calls_token_create,
     v1_calls_tts_create,
     v1_calls_usage_retrieve,
 )
+from jaxl.api.client.models.call import Call
 from jaxl.api.client.models.call_add_request_request import (
     CallAddRequestRequest,
 )
@@ -149,6 +151,20 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
             provider=None,
             cid=None,
         ),
+    )
+
+
+def calls_get(args: Optional[Dict[str, Any]] = None) -> Response[Call]:
+    """Get a call"""
+    args = args or {}
+    return v1_calls_retrieve.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        currency=args.get("currency", DEFAULT_CURRENCY),
     )
 
 
@@ -324,6 +340,15 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     )
     calls_tts_parser.set_defaults(func=calls_tts, _arg_keys=["call_id", "prompt"])
 
+    calls_get_parser = subparsers.add_parser("get", help="Get a call detail")
+    calls_get_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call ID",
+    )
+    calls_get_parser.set_defaults(func=calls_get, _arg_keys=["call_id"])
+
     # hangup
     # calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup calls")
     # calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=[])
@@ -375,3 +400,6 @@ class JaxlCallsSDK:
 
     def tts(self, **kwargs: Any) -> Response[Any]:
         return calls_tts(kwargs)
+
+    def get(self, **kwargs: Any) -> Response[Call]:
+        return calls_get(kwargs)
