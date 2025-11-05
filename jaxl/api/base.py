@@ -10,9 +10,21 @@ with or without modification, is strictly prohibited.
 import json
 import logging
 from enum import Enum
-from typing import Any, Callable, Coroutine, Dict, List, Optional, Union
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Coroutine,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 
 import requests
+from fastapi import WebSocket
+from fastapi.responses import Response as FastApiResponse
 from pydantic import BaseModel, model_validator
 
 from jaxl.api.client.types import Response
@@ -28,6 +40,7 @@ class JaxlWebhookEvent(Enum):
     OPTION = 2
     TEARDOWN = 3
     STREAM = 4
+    MARK = 5
 
 
 class JaxlOrg(BaseModel):
@@ -55,11 +68,14 @@ class JaxlWebhookRequest(BaseModel):
     option: Optional[str]
     # Extra data
     data: Optional[str]
+    # Present only with mark event
+    mark: Optional[str] = None
 
 
 class JaxlWebhookResponse(BaseModel):
     prompt: List[str]
     num_characters: Union[int, str]
+    mark: Optional[str] = None
 
 
 class JaxlStreamRequest(BaseModel):
@@ -110,8 +126,22 @@ class JaxlCtaResponse(BaseModel):
 
 HANDLER_RESPONSE = Optional[Union[JaxlWebhookResponse, JaxlCtaResponse]]
 
+ApiRouteConfig = Tuple[str, List[str], Optional[BaseModel]]
+ApiRouteFunc = Union[
+    Callable[[BaseModel], Coroutine[Any, Any, Union[BaseModel, FastApiResponse]]],
+    Callable[[], Coroutine[Any, Any, Union[BaseModel, FastApiResponse]]],
+]
+WebsocketRouteFunc = Callable[[WebSocket], Awaitable[None]]
+
 
 class BaseJaxlApp:
+
+    # pylint: disable=no-self-use,unused-argument
+    def api_routes(self) -> List[Tuple[ApiRouteConfig, ApiRouteFunc]]:
+        return []
+
+    def websocket_routes(self) -> List[Tuple[str, WebsocketRouteFunc]]:
+        return []
 
     # pylint: disable=no-self-use,unused-argument
     async def handle_configure(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
@@ -132,6 +162,10 @@ class BaseJaxlApp:
     # pylint: disable=no-self-use,unused-argument
     async def handle_option(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when IVR option is chosen."""
+        return None
+
+    async def handle_mark(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
+        """Invoked once TTS has finished.  Only invoked if a marker was provided to tts function"""
         return None
 
     # pylint: disable=no-self-use,unused-argument
@@ -219,5 +253,11 @@ class BaseJaxlApp:
             except Exception as exc:
                 logger.warning(f"Unable to process ollama response: {exc}, {chunk}")
 
-    async def tts(self, call_id: int, prompt: str, **kwargs: Any) -> Response[Any]:
-        return calls_tts({"call_id": call_id, "prompt": prompt})
+    async def tts(
+        self,
+        call_id: int,
+        prompt: str,
+        mark: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Response[Any]:
+        return calls_tts({"call_id": call_id, "prompt": prompt, "mark": mark})
