@@ -23,6 +23,7 @@ import wave
 from collections import deque
 from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, cast
 
+from fastapi.websockets import WebSocketState
 from starlette.websockets import WebSocketDisconnect
 
 from jaxl.api.base import (
@@ -165,9 +166,13 @@ def _start_server(
                 # Just mock a dummy response for now, allowing module developers
                 # to not override handle_teardown if they wish not to use it.
                 response = DUMMY_RESPONSE
+        elif req.event == JaxlWebhookEvent.MARK:
+            assert request.method == "POST"
+            response = await app.handle_mark(req)
         if response is not None:
             return response
-        raise NotImplementedError(f"Unhandled event {req.event}")
+        # logger.warning(f"Unhandled event {req.event} or handler returned None")
+        return None
 
     @server.websocket("/stream/")
     async def stream(ws: WebSocket) -> None:
@@ -190,8 +195,8 @@ def _start_server(
         await ws.accept()
 
         # pylint: disable=too-many-nested-blocks
-        while True:
-            try:
+        try:
+            while True:
                 data = json.loads(await ws.receive_text())
                 ev = data["event"]
                 if ev == "media":
@@ -242,8 +247,22 @@ def _start_server(
                     pass
                 else:
                     logger.warning(f"UNHANDLED STREAMING EVENT {ev}")
-            except WebSocketDisconnect:
-                break
+        except WebSocketDisconnect:
+            pass
+        finally:
+            if ws.client_state != WebSocketState.DISCONNECTED:
+                await ws.close()
+
+    for config, func in app.api_routes():
+        server.add_api_route(
+            path=config[0],
+            methods=config[1],
+            response_model=config[2],
+            endpoint=func,
+        )
+
+    for path, wfunc in app.websocket_routes():
+        server.add_websocket_route(path, wfunc)
 
     return server
 

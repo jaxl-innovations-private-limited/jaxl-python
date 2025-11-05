@@ -191,7 +191,8 @@ def calls_tts(args: Dict[str, Any]) -> Response[Any]:
             auth_token=args.get("auth_token", None),
         ),
         json_body=CallTtsRequestRequest(
-            prompts=[pro for pro in args["prompt"].split(".") if len(pro.strip()) > 0]
+            prompts=[pro for pro in args["prompt"].split(".") if len(pro.strip()) > 0],
+            mark=args.get("mark", None),
         ),
     )
 
