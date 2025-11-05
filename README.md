@@ -27,6 +27,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Unmute a Participant in an Active Call](#unmute-a-participant-in-an-active-call)
    - [Hold a Participant in an Active Call](#hold-a-participant-in-an-active-call)
    - [Unhold a Participant in an Active Call](#unhold-a-participant-in-an-active-call)
+   - [Get call details](#get-call-details)
    - [Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs)
    - [Realtime Streaming Audio](#realtime-streaming-audio)
    - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
@@ -319,6 +320,12 @@ Unhold an agent in a call
 
 ```bash
 jaxl calls unhold --call-id 1235 --email <someone@mycompany.com>
+```
+
+### Get call details
+
+```bash
+jaxl calls get --call-id 1234
 ```
 
 ### Receive Call Events via Webhook IVRs
