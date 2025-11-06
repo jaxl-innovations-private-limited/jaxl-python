@@ -87,7 +87,7 @@ def ivrs_options_create(
                 appusers=args.get("appusers"),
                 collections=(
                     IVRCollectionRequest(
-                        type=IdEnum.VALUE_1,
+                        type=IdEnum.VALUE_2,
                         collection_ids=args["teams"],
                     )
                     if args.get("teams")

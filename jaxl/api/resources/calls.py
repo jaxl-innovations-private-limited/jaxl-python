@@ -128,6 +128,12 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
                 cta, value = parts[1].split("=", 1)
                 if cta not in IVR_CTA_KEYS or input_ not in IVR_INPUTS:
                     raise ValueError(f"Invalid CTA key {cta} or input {input_}")
+                if cta in (
+                    "devices",
+                    "appusers",
+                    "teams",
+                ):
+                    value = value.split(",")
                 inputs[input_] = (name, cta, value)
             ivr_id = ivrs_create_adhoc(message, inputs)
             if ivr_id is None:
