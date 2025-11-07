@@ -9,7 +9,7 @@ with or without modification, is strictly prohibited.
 
 import argparse
 import uuid
-from typing import Any, Dict, List, Optional, Tuple, cast
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
@@ -56,7 +56,7 @@ def calls_usage(args: Dict[str, Any]) -> Response[CallUsageResponse]:
 
 def ivrs_create_adhoc(
     message: str,
-    inputs: Optional[Dict[str, Tuple[str, str, str]]] = None,
+    inputs: Optional[Dict[str, Tuple[str, str, Union[List[str], str]]]] = None,
     hangup: bool = False,
 ) -> int:
     if (hangup is True and inputs is not None) or (hangup is False and inputs is None):
@@ -128,13 +128,20 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
                 cta, value = parts[1].split("=", 1)
                 if cta not in IVR_CTA_KEYS or input_ not in IVR_INPUTS:
                     raise ValueError(f"Invalid CTA key {cta} or input {input_}")
-                if cta in (
-                    "devices",
-                    "appusers",
-                    "teams",
-                ):
-                    value = value.split(",")
-                inputs[input_] = (name, cta, value)
+                inputs[input_] = (
+                    name,
+                    cta,
+                    (
+                        value.split(",")
+                        if cta
+                        in (
+                            "devices",
+                            "appusers",
+                            "teams",
+                        )
+                        else value
+                    ),
+                )
             ivr_id = ivrs_create_adhoc(message, inputs)
             if ivr_id is None:
                 raise ValueError("Unable to create ad-hoc IVR")
