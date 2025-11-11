@@ -218,7 +218,7 @@ def _start_server(
                 logger.warning(f"⚠️ send_audio failure: {exc}")
 
         app.send_audio = _send_audio  # type: ignore[method-assign]
-        app.clear_audio = _clear_audio
+        app.clear_audio = _clear_audio  # type: ignore[method-assign]
 
         # pylint: disable=too-many-nested-blocks
         try:
