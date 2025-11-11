@@ -261,3 +261,12 @@ class BaseJaxlApp:
         **kwargs: Any,
     ) -> Response[Any]:
         return calls_tts({"call_id": call_id, "prompt": prompt, "mark": mark})
+
+    async def send_audio(self, slin16: bytes) -> None:
+        """Send raw audio.
+
+        Only available with bidirectional streams.
+        """
+
+    async def clear_audio(self) -> None:
+        """Clear any buffered audio."""
