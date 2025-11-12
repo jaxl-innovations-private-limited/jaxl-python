@@ -194,6 +194,32 @@ def _start_server(
 
         await ws.accept()
 
+        async def _clear_audio() -> None:
+            try:
+                await ws.send_text(json.dumps({"event": "clear"}))
+            # pylint: disable=broad-exception-caught
+            except Exception as exc:
+                logger.warning(f"⚠️ clear_audio failure: {exc}")
+
+        async def _send_audio(slin16: bytes) -> None:
+            try:
+                await ws.send_text(
+                    json.dumps(
+                        {
+                            "event": "media",
+                            "media": {
+                                "payload": base64.b64encode(slin16).decode("ascii"),
+                            },
+                        }
+                    )
+                )
+            # pylint: disable=broad-exception-caught
+            except Exception as exc:
+                logger.warning(f"⚠️ send_audio failure: {exc}")
+
+        app.send_audio = _send_audio  # type: ignore[method-assign]
+        app.clear_audio = _clear_audio  # type: ignore[method-assign]
+
         # pylint: disable=too-many-nested-blocks
         try:
             while True:
