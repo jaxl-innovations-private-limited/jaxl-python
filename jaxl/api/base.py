@@ -27,6 +27,7 @@ from fastapi import WebSocket
 from fastapi.responses import Response as FastApiResponse
 from pydantic import BaseModel, model_validator
 
+from jaxl.api.client.models.call_tag_response import CallTagResponse
 from jaxl.api.client.types import Response
 from jaxl.api.resources.calls import calls_tts
 from jaxl.api.resources.ivrs import IVR_CTA_KEYS
@@ -262,11 +263,17 @@ class BaseJaxlApp:
     ) -> Response[Any]:
         return calls_tts({"call_id": call_id, "prompt": prompt, "mark": mark})
 
-    async def send_audio(self, slin16: bytes) -> None:
+    async def send_audio(self, call_id: int, slin16: bytes) -> None:
         """Send raw audio.
 
         Only available with bidirectional streams.
         """
 
-    async def clear_audio(self) -> None:
+    async def clear_audio(self, call_id: int) -> None:
         """Clear any buffered audio."""
+
+    async def hangup(self, call_id: int) -> Response[Any]:
+        """Hangup call by ID"""
+
+    async def add_tag(self, call_id: int, tag: str) -> Response[CallTagResponse]:
+        """Add tag to a call by ID."""
