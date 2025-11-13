@@ -274,6 +274,8 @@ class BaseJaxlApp:
 
     async def hangup(self, call_id: int) -> Response[Any]:
         """Hangup call by ID"""
+        raise NotImplementedError()
 
     async def add_tag(self, call_id: int, tag: str) -> Response[CallTagResponse]:
         """Add tag to a call by ID."""
+        raise NotImplementedError()
