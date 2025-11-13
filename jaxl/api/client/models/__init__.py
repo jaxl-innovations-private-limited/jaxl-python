@@ -22,6 +22,7 @@ from .call_add_request_request import CallAddRequestRequest
 from .call_cost import CallCost
 from .call_location_epoch import CallLocationEpoch
 from .call_metadata import CallMetadata
+from .call_tag_request import CallTagRequest
 from .call_tag_response import CallTagResponse
 from .call_token_request import CallTokenRequest
 from .call_token_response import CallTokenResponse
@@ -191,6 +192,7 @@ __all__ = (
     "CallCost",
     "CallLocationEpoch",
     "CallMetadata",
+    "CallTagRequest",
     "CallTagResponse",
     "CallTokenRequest",
     "CallTokenResponse",

@@ -34,7 +34,10 @@ from jaxl.api.base import (
     JaxlWebhookRequest,
     JaxlWebhookResponse,
 )
+from jaxl.api.client.models.call_tag_response import CallTagResponse
+from jaxl.api.client.types import Response
 from jaxl.api.resources.accounts import accounts_me
+from jaxl.api.resources.calls import calls_hangup, calls_tag_add
 from jaxl.api.resources.silence import SilenceDetector
 
 
@@ -129,6 +132,42 @@ def _start_server(
     ) -> None:
         asyncio.create_task(_ttask_done_callback_async(req, task, tsid))
 
+    wss: Dict[int, WebSocket] = {}
+
+    async def _add_tag(call_id: int, tag: str) -> Response[CallTagResponse]:
+        return calls_tag_add({"call_id": call_id, "tag": tag})
+
+    async def _hangup(call_id: int) -> Response[Any]:
+        return calls_hangup({"call_id": call_id})
+
+    async def _clear_audio(call_id: int) -> None:
+        try:
+            await wss[call_id].send_text(json.dumps({"event": "clear"}))
+        # pylint: disable=broad-exception-caught
+        except Exception as exc:
+            logger.warning(f"⚠️ clear_audio failure: {exc}")
+
+    async def _send_audio(call_id: int, slin16: bytes) -> None:
+        try:
+            await wss[call_id].send_text(
+                json.dumps(
+                    {
+                        "event": "media",
+                        "media": {
+                            "payload": base64.b64encode(slin16).decode("ascii"),
+                        },
+                    }
+                )
+            )
+        # pylint: disable=broad-exception-caught
+        except Exception as exc:
+            logger.warning(f"⚠️ send_audio failure: {exc}")
+
+    app.send_audio = _send_audio  # type: ignore[method-assign]
+    app.clear_audio = _clear_audio  # type: ignore[method-assign]
+    app.add_tag = _add_tag  # type: ignore[method-assign]
+    app.hangup = _hangup  # type: ignore[method-assign]
+
     @server.api_route(
         "/webhook/",
         methods=["POST", "DELETE"],
@@ -193,32 +232,7 @@ def _start_server(
         slin16s: List[bytes] = []
 
         await ws.accept()
-
-        async def _clear_audio() -> None:
-            try:
-                await ws.send_text(json.dumps({"event": "clear"}))
-            # pylint: disable=broad-exception-caught
-            except Exception as exc:
-                logger.warning(f"⚠️ clear_audio failure: {exc}")
-
-        async def _send_audio(slin16: bytes) -> None:
-            try:
-                await ws.send_text(
-                    json.dumps(
-                        {
-                            "event": "media",
-                            "media": {
-                                "payload": base64.b64encode(slin16).decode("ascii"),
-                            },
-                        }
-                    )
-                )
-            # pylint: disable=broad-exception-caught
-            except Exception as exc:
-                logger.warning(f"⚠️ send_audio failure: {exc}")
-
-        app.send_audio = _send_audio  # type: ignore[method-assign]
-        app.clear_audio = _clear_audio  # type: ignore[method-assign]
+        wss[state["call_id"]] = ws
 
         # pylint: disable=too-many-nested-blocks
         try:
@@ -276,6 +290,7 @@ def _start_server(
         except WebSocketDisconnect:
             pass
         finally:
+            del wss[state["call_id"]]
             if ws.client_state != WebSocketState.DISCONNECTED:
                 await ws.close()
 

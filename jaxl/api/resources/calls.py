@@ -14,8 +14,10 @@ from typing import Any, Dict, List, Optional, Tuple, Union, cast
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
+    v1_calls_hangup_retrieve,
     v1_calls_list,
     v1_calls_retrieve,
+    v1_calls_tags_create,
     v1_calls_token_create,
     v1_calls_tts_create,
     v1_calls_usage_retrieve,
@@ -24,6 +26,8 @@ from jaxl.api.client.models.call import Call
 from jaxl.api.client.models.call_add_request_request import (
     CallAddRequestRequest,
 )
+from jaxl.api.client.models.call_tag_request import CallTagRequest
+from jaxl.api.client.models.call_tag_response import CallTagResponse
 from jaxl.api.client.models.call_token_request import CallTokenRequest
 from jaxl.api.client.models.call_token_response import CallTokenResponse
 from jaxl.api.client.models.call_tts_request_request import (
@@ -226,8 +230,27 @@ def calls_tts(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
-# def calls_hangup(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
-#     pass
+def calls_tag_add(args: Dict[str, Any]) -> Response[CallTagResponse]:
+    return v1_calls_tags_create.sync_detailed(
+        call_id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallTagRequest(name=args["tag"]),
+    )
+
+
+def calls_hangup(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_hangup_retrieve.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+    )
 
 
 def _subparser(parser: argparse.ArgumentParser) -> None:
@@ -363,8 +386,14 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     calls_get_parser.set_defaults(func=calls_get, _arg_keys=["call_id"])
 
     # hangup
-    # calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup calls")
-    # calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=[])
+    calls_hangup_parser = subparsers.add_parser("hangup", help="Hangup call")
+    calls_hangup_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call ID",
+    )
+    calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=["call_id"])
 
     # transfer
 
@@ -416,3 +445,9 @@ class JaxlCallsSDK:
 
     def get(self, **kwargs: Any) -> Response[Call]:
         return calls_get(kwargs)
+
+    def add_tag(self, **kwargs: Any) -> Response[CallTagResponse]:
+        return calls_tag_add(kwargs)
+
+    def hangup(self, **kwargs: Any) -> Response[Any]:
+        return calls_hangup(kwargs)
