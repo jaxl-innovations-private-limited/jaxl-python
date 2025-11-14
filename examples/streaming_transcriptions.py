@@ -27,7 +27,7 @@ class JaxlAppStreamingTranscription(BaseJaxlApp):
             num_characters=-1,
         )
 
-    async def handle_speech_detection(self, speaking: bool) -> None:
+    async def handle_speech_detection(self, call_id: int, speaking: bool) -> None:
         print("🎙️" if speaking else "🤐")
 
     async def handle_transcription(

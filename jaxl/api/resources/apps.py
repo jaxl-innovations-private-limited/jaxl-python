@@ -250,7 +250,7 @@ def _start_server(
                     # Manage speech segments
                     if change is True:
                         speaking = change
-                        await app.handle_speech_detection(speaking)
+                        await app.handle_speech_detection(state["call_id"], speaking)
                         if len(slin16s) == 0:
                             # Silence just got detected, copy over
                             # last speech_frame_threshold of frames
@@ -260,7 +260,7 @@ def _start_server(
                         slin16s.append(slin16)
                     elif change is False:
                         speaking = change
-                        await app.handle_speech_detection(speaking)
+                        await app.handle_speech_detection(state["call_id"], speaking)
                         # print("🤐")
                         if len(slin16s) > 0:
                             # Invoke speech segment handlers

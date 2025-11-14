@@ -174,7 +174,7 @@ class BaseJaxlApp:
         """Invoked when a call ends."""
         return None
 
-    async def handle_speech_detection(self, speaking: bool) -> None:
+    async def handle_speech_detection(self, call_id: int, speaking: bool) -> None:
         """Invoked when speech starts and ends."""
         return None
 
