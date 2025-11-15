@@ -266,7 +266,9 @@ def attest() -> Optional[Dict[str, Any]]:
     """
     data_dir = os.path.join(str(pathlib.Path.home()), ".jaxl", "api")
     os.makedirs(data_dir, exist_ok=True)
-    attestation_path = Path(data_dir) / "attestation.json"
+    attestation_path = Path(data_dir) / os.environ.get(
+        "JAXL_ATTESTATION_FILE_NAME", "attestation.json"
+    )
     if attestation_path.exists():
         return cast(Dict[str, Any], json.loads(attestation_path.read_text()))
     attestation = _attest()
