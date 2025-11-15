@@ -26,6 +26,7 @@ from .call_tag_request import CallTagRequest
 from .call_tag_response import CallTagResponse
 from .call_token_request import CallTokenRequest
 from .call_token_response import CallTokenResponse
+from .call_transfer_request_request import CallTransferRequestRequest
 from .call_tts_request_request import CallTtsRequestRequest
 from .call_type_enum import CallTypeEnum
 from .call_usage_by_currency_response import CallUsageByCurrencyResponse
@@ -141,6 +142,7 @@ from .reaction_by import ReactionBy
 from .rental_currency_enum import RentalCurrencyEnum
 from .resource_enum import ResourceEnum
 from .shopify_auth_request_request import ShopifyAuthRequestRequest
+from .stripe_auth_request_request import StripeAuthRequestRequest
 from .user_agent import UserAgent
 from .user_agent_browser import UserAgentBrowser
 from .user_agent_device import UserAgentDevice
@@ -196,6 +198,7 @@ __all__ = (
     "CallTagResponse",
     "CallTokenRequest",
     "CallTokenResponse",
+    "CallTransferRequestRequest",
     "CallTtsRequestRequest",
     "CallTypeEnum",
     "CallUsageByCurrencyResponse",
@@ -303,6 +306,7 @@ __all__ = (
     "RentalCurrencyEnum",
     "ResourceEnum",
     "ShopifyAuthRequestRequest",
+    "StripeAuthRequestRequest",
     "UserAgent",
     "UserAgentBrowser",
     "UserAgentDevice",

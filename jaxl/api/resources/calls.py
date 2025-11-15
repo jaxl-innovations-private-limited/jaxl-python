@@ -19,6 +19,7 @@ from jaxl.api.client.api.v1 import (
     v1_calls_retrieve,
     v1_calls_tags_create,
     v1_calls_token_create,
+    v1_calls_transfer_create,
     v1_calls_tts_create,
     v1_calls_usage_retrieve,
 )
@@ -30,6 +31,9 @@ from jaxl.api.client.models.call_tag_request import CallTagRequest
 from jaxl.api.client.models.call_tag_response import CallTagResponse
 from jaxl.api.client.models.call_token_request import CallTokenRequest
 from jaxl.api.client.models.call_token_response import CallTokenResponse
+from jaxl.api.client.models.call_transfer_request_request import (
+    CallTransferRequestRequest,
+)
 from jaxl.api.client.models.call_tts_request_request import (
     CallTtsRequestRequest,
 )
@@ -41,6 +45,8 @@ from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
     IVR_CTA_KEYS,
     IVR_INPUTS,
+    add_next_or_cta_flags,
+    create_next_or_cta,
     ivrs_create,
     ivrs_options_create,
 )
@@ -253,6 +259,18 @@ def calls_hangup(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_transfer_create.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallTransferRequestRequest(next_or_cta=create_next_or_cta(args)),
+    )
+
+
 def _subparser(parser: argparse.ArgumentParser) -> None:
     """Manage Calls (Domestic & International Cellular, App-to-App)"""
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -396,6 +414,18 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     calls_hangup_parser.set_defaults(func=calls_hangup, _arg_keys=["call_id"])
 
     # transfer
+    calls_transfer_parser = subparsers.add_parser("transfer", help="Transfer call")
+    calls_transfer_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call ID",
+    )
+    _group = add_next_or_cta_flags(calls_transfer_parser)
+    calls_transfer_parser.set_defaults(
+        func=calls_transfer,
+        _arg_keys=["call_id"] + IVR_CTA_KEYS,
+    )
 
     # add
     # remove

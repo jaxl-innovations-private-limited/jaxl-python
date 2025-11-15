@@ -68,15 +68,8 @@ def ivrs_create(args: Dict[str, Any]) -> Response[IVRMenuResponse]:
     )
 
 
-def ivrs_options_create(
-    args: Dict[str, Any],
-) -> Response[Union[IVROptionsInvalidResponse, IVROptionsResponse]]:
-    client = jaxl_api_client(
-        JaxlApiModule.CALL,
-        credentials=args.get("credentials", None),
-        auth_token=args.get("auth_token", None),
-    )
-    next_or_cta = (
+def create_next_or_cta(args: Dict[str, Any]) -> NextOrCTARequest:
+    return (
         NextOrCTARequest(next_=args["next_"], cta=None)
         if args.get("next_", None) is not None
         else NextOrCTARequest(
@@ -97,6 +90,17 @@ def ivrs_options_create(
             ),
         )
     )
+
+
+def ivrs_options_create(
+    args: Dict[str, Any],
+) -> Response[Union[IVROptionsInvalidResponse, IVROptionsResponse]]:
+    client = jaxl_api_client(
+        JaxlApiModule.CALL,
+        credentials=args.get("credentials", None),
+        auth_token=args.get("auth_token", None),
+    )
+    next_or_cta = create_next_or_cta(args)
 
     # Check whether this args["input_"] is already configured for IVR.
     # Accordingly, either patch or create.
@@ -174,6 +178,19 @@ IVR_INPUTS = (
 )
 
 
+def add_next_or_cta_flags(
+    parser: argparse.ArgumentParser,
+) -> argparse._MutuallyExclusiveGroup:
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--phone", type=str, help="Send to a phone number")
+    group.add_argument("--devices", type=int, nargs="+", help="Send to devices")
+    group.add_argument("--appusers", type=int, nargs="+", help="Send to app users")
+    group.add_argument("--teams", type=int, nargs="+", help="Send to teams")
+    group.add_argument("--webhook", type=str, help="Send to a webhook URL")
+    group.add_argument("--next", type=int, dest="next_", help="Next IVR ID")
+    return group
+
+
 def _options_subparser(parser: argparse.ArgumentParser) -> None:
     """Returns ivr options resource subparser."""
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -201,13 +218,7 @@ def _options_subparser(parser: argparse.ArgumentParser) -> None:
         type=str,
         help="Message to speak when referencing this option",
     )
-    group = options_configure_ivr.add_mutually_exclusive_group(required=True)
-    group.add_argument("--phone", type=str, help="Send to a phone number")
-    group.add_argument("--devices", type=int, nargs="+", help="Send to devices")
-    group.add_argument("--appusers", type=int, nargs="+", help="Send to app users")
-    group.add_argument("--teams", type=int, nargs="+", help="Send to teams")
-    group.add_argument("--webhook", type=str, help="Send to a webhook URL")
-    group.add_argument("--next", type=int, dest="next_", help="Next IVR ID")
+    _group = add_next_or_cta_flags(options_configure_ivr)
     options_configure_ivr.set_defaults(
         func=ivrs_options_create,
         _arg_keys=[

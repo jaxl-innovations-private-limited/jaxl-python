@@ -16,6 +16,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
     from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
     from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
+    from ..models.stripe_auth_request_request import StripeAuthRequestRequest
 
 
 T = TypeVar("T", bound="IntegrationsPropertiesRequest")
@@ -27,10 +28,12 @@ class IntegrationsPropertiesRequest:
     Attributes:
         shopify (Union[Unset, None, ShopifyAuthRequestRequest]):
         exotel (Union[Unset, None, ExotelAuthRequestRequest]):
+        stripe (Union[Unset, None, StripeAuthRequestRequest]):
     """
 
     shopify: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
     exotel: Union[Unset, None, "ExotelAuthRequestRequest"] = UNSET
+    stripe: Union[Unset, None, "StripeAuthRequestRequest"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -42,6 +45,10 @@ class IntegrationsPropertiesRequest:
         if not isinstance(self.exotel, Unset):
             exotel = self.exotel.to_dict() if self.exotel else None
 
+        stripe: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.stripe, Unset):
+            stripe = self.stripe.to_dict() if self.stripe else None
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -49,6 +56,8 @@ class IntegrationsPropertiesRequest:
             field_dict["shopify"] = shopify
         if exotel is not UNSET:
             field_dict["exotel"] = exotel
+        if stripe is not UNSET:
+            field_dict["stripe"] = stripe
 
         return field_dict
 
@@ -56,6 +65,7 @@ class IntegrationsPropertiesRequest:
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
         from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
+        from ..models.stripe_auth_request_request import StripeAuthRequestRequest
 
         d = src_dict.copy()
         _shopify = d.pop("shopify", UNSET)
@@ -76,9 +86,19 @@ class IntegrationsPropertiesRequest:
         else:
             exotel = ExotelAuthRequestRequest.from_dict(_exotel)
 
+        _stripe = d.pop("stripe", UNSET)
+        stripe: Union[Unset, None, StripeAuthRequestRequest]
+        if _stripe is None:
+            stripe = None
+        elif isinstance(_stripe, Unset):
+            stripe = UNSET
+        else:
+            stripe = StripeAuthRequestRequest.from_dict(_stripe)
+
         integrations_properties_request = cls(
             shopify=shopify,
             exotel=exotel,
+            stripe=stripe,
         )
 
         integrations_properties_request.additional_properties = d
