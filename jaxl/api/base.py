@@ -56,6 +56,7 @@ class JaxlWebhookState(BaseModel):
     org: Optional[JaxlOrg]
     metadata: Optional[Dict[str, Any]]
     greeting_message: Optional[str]
+    options: Optional[Dict[str, Any]]
 
 
 class JaxlWebhookRequest(BaseModel):
