@@ -290,7 +290,8 @@ def _start_server(
         except WebSocketDisconnect:
             pass
         finally:
-            del wss[state["call_id"]]
+            if state["call_id"] in wss:
+                del wss[state["call_id"]]
             if ws.client_state != WebSocketState.DISCONNECTED:
                 await ws.close()
 
