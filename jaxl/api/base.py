@@ -264,14 +264,16 @@ class BaseJaxlApp:
     ) -> Response[Any]:
         return calls_tts({"call_id": call_id, "prompt": prompt, "mark": mark})
 
-    async def send_audio(self, call_id: int, slin16: bytes) -> None:
+    async def send_audio(self, call_id: int, slin16: bytes) -> bool:
         """Send raw audio.
 
         Only available with bidirectional streams.
         """
+        return False
 
-    async def clear_audio(self, call_id: int) -> None:
+    async def clear_audio(self, call_id: int) -> bool:
         """Clear any buffered audio."""
+        return False
 
     async def hangup(self, call_id: int) -> Optional[Response[Any]]:
         """Hangup call by ID"""

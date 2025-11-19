@@ -140,14 +140,16 @@ def _start_server(
     async def _hangup(call_id: int) -> Response[Any]:
         return calls_hangup({"call_id": call_id})
 
-    async def _clear_audio(call_id: int) -> None:
+    async def _clear_audio(call_id: int) -> bool:
         try:
             await wss[call_id].send_text(json.dumps({"event": "clear"}))
+            return True
         # pylint: disable=broad-exception-caught
         except Exception as exc:
             logger.warning(f"⚠️ clear_audio failure: {exc}")
+            return False
 
-    async def _send_audio(call_id: int, slin16: bytes) -> None:
+    async def _send_audio(call_id: int, slin16: bytes) -> bool:
         try:
             await wss[call_id].send_text(
                 json.dumps(
@@ -159,9 +161,11 @@ def _start_server(
                     }
                 )
             )
+            return True
         # pylint: disable=broad-exception-caught
         except Exception as exc:
             logger.warning(f"⚠️ send_audio failure: {exc}")
+            return False
 
     app.send_audio = _send_audio  # type: ignore[method-assign]
     app.clear_audio = _clear_audio  # type: ignore[method-assign]
