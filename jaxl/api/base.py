@@ -45,6 +45,7 @@ class JaxlWebhookEvent(Enum):
 
 
 class JaxlOrg(BaseModel):
+    id: Optional[int] = None
     name: str
 
 
