@@ -16,6 +16,7 @@ from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
     v1_calls_hangup_retrieve,
     v1_calls_list,
+    v1_calls_report_retrieve,
     v1_calls_retrieve,
     v1_calls_tags_create,
     v1_calls_token_create,
@@ -40,6 +41,9 @@ from jaxl.api.client.models.call_tts_request_request import (
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
+from jaxl.api.client.models.v1_calls_report_retrieve_fields_item import (
+    V1CallsReportRetrieveFieldsItem,
+)
 from jaxl.api.client.types import Response, Unset
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
@@ -259,6 +263,17 @@ def calls_hangup(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+def calls_report(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_report_retrieve.sync_detailed(
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        fields=args.get("fields", None),
+    )
+
+
 def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
     return v1_calls_transfer_create.sync_detailed(
         id=args["call_id"],
@@ -427,6 +442,28 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         _arg_keys=["call_id"] + IVR_CTA_KEYS,
     )
 
+    # report
+    DEFAULT_REPORT_FIELDS = [
+        V1CallsReportRetrieveFieldsItem.ID,
+        V1CallsReportRetrieveFieldsItem.DURATION,
+        V1CallsReportRetrieveFieldsItem.ACTOR,
+        V1CallsReportRetrieveFieldsItem.RECORDING_URL,
+        V1CallsReportRetrieveFieldsItem.DIRECTION,
+        V1CallsReportRetrieveFieldsItem.FROM_NUMBER,
+        V1CallsReportRetrieveFieldsItem.TO_NUMBER,
+        V1CallsReportRetrieveFieldsItem.TAGS,
+    ]
+    calls_report_parser = subparsers.add_parser("report", help="Give call report")
+
+    calls_report_parser.add_argument(
+        "--fields",
+        nargs="*",
+        type=str,
+        required=False,
+        default=DEFAULT_REPORT_FIELDS,
+        help="List of report fields. Defaults to: %(default)s",
+    )
+    calls_report_parser.set_defaults(func=calls_report, _arg_keys=["fields"])
     # add
     # remove
 
