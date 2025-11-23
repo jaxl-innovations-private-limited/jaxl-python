@@ -259,11 +259,15 @@ def _start_server(
                             # Silence just got detected, copy over
                             # last speech_frame_threshold of frames
                             slin16s = list(buffer)
+                            if len(slin16s) > 0:
+                                await app.handle_speech_chunks(req, slin16s)
                             # print("💿")
                         # print("🎙️")
                         slin16s.append(slin16)
+                        await app.handle_speech_chunks(req, [slin16])
                     elif change is False:
                         speaking = change
+                        await app.handle_speech_chunks(req, [slin16])
                         await app.handle_speech_detection(state["call_id"], speaking)
                         # print("🤐")
                         if len(slin16s) > 0:
@@ -284,6 +288,7 @@ def _start_server(
                     else:
                         assert change is None
                         if speaking is True:
+                            await app.handle_speech_chunks(req, [slin16])
                             slin16s.append(slin16)
                         else:
                             assert speaking is False

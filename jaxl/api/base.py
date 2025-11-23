@@ -187,6 +187,13 @@ class BaseJaxlApp:
     ) -> None:
         return None
 
+    async def handle_speech_chunks(
+        self,
+        req: JaxlStreamRequest,
+        slin16s: List[bytes],
+    ) -> None:
+        pass
+
     async def handle_speech_segment(
         self,
         req: JaxlStreamRequest,
