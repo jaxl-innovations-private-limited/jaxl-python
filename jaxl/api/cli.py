@@ -15,6 +15,7 @@ import pkgutil
 
 from jaxl.api import resources
 from jaxl.api._client import attest
+from jaxl.api.client.types import Response
 
 
 def _init_subparsers(
@@ -47,7 +48,11 @@ def main() -> None:
     args = parser.parse_args()
     attest()
     arguments = {k: getattr(args, k) for k in getattr(args, "_arg_keys", [])}
-    print(args.func(arguments))
+    response = args.func(arguments)
+    if not isinstance(response, Response):
+        print(response)
+    else:
+        print(response.parsed)
 
 
 def entry_point() -> None:
