@@ -13,7 +13,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
-from jaxl.api._client import JaxlApiModule, jaxl_api_client
+from jaxl.api._client import JaxlApiModule, encrypt, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
     v1_calls_hangup_retrieve,
@@ -290,7 +290,7 @@ def calls_message(args: Dict[str, Any]) -> Response[Any]:
             auth_token=args.get("auth_token", None),
         ),
         json_body=CallMessageRequestRequest(
-            text=args["text"],
+            text=encrypt(args["text"]),
             timestamp=datetime.fromtimestamp(
                 args.get("epoch", None) or time.time(),
                 tz=timezone.utc,
