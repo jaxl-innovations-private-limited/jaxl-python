@@ -8,14 +8,17 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
+import time
 import uuid
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
-from jaxl.api._client import JaxlApiModule, jaxl_api_client
+from jaxl.api._client import JaxlApiModule, encrypt, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
     v1_calls_hangup_retrieve,
     v1_calls_list,
+    v1_calls_messages_create,
     v1_calls_retrieve,
     v1_calls_tags_create,
     v1_calls_token_create,
@@ -26,6 +29,12 @@ from jaxl.api.client.api.v1 import (
 from jaxl.api.client.models.call import Call
 from jaxl.api.client.models.call_add_request_request import (
     CallAddRequestRequest,
+)
+from jaxl.api.client.models.call_message_request_request import (
+    CallMessageRequestRequest,
+)
+from jaxl.api.client.models.call_message_request_type_enum import (
+    CallMessageRequestTypeEnum,
 )
 from jaxl.api.client.models.call_tag_request import CallTagRequest
 from jaxl.api.client.models.call_tag_response import CallTagResponse
@@ -40,6 +49,7 @@ from jaxl.api.client.models.call_tts_request_request import (
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
+from jaxl.api.client.models.why_enum import WhyEnum
 from jaxl.api.client.types import Response, Unset
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
@@ -271,6 +281,30 @@ def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+def calls_message(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_messages_create.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallMessageRequestRequest(
+            text=encrypt(args["text"]),
+            timestamp=datetime.fromtimestamp(
+                args.get("epoch", None) or time.time(),
+                tz=timezone.utc,
+            ),
+            why=WhyEnum[cast(str, args["direction"]).upper()],
+            type=(
+                CallMessageRequestTypeEnum.VALUE_1
+                if args["type"] == "chat"
+                else CallMessageRequestTypeEnum.VALUE_10
+            ),
+        ),
+    )
+
+
 def _subparser(parser: argparse.ArgumentParser) -> None:
     """Manage Calls (Domestic & International Cellular, App-to-App)"""
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -427,6 +461,52 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         _arg_keys=["call_id"] + IVR_CTA_KEYS,
     )
 
+    # message
+    calls_message_parser = subparsers.add_parser("message", help="Add message to call")
+    calls_message_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call ID",
+    )
+    calls_message_parser.add_argument(
+        "--text",
+        type=str,
+        required=True,
+        help="Message text",
+    )
+    calls_message_parser.add_argument(
+        "--type",
+        type=str,
+        choices=["chat", "note"],
+        required=True,
+        help="Message type",
+    )
+    calls_message_parser.add_argument(
+        "--direction",
+        type=str,
+        choices=["sent", "rcvd"],
+        required=True,
+        help="Message direction",
+    )
+    calls_message_parser.add_argument(
+        "--epoch",
+        type=float,
+        required=False,
+        help="Provide timestamp when this message was originally generated.  "
+        + "If not provided, current epoch will be used",
+    )
+    calls_message_parser.set_defaults(
+        func=calls_message,
+        _arg_keys=[
+            "call_id",
+            "text",
+            "type",
+            "direction",
+            "epoch",
+        ],
+    )
+
     # add
     # remove
 
@@ -481,3 +561,6 @@ class JaxlCallsSDK:
 
     def hangup(self, **kwargs: Any) -> Response[Any]:
         return calls_hangup(kwargs)
+
+    def message(self, **kwargs: Any) -> Response[Any]:
+        return calls_message(kwargs)

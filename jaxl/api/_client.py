@@ -299,6 +299,16 @@ def _attest() -> Optional[Dict[str, Any]]:
     return response
 
 
+def encrypt(text: str) -> str:
+    attestation = attest()
+    assert attestation and "sk" in attestation
+    return (
+        Fernet(attestation["sk"])
+        .encrypt(json.dumps(text).encode("utf-8"))
+        .decode("utf-8")
+    )
+
+
 class JaxlApiModule(Enum):
     """Available API Modules"""
 
