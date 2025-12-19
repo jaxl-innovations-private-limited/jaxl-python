@@ -21,7 +21,12 @@ from .call import Call
 from .call_add_request_request import CallAddRequestRequest
 from .call_cost import CallCost
 from .call_location_epoch import CallLocationEpoch
+from .call_message_request_request import CallMessageRequestRequest
+from .call_message_request_type_enum import CallMessageRequestTypeEnum
 from .call_metadata import CallMetadata
+from .call_report import CallReport
+from .call_report_reason import CallReportReason
+from .call_report_status_enum import CallReportStatusEnum
 from .call_tag_request import CallTagRequest
 from .call_tag_response import CallTagResponse
 from .call_token_request import CallTokenRequest
@@ -151,6 +156,8 @@ from .user_agent_platform import UserAgentPlatform
 from .user_identity import UserIdentity
 from .v1_app_organizations_list_status_item import V1AppOrganizationsListStatusItem
 from .v1_calls_list_direction import V1CallsListDirection
+from .v1_calls_report_retrieve_date_range import V1CallsReportRetrieveDateRange
+from .v1_calls_report_retrieve_fields_item import V1CallsReportRetrieveFieldsItem
 from .v1_campaign_list_status_item import V1CampaignListStatusItem
 from .v1_customer_consumables_retrieve_currency import (
     V1CustomerConsumablesRetrieveCurrency,
@@ -179,6 +186,7 @@ from .v3_orders_subscriptions_list_currency import V3OrdersSubscriptionsListCurr
 from .v3_orders_subscriptions_list_status_item import (
     V3OrdersSubscriptionsListStatusItem,
 )
+from .why_enum import WhyEnum
 
 __all__ = (
     "AddressProvider",
@@ -193,7 +201,12 @@ __all__ = (
     "CallAddRequestRequest",
     "CallCost",
     "CallLocationEpoch",
+    "CallMessageRequestRequest",
+    "CallMessageRequestTypeEnum",
     "CallMetadata",
+    "CallReport",
+    "CallReportReason",
+    "CallReportStatusEnum",
     "CallTagRequest",
     "CallTagResponse",
     "CallTokenRequest",
@@ -315,6 +328,8 @@ __all__ = (
     "UserIdentity",
     "V1AppOrganizationsListStatusItem",
     "V1CallsListDirection",
+    "V1CallsReportRetrieveDateRange",
+    "V1CallsReportRetrieveFieldsItem",
     "V1CampaignListStatusItem",
     "V1CustomerConsumablesRetrieveCurrency",
     "V1IvrListDuration",
@@ -331,4 +346,5 @@ __all__ = (
     "V2AppOrganizationsEmployeesListStatusItem",
     "V3OrdersSubscriptionsListCurrency",
     "V3OrdersSubscriptionsListStatusItem",
+    "WhyEnum",
 )
