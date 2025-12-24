@@ -15,7 +15,8 @@ Jaxl SDK Apps implements [`BaseJaxlApp`](https://github.com/jaxl-innovations-pri
    - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
    - [Realtime Streaming Transcriptions per Speech Segment](#realtime-streaming-transcriptions-per-speech-segment)
    - [AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS](#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts)
-4. [Production](#production)
+4. [Conversational AI Agents](#conversational-ai-agents)
+5. [Production](#production)
 
 ## Setup
 
@@ -140,6 +141,25 @@ pip install -U jaxl-python[silence,transcribe]
 export JAXL_OLLAMA_URL=https://<llm.domain>/api/chat
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAIAgent --transcribe
 ```
+
+## Conversational AI Agents
+
+When building conversational AI agents i.e. your app is expecting no IVR style DTMF inputs,
+also add `&conv` to your app URL.
+
+This will signal Jaxl Calling Infrastructure to not enforce certain rules only eligible for a classic IVR flow e.g. prompting the user when no input is received within timeout seconds.
+
+NOTE: By default, Jaxl Calling Infrastructure assumes your app will return a prompt (text) to speak out in response from `handle_setup` method. For conversational AI agents, your AI agent likely won't be immediately ready with a response. For such scenarios, continue returning sample response below:
+
+```python
+async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
+   # Asynchronously initialize your AI Agent here
+   # ...
+   return JaxlWebhookResponse(prompt=["."], num_characters=-1)
+```
+
+- Returning `.` doesn't result in a speech
+- `num_characters=-1` is currently mandatory for conversational bots because your app is expecting zero DTMF inputs
 
 ## Production
 

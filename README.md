@@ -65,7 +65,7 @@ positional arguments:
     members             Manage Members
     messages            Manage Messages (SMS, WA, RCS, Email, App-to-App)
     notifications       Manage Notifications (Android, iOS, Web)
-    orgs                Manage Accounts
+    orgs                Manage Organizations
     payments            Manage Payments
     phones              Manage Phones (Landline, Mobile, TollFree)
     teams               Manage Teams (Managers, Phones)
