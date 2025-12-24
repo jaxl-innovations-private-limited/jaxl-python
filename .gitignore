@@ -34,3 +34,4 @@ schema.yaml
 jaxl-api-credentials*.json
 docs
 jaxlapi.sh
+*.py.orig
