@@ -538,7 +538,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         "--path",
         type=str,
         required=True,
-        help="Recording download path",
+        help="WAV recording download path",
     )
     calls_audio_parser.set_defaults(func=calls_audio, _arg_keys=["call_id", "path"])
 
