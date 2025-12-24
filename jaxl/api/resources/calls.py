@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union, cast
 from jaxl.api._client import JaxlApiModule, encrypt, jaxl_api_client
 from jaxl.api.client.api.v1 import (
     v1_calls_add_create,
+    v1_calls_audio_retrieve,
     v1_calls_hangup_retrieve,
     v1_calls_list,
     v1_calls_messages_create,
@@ -30,6 +31,7 @@ from jaxl.api.client.models.call import Call
 from jaxl.api.client.models.call_add_request_request import (
     CallAddRequestRequest,
 )
+from jaxl.api.client.models.call_audio_reason import CallAudioReason
 from jaxl.api.client.models.call_message_request_request import (
     CallMessageRequestRequest,
 )
@@ -305,6 +307,23 @@ def calls_message(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+def calls_audio(args: Dict[str, Any]) -> Response[Any | CallAudioReason]:
+    assert "call_id" in args and "path" in args
+    response = v1_calls_audio_retrieve.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+    )
+    if response.status_code != 200:
+        return response
+    with open(args["path"], "wb+") as recording:
+        recording.write(response.content)
+    return response
+
+
 def _subparser(parser: argparse.ArgumentParser) -> None:
     """Manage Calls (Domestic & International Cellular, App-to-App)"""
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -506,6 +525,22 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "epoch",
         ],
     )
+
+    # audio
+    calls_audio_parser = subparsers.add_parser("audio", help="Download call recording")
+    calls_audio_parser.add_argument(
+        "--call-id",
+        type=int,
+        required=True,
+        help="Call ID",
+    )
+    calls_audio_parser.add_argument(
+        "--path",
+        type=str,
+        required=True,
+        help="WAV recording download path",
+    )
+    calls_audio_parser.set_defaults(func=calls_audio, _arg_keys=["call_id", "path"])
 
     # add
     # remove
