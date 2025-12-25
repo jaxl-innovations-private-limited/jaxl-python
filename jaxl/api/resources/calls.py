@@ -599,3 +599,6 @@ class JaxlCallsSDK:
 
     def message(self, **kwargs: Any) -> Response[Any]:
         return calls_message(kwargs)
+
+    def audio(self, **kwargs: Any) -> Response[Any | CallAudioReason]:
+        return calls_audio(kwargs)
