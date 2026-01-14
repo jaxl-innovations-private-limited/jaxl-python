@@ -38,19 +38,26 @@ from .call_type_enum import CallTypeEnum
 from .call_usage_by_currency_response import CallUsageByCurrencyResponse
 from .call_usage_response import CallUsageResponse
 from .call_usage_stats_response import CallUsageStatsResponse
+from .campaign import Campaign
 from .campaign_metadata import CampaignMetadata
 from .campaign_metadata_metadata import CampaignMetadataMetadata
 from .campaign_response import CampaignResponse
 from .campaign_response_status_enum import CampaignResponseStatusEnum
 from .campaign_stats import CampaignStats
 from .campaign_tag import CampaignTag
+from .campaign_upload_request import CampaignUploadRequest
+from .campaign_upload_request_options import CampaignUploadRequestOptions
+from .campaign_upload_type_enum import CampaignUploadTypeEnum
+from .campaign_window_request import CampaignWindowRequest
 from .can_user_resubscribe_plan import CanUserResubscribePlan
 from .canceled_by_enum import CanceledByEnum
 from .capabilities import Capabilities
 from .connection import Connection
+from .content_type_enum import ContentTypeEnum
 from .country import Country
 from .cta import CTA
 from .cta_request import CTARequest
+from .cta_type_enum import CtaTypeEnum
 from .currency_enum import CurrencyEnum
 from .customer_consumable_total import CustomerConsumableTotal
 from .customer_order_subscriptions_serializer_v2 import (
@@ -219,19 +226,26 @@ __all__ = (
     "CallUsageByCurrencyResponse",
     "CallUsageResponse",
     "CallUsageStatsResponse",
+    "Campaign",
     "CampaignMetadata",
     "CampaignMetadataMetadata",
     "CampaignResponse",
     "CampaignResponseStatusEnum",
     "CampaignStats",
     "CampaignTag",
+    "CampaignUploadRequest",
+    "CampaignUploadRequestOptions",
+    "CampaignUploadTypeEnum",
+    "CampaignWindowRequest",
     "CanceledByEnum",
     "CanUserResubscribePlan",
     "Capabilities",
     "Connection",
+    "ContentTypeEnum",
     "Country",
     "CTA",
     "CTARequest",
+    "CtaTypeEnum",
     "CurrencyEnum",
     "CustomerConsumableTotal",
     "CustomerOrderSubscriptionsSerializerV2",
