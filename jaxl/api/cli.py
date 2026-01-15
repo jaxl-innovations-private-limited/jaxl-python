@@ -52,7 +52,7 @@ def main() -> None:
     if not isinstance(response, Response):
         print(response)
     else:
-        print(response.parsed)
+        print(response.parsed or response.content)
 
 
 def entry_point() -> None:
