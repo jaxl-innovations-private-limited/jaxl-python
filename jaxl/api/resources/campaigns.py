@@ -106,7 +106,7 @@ def campaigns_create(args: Dict[str, Any]) -> Response[Campaign]:
             run_at=UNSET,
             recharge=total_recharge.parsed.signed,
             currency=currency,
-            template=UNSET,
+            template=args["template"],
             window=CampaignWindowRequest(
                 start=args["start_time"],
                 end=args["end_time"],
@@ -192,12 +192,18 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         default="Asia/Kolkata",
         help="Campaign window timezone",
     )
+    campaign_create_parser.add_argument(
+        "--template",
+        type=str,
+        required=True,
+        help="Greeting or Prompt template to use",
+    )
     group = campaign_create_parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "--ai-id",
         type=str,
         required=False,
-        choices=["cod", "ndr", "acart", "feedback"],
+        choices=["custom", "cod", "ndr", "acart", "feedback"],
         help="AI Agent ID",
     )
     group.add_argument(
@@ -229,6 +235,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "start_time",
             "end_time",
             "timezone",
+            "template",
         ],
     )
 
