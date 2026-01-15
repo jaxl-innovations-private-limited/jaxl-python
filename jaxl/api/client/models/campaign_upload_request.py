@@ -19,8 +19,11 @@ from ..models.campaign_upload_type_enum import CampaignUploadTypeEnum
 from ..models.content_type_enum import ContentTypeEnum
 from ..types import UNSET, File, Unset
 
+
 if TYPE_CHECKING:
-    from ..models.campaign_upload_request_options import CampaignUploadRequestOptions
+    from ..models.campaign_upload_request_options import (
+        CampaignUploadRequestOptions,
+    )
     from ..models.campaign_window_request import CampaignWindowRequest
 
 
@@ -149,7 +152,7 @@ class CampaignUploadRequest:
             window = (
                 (None, json.dumps(self.window.to_dict()).encode(), "application/json")
                 if self.window
-                else None
+                else window
             )
 
         auto_retry = (
@@ -167,7 +170,7 @@ class CampaignUploadRequest:
             options = (
                 (None, json.dumps(self.options.to_dict()).encode(), "application/json")
                 if self.options
-                else None
+                else options
             )
 
         field_dict: Dict[str, Any] = {}
