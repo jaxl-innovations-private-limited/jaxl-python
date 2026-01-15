@@ -107,9 +107,13 @@ def campaigns_create(args: Dict[str, Any]) -> Response[Campaign]:
             recharge=total_recharge.parsed.signed,
             currency=currency,
             template=UNSET,
-            window=CampaignWindowRequest(start="09:00", end="19:00", tz="Asia/Kolkata"),
-            auto_retry=True,
-            cc="IN",
+            window=CampaignWindowRequest(
+                start=args["start_time"],
+                end=args["end_time"],
+                tz=args["timezone"],
+            ),
+            auto_retry=args["auto_retry"],
+            cc=args["country_code"],
             options=CampaignUploadRequestOptions(),
         ),
     )
@@ -158,6 +162,36 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         choices=["ai", "ivr", "team", "member"],
         help="Type of campaign to run.  One of the below flag must be provided accordingly",
     )
+    campaign_create_parser.add_argument(
+        "--country-code",
+        type=str,
+        required=True,
+        help="Default country code. "
+        + "Used when phone number does not contain a country code. e.g. IN, US, ...",
+    )
+    campaign_create_parser.add_argument(
+        "--auto-retry",
+        action="store_true",
+        help="Automatically retry missed, failed and no-response targets",
+    )
+    campaign_create_parser.add_argument(
+        "--start-time",
+        type=str,
+        default="09:00",
+        help="Campaign window start time",
+    )
+    campaign_create_parser.add_argument(
+        "--end-time",
+        type=str,
+        default="19:00",
+        help="Campaign window end time",
+    )
+    campaign_create_parser.add_argument(
+        "--timezone",
+        type=str,
+        default="Asia/Kolkata",
+        help="Campaign window timezone",
+    )
     group = campaign_create_parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
         "--ai-id",
@@ -183,7 +217,19 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     )
     campaign_create_parser.set_defaults(
         func=campaigns_create,
-        _arg_keys=["path", "type", "ai_id", "ivr_id", "team_id", "email"],
+        _arg_keys=[
+            "path",
+            "type",
+            "ai_id",
+            "ivr_id",
+            "team_id",
+            "email",
+            "country_code",
+            "auto_retry",
+            "start_time",
+            "end_time",
+            "timezone",
+        ],
     )
 
 
