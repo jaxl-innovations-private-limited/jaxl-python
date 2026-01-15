@@ -299,7 +299,7 @@ def _attest() -> Optional[Dict[str, Any]]:
     return response
 
 
-def encrypt(text: str) -> str:
+def encrypt(text: Any) -> str:
     attestation = attest()
     assert attestation and "sk" in attestation
     return (

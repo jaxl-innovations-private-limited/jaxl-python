@@ -8,9 +8,11 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
+import io
+from pathlib import Path
 from typing import Any, Dict
 
-from jaxl.api._client import JaxlApiModule, jaxl_api_client
+from jaxl.api._client import JaxlApiModule, encrypt, jaxl_api_client
 from jaxl.api.client.api.v1 import v1_campaign_list, v1_campaign_upload_create
 from jaxl.api.client.models.campaign import Campaign
 from jaxl.api.client.models.campaign_upload_request import (
@@ -29,15 +31,67 @@ from jaxl.api.client.models.content_type_enum import ContentTypeEnum
 from jaxl.api.client.models.paginated_campaign_response_list import (
     PaginatedCampaignResponseList,
 )
-from jaxl.api.client.types import File, Response
+from jaxl.api.client.types import UNSET, File, Response
 from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
+from jaxl.api.resources.orgs import first_org_id
 from jaxl.api.resources.payments import payments_get_total_recharge
 
 
 def campaigns_create(args: Dict[str, Any]) -> Response[Campaign]:
-    total_recharge = payments_get_total_recharge({"currency": 2})
+    currency = 2
+    total_recharge = payments_get_total_recharge({"currency": currency})
     if total_recharge.status_code != 200 or total_recharge.parsed is None:
         raise ValueError("Unable to fetch total recharge")
+
+    # content_type
+    content_type = ContentTypeEnum.CSV
+
+    # type
+    ttype: CampaignUploadTypeEnum
+    if args["type"] == "ai":
+        ttype = CampaignUploadTypeEnum.AIAGENT
+    elif args["type"] == "ivr":
+        ttype = CampaignUploadTypeEnum.MARKETPLACE
+    elif args["type"] == "team":
+        ttype = CampaignUploadTypeEnum.ORGANIZATION_GROUP
+    elif args["type"] == "member":
+        ttype = CampaignUploadTypeEnum.ORGANIZATION_EMPLOYEE
+    else:
+        raise ValueError("Invalid type")
+
+    # type options
+    if ttype == CampaignUploadTypeEnum.AIAGENT and args.get("ai_id") is None:
+        raise ValueError("Must use --ai-id with type=ai")
+    if ttype == CampaignUploadTypeEnum.MARKETPLACE and args.get("ivr_id") is None:
+        raise ValueError("Must use --ivr-id with type=ivr")
+    if (
+        ttype == CampaignUploadTypeEnum.ORGANIZATION_GROUP
+        and args.get("team_id") is None
+    ):
+        raise ValueError("Must use --team-id with type=team")
+    if (
+        ttype == CampaignUploadTypeEnum.ORGANIZATION_EMPLOYEE
+        and args.get("email") is None
+    ):
+        raise ValueError("Must use --email with type=member")
+
+    # jaxl_id
+    jaxl_id: Dict[str, Any]
+    if ttype == CampaignUploadTypeEnum.AIAGENT:
+        jaxl_id = {"o": "aiagent", "i": args["ai_id"], "oid": first_org_id()}
+    else:
+        raise ValueError("Not implemented")
+
+    # specification
+    spec_path = Path(args["path"])
+    payload = io.BytesIO(spec_path.read_bytes())
+    payload.seek(0)
+    specification = File(
+        payload=payload,
+        file_name=spec_path.name,
+        mime_type="text/csv",
+    )
+
     return v1_campaign_upload_create.sync_detailed(
         client=jaxl_api_client(
             JaxlApiModule.CALL,
@@ -45,18 +99,18 @@ def campaigns_create(args: Dict[str, Any]) -> Response[Campaign]:
             auth_token=args.get("auth_token", None),
         ),
         multipart_data=CampaignUploadRequest(
-            specification=File(),
-            content_type=ContentTypeEnum.CSV,
-            type=CampaignUploadTypeEnum.AIAGENT,
-            jaxl_id="",
-            run_at=None,
+            specification=specification,
+            content_type=content_type,
+            type=ttype,
+            jaxl_id=encrypt(jaxl_id),
+            run_at=UNSET,
             recharge=total_recharge.parsed.signed,
-            currency=2,
-            template="",
-            window=CampaignWindowRequest(start="0900", end="1900", tz=""),
+            currency=currency,
+            template=UNSET,
+            window=CampaignWindowRequest(start="09:00", end="19:00", tz="Asia/Kolkata"),
             auto_retry=True,
-            cc=None,
-            option=CampaignUploadRequestOptions(),
+            cc="IN",
+            options=CampaignUploadRequestOptions(),
         ),
     )
 
@@ -127,7 +181,10 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         required=False,
         help="Member Email ID to whom this CSV must be assigned as tasks",
     )
-    campaign_create_parser.set_defaults(func=campaigns_create, _arg_keys=["path"])
+    campaign_create_parser.set_defaults(
+        func=campaigns_create,
+        _arg_keys=["path", "type", "ai_id", "ivr_id", "team_id", "email"],
+    )
 
 
 class JaxlCampaignsSDK:
