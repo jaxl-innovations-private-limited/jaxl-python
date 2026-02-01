@@ -66,6 +66,8 @@ def _start_server(
     transcribe_language: str = "en",
     transcribe_device: str = "cpu",
     transcribe_temperature: float = 0.3,
+    vad_silence_frame_threshold: int = 25,
+    vad_speech_frame_threshold: int = 20,
 ) -> "FastAPI":
     from fastapi import FastAPI, Request, WebSocket
 
@@ -230,7 +232,10 @@ def _start_server(
         state = json.loads(base64.b64decode(_state))
 
         # Speech detector, Speech state & Segment buffer
-        sdetector = SilenceDetector()
+        sdetector = SilenceDetector(
+            silence_frame_threshold=vad_silence_frame_threshold,
+            speech_frame_threshold=vad_speech_frame_threshold,
+        )
         speaking: bool = False
         buffer: Deque[bytes] = deque(maxlen=sdetector.speech_frame_threshold)
         slin16s: List[bytes] = []
@@ -344,6 +349,8 @@ def apps_run(args: Dict[str, Any]) -> str:
         transcribe_model_size=args["transcribe_model_size"],
         transcribe_language=args["transcribe_language"],
         transcribe_device=args["transcribe_device"],
+        vad_silence_frame_threshold=args["vad_silence_frame_threshold"],
+        vad_speech_frame_threshold=args["vad_speech_frame_threshold"],
     )
 
     import uvicorn
@@ -403,6 +410,18 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         default="cpu",
         help="Options are: auto, cpu, cuda, cuda:N, mps",
     )
+    apps_run_parser.add_argument(
+        "--vad-silence-frame-threshold",
+        type=int,
+        default=25,
+        help="Amount of silence in milliseconds before silence detection is triggered",
+    )
+    apps_run_parser.add_argument(
+        "--vad-speech-frame-threshold",
+        type=int,
+        default=20,
+        help="Amount of speech in milliseconds before speech detection is triggered",
+    )
     apps_run_parser.set_defaults(
         func=apps_run,
         _arg_keys=[
@@ -413,6 +432,8 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "transcribe_model_size",
             "transcribe_language",
             "transcribe_device",
+            "vad_silence_frame_threshold",
+            "vad_speech_frame_threshold",
         ],
     )
 

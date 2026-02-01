@@ -20,7 +20,7 @@ class SilenceDetector:
         sample_rate: int = 8000,
         frame_duration_ms: int = 20,
         aggressiveness: int = 2,
-        silence_frame_threshold: int = 15,  # ~300ms
+        silence_frame_threshold: int = 25,  # ~500ms
         speech_frame_threshold: int = 20,  # ~400ms
     ):
         import webrtcvad
