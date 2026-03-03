@@ -66,6 +66,7 @@ def _start_server(
     transcribe_language: str = "en",
     transcribe_device: str = "cpu",
     transcribe_temperature: float = 0.3,
+    vad_aggressiveness: int = 2,
     vad_silence_frame_threshold: int = 25,
     vad_speech_frame_threshold: int = 20,
 ) -> "FastAPI":
@@ -233,6 +234,7 @@ def _start_server(
 
         # Speech detector, Speech state & Segment buffer
         sdetector = SilenceDetector(
+            aggressiveness=vad_aggressiveness,
             silence_frame_threshold=vad_silence_frame_threshold,
             speech_frame_threshold=vad_speech_frame_threshold,
         )
@@ -349,6 +351,7 @@ def apps_run(args: Dict[str, Any]) -> str:
         transcribe_model_size=args["transcribe_model_size"],
         transcribe_language=args["transcribe_language"],
         transcribe_device=args["transcribe_device"],
+        vad_aggressiveness=args["vad_aggressiveness"],
         vad_silence_frame_threshold=args["vad_silence_frame_threshold"],
         vad_speech_frame_threshold=args["vad_speech_frame_threshold"],
     )
@@ -411,6 +414,12 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Options are: auto, cpu, cuda, cuda:N, mps",
     )
     apps_run_parser.add_argument(
+        "--vad-aggressiveness",
+        type=int,
+        default=1,
+        help="VAD Aggressiveness",
+    )
+    apps_run_parser.add_argument(
         "--vad-silence-frame-threshold",
         type=int,
         default=25,
@@ -432,6 +441,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "transcribe_model_size",
             "transcribe_language",
             "transcribe_device",
+            "vad_aggressiveness",
             "vad_silence_frame_threshold",
             "vad_speech_frame_threshold",
         ],

@@ -60,7 +60,7 @@ class SilenceDetector:
                 self.silence_frames = 0
                 if (
                     not self.is_talking
-                    and self.speech_frames > self.speech_frame_threshold
+                    and self.speech_frames >= self.speech_frame_threshold
                 ):
                     change = True  # silence -> speech
                     self.is_talking = True
@@ -69,7 +69,7 @@ class SilenceDetector:
                 self.speech_frames = 0
                 if (
                     self.is_talking
-                    and self.silence_frames > self.silence_frame_threshold
+                    and self.silence_frames >= self.silence_frame_threshold
                 ):
                     change = False  # speech -> silence
                     self.is_talking = False
