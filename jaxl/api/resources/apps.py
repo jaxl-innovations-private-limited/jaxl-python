@@ -230,7 +230,7 @@ def _start_server(
             return
 
         ivr_id = int(_ivr_id)
-        state = json.loads(base64.b64decode(_state))
+        state = json.loads(base64.urlsafe_b64decode(_state))
 
         # Speech detector, Speech state & Segment buffer
         sdetector = SilenceDetector(
