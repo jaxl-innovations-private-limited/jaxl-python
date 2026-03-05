@@ -28,8 +28,7 @@ jobs:
         run: |
           python -m venv .venv
           source .venv/bin/activate
-          python -m pip install --upgrade pip "setuptools<81" wheel
-          pip install git+https://github.com/openai/whisper.git
+          python -m pip install --upgrade pip
           pip install -e .[dev,docs,types,app,grout,silence,transcribe,release]
       - name: Run mypy
         run: |
