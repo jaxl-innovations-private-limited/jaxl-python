@@ -49,6 +49,13 @@ class JaxlOrg(BaseModel):
     name: str
 
 
+# Earlier voice config was part of options keyed with "aiagent"
+# Now Jaxl backend will send out separate key fr voice related config.
+class JaxlVoiceConfig(BaseModel):
+    lang: str
+    name: str
+
+
 class JaxlWebhookState(BaseModel):
     call_id: int
     from_number: str
@@ -58,6 +65,7 @@ class JaxlWebhookState(BaseModel):
     metadata: Optional[Dict[str, Any]]
     greeting_message: Optional[str]
     options: Optional[Dict[str, Any]]
+    voice: Optional[JaxlVoiceConfig] = None
 
 
 class JaxlWebhookRequest(BaseModel):
