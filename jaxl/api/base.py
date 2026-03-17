@@ -184,6 +184,14 @@ class BaseJaxlApp:
         """Invoked when a call ends."""
         return None
 
+    async def on_stream_connect(self, call_id: int) -> None:
+        """Invoke when websocket stream has been established for bidirectional audio packets."""
+        return None
+
+    async def on_stream_disconnect(self, call_id: int) -> None:
+        """Invoke when websocket stream has been disconnected for bidirectional audio packets."""
+        return None
+
     async def handle_speech_detection(self, call_id: int, speaking: bool) -> None:
         """Invoked when speech starts and ends."""
         return None

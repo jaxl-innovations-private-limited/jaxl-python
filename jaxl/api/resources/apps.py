@@ -167,7 +167,7 @@ def _start_server(
             return True
         # pylint: disable=broad-exception-caught
         except Exception as exc:
-            logger.warning(f"⚠️ send_audio failure: {exc}")
+            logger.warning("⚠️ send_audio failure", exc_info=exc)
             return False
 
     app.send_audio = _send_audio  # type: ignore[method-assign]
@@ -246,6 +246,7 @@ def _start_server(
         wss[state["call_id"]] = ws
 
         # pylint: disable=too-many-nested-blocks
+        await app.on_stream_connect(state["call_id"])
         try:
             while True:
                 data = json.loads(await ws.receive_text())
@@ -306,10 +307,13 @@ def _start_server(
         except WebSocketDisconnect:
             pass
         finally:
-            if state["call_id"] in wss:
-                del wss[state["call_id"]]
-            if ws.client_state != WebSocketState.DISCONNECTED:
-                await ws.close()
+            try:
+                if state["call_id"] in wss:
+                    del wss[state["call_id"]]
+                if ws.client_state != WebSocketState.DISCONNECTED:
+                    await ws.close()
+            finally:
+                await app.on_stream_disconnect(state["call_id"])
 
     for config, func in app.api_routes():
         server.add_api_route(
