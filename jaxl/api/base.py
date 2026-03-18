@@ -145,6 +145,7 @@ ApiRouteFunc = Union[
 WebsocketRouteFunc = Callable[[WebSocket], Awaitable[None]]
 
 
+# pylint: disable=too-many-public-methods
 class BaseJaxlApp:
 
     # pylint: disable=no-self-use,unused-argument
