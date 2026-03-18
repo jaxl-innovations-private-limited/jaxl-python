@@ -145,6 +145,7 @@ ApiRouteFunc = Union[
 WebsocketRouteFunc = Callable[[WebSocket], Awaitable[None]]
 
 
+# pylint: disable=too-many-public-methods
 class BaseJaxlApp:
 
     # pylint: disable=no-self-use,unused-argument
@@ -182,6 +183,14 @@ class BaseJaxlApp:
     # pylint: disable=no-self-use,unused-argument
     async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a call ends."""
+        return None
+
+    async def on_stream_connect(self, call_id: int) -> None:
+        """Invoke when websocket stream has been established for bidirectional audio packets."""
+        return None
+
+    async def on_stream_disconnect(self, call_id: int) -> None:
+        """Invoke when websocket stream has been disconnected for bidirectional audio packets."""
         return None
 
     async def handle_speech_detection(self, call_id: int, speaking: bool) -> None:
