@@ -167,7 +167,7 @@ def _start_server(
             return True
         # pylint: disable=broad-exception-caught
         except Exception as exc:
-            logger.warning("⚠️ send_audio failure", exc_info=exc)
+            logger.warning(f"⚠️ send_audio failure: {exc}")
             return False
 
     app.send_audio = _send_audio  # type: ignore[method-assign]
