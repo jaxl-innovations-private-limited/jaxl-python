@@ -54,6 +54,7 @@ class JaxlOrg(BaseModel):
 class JaxlVoiceConfig(BaseModel):
     lang: str
     name: str
+    gender: Optional[str] = None
 
 
 class JaxlWebhookState(BaseModel):
