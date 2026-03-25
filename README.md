@@ -117,7 +117,7 @@ This IVR will speak the message and then hangup the call.
 
 ```bash
 jaxl ivrs create \
-  --message "Hello, we are calling via Jaxl IVR demo created from CLI.  Will hang up after speaking this message." \
+  --message "Hello, we are calling via Jaxl IVR demo created from CLI.  Will hang up after speaking this message" \
   --hangup
 ```
 
@@ -200,8 +200,8 @@ jaxl calls create \
   --to "+CC<Callee Number>" \
   --from "+CC<Purchased Jaxl Number>" \
   --message "Hello, we are calling you from MyCompany" \
-  --option "1=Press 1 for sales:team=<Sales Team ID>" \
-  --option "2=Press 2 for HR department:team=<HR Team ID>
+  --option "1=Press 1 for sales:teams=<Sales Team ID>" \
+  --option "2=Press 2 for HR department:teams=<HR Team ID>
 ```
 
 ### Dial-out 2-Party Conference with Ad-hoc IVR
