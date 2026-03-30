@@ -49,6 +49,14 @@ class JaxlOrg(BaseModel):
     name: str
 
 
+# Earlier voice config was part of options keyed with "aiagent"
+# Now Jaxl backend will send out separate key fr voice related config.
+class JaxlVoiceConfig(BaseModel):
+    lang: str
+    name: str
+    gender: Optional[str] = None
+
+
 class JaxlWebhookState(BaseModel):
     call_id: int
     from_number: str
@@ -58,6 +66,7 @@ class JaxlWebhookState(BaseModel):
     metadata: Optional[Dict[str, Any]]
     greeting_message: Optional[str]
     options: Optional[Dict[str, Any]]
+    voice: Optional[JaxlVoiceConfig] = None
 
 
 class JaxlWebhookRequest(BaseModel):
@@ -137,6 +146,7 @@ ApiRouteFunc = Union[
 WebsocketRouteFunc = Callable[[WebSocket], Awaitable[None]]
 
 
+# pylint: disable=too-many-public-methods
 class BaseJaxlApp:
 
     # pylint: disable=no-self-use,unused-argument
@@ -174,6 +184,14 @@ class BaseJaxlApp:
     # pylint: disable=no-self-use,unused-argument
     async def handle_teardown(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a call ends."""
+        return None
+
+    async def on_stream_connect(self, call_id: int) -> None:
+        """Invoke when websocket stream has been established for bidirectional audio packets."""
+        return None
+
+    async def on_stream_disconnect(self, call_id: int) -> None:
+        """Invoke when websocket stream has been disconnected for bidirectional audio packets."""
         return None
 
     async def handle_speech_detection(self, call_id: int, speaking: bool) -> None:
