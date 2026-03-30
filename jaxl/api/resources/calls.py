@@ -203,6 +203,20 @@ def calls_get(args: Optional[Dict[str, Any]] = None) -> Response[Call]:
     )
 
 
+async def calls_aget(args: Optional[Dict[str, Any]] = None) -> Response[Call]:
+    """Get a call asynchronously"""
+    args = args or {}
+    return await v1_calls_retrieve.asyncio_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        currency=args.get("currency", DEFAULT_CURRENCY),
+    )
+
+
 def calls_list(args: Optional[Dict[str, Any]] = None) -> Response[PaginatedCallList]:
     """List calls"""
     args = args or {}
@@ -590,6 +604,9 @@ class JaxlCallsSDK:
 
     def get(self, **kwargs: Any) -> Response[Call]:
         return calls_get(kwargs)
+
+    async def aget(self, **kwargs: Any) -> Response[Call]:
+        return await calls_aget(kwargs)
 
     def add_tag(self, **kwargs: Any) -> Response[CallTagResponse]:
         return calls_tag_add(kwargs)
