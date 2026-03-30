@@ -112,7 +112,7 @@ services to build custom call flows.
 ### Teardown Event (3)
 
 - Triggered when an incoming call ends.
-- Webhook endpoint will receive following POST request:
+- Webhook endpoint will receive following DELETE request:
 
   ```json
   {
