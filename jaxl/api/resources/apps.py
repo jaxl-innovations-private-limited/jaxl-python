@@ -362,7 +362,13 @@ def apps_run(args: Dict[str, Any]) -> str:
 
     import uvicorn
 
-    uvicorn.run(app, host=args["host"], port=args["port"])
+    uvicorn.run(
+        app,
+        host=args["host"],
+        port=args["port"],
+        http="httptools",
+        ws="wsproto",
+    )
 
     return "Bbye"
 
