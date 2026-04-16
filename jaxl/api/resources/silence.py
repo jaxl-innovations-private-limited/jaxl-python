@@ -20,8 +20,8 @@ class SilenceDetector:
         sample_rate: int = 8000,
         frame_duration_ms: int = 20,
         aggressiveness: int = 2,
-        silence_frame_threshold: int = 25,  # ~500ms
-        speech_frame_threshold: int = 20,  # ~400ms
+        silence_frame_threshold: int = 12,  # ~240ms
+        speech_frame_threshold: int = 8,  # ~160ms
     ):
         import webrtcvad
 
@@ -37,6 +37,7 @@ class SilenceDetector:
         self.speech_frames = 0
         self.silence_frames = 0
         self.buffer = b""
+        self.last_frame_is_speech: Optional[bool] = None
 
     def process(self, slin16: bytes) -> Optional[bool]:
         """Process PCM16 mono audio. Returns:
@@ -54,6 +55,7 @@ class SilenceDetector:
             )
 
             is_speech = self.vad.is_speech(frame, self.sample_rate)
+            self.last_frame_is_speech = is_speech
 
             if is_speech:
                 self.speech_frames += 1
@@ -81,3 +83,4 @@ class SilenceDetector:
         self.silence_frames = 0
         self.speech_frames = 0
         self.is_talking = False
+        self.last_frame_is_speech = None
