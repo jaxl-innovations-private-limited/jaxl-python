@@ -67,8 +67,8 @@ def _start_server(
     transcribe_device: str = "cpu",
     transcribe_temperature: float = 0.3,
     vad_aggressiveness: int = 2,
-    vad_silence_frame_threshold: int = 25,
-    vad_speech_frame_threshold: int = 20,
+    vad_silence_frame_threshold: int = 12,
+    vad_speech_frame_threshold: int = 8,
 ) -> "FastAPI":
     from fastapi import FastAPI, Request, WebSocket
 
@@ -239,7 +239,7 @@ def _start_server(
             speech_frame_threshold=vad_speech_frame_threshold,
         )
         speaking: bool = False
-        buffer: Deque[bytes] = deque(maxlen=sdetector.speech_frame_threshold)
+        buffer: Deque[bytes] = deque(maxlen=4)
         slin16s: List[bytes] = []
 
         await ws.accept()
@@ -259,25 +259,19 @@ def _start_server(
                     # Detect start/end of speech
                     buffer.append(slin16)
                     change = sdetector.process(slin16)
+                    current_frame_is_speech = sdetector.last_frame_is_speech
                     # Manage speech segments
                     if change is True:
                         speaking = change
                         await app.handle_speech_detection(state["call_id"], speaking)
                         if len(slin16s) == 0:
-                            # Silence just got detected, copy over
-                            # last speech_frame_threshold of frames
+                            # Copy over a short, fixed preroll window.
                             slin16s = list(buffer)
                             if len(slin16s) > 0:
                                 await app.handle_speech_chunks(req, slin16s)
-                            # print("💿")
-                        # print("🎙️")
-                        slin16s.append(slin16)
-                        await app.handle_speech_chunks(req, [slin16])
                     elif change is False:
                         speaking = change
-                        await app.handle_speech_chunks(req, [slin16])
                         await app.handle_speech_detection(state["call_id"], speaking)
-                        # print("🤐")
                         if len(slin16s) > 0:
                             # Invoke speech segment handlers
                             await app.handle_speech_segment(req, slin16s)
@@ -296,8 +290,9 @@ def _start_server(
                     else:
                         assert change is None
                         if speaking is True:
-                            await app.handle_speech_chunks(req, [slin16])
-                            slin16s.append(slin16)
+                            if current_frame_is_speech:
+                                await app.handle_speech_chunks(req, [slin16])
+                                slin16s.append(slin16)
                         else:
                             assert speaking is False
                 elif ev == "connected":
@@ -426,20 +421,20 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     apps_run_parser.add_argument(
         "--vad-aggressiveness",
         type=int,
-        default=1,
+        default=2,
         help="VAD Aggressiveness",
     )
     apps_run_parser.add_argument(
         "--vad-silence-frame-threshold",
         type=int,
-        default=25,
-        help="Amount of silence in milliseconds before silence detection is triggered",
+        default=12,
+        help="Number of 20ms frames of silence before silence detection is triggered",
     )
     apps_run_parser.add_argument(
         "--vad-speech-frame-threshold",
         type=int,
-        default=20,
-        help="Amount of speech in milliseconds before speech detection is triggered",
+        default=8,
+        help="Number of 20ms frames of speech before speech detection is triggered",
     )
     apps_run_parser.set_defaults(
         func=apps_run,
