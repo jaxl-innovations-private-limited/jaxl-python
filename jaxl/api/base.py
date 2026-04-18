@@ -67,6 +67,8 @@ class JaxlWebhookState(BaseModel):
     greeting_message: Optional[str]
     options: Optional[Dict[str, Any]]
     voice: Optional[JaxlVoiceConfig] = None
+    campaign_id: Optional[int] = None
+    campaign_type: Optional[str] = None
 
 
 class JaxlWebhookRequest(BaseModel):
