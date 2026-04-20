@@ -68,7 +68,7 @@ def _start_server(
     transcribe_temperature: float = 0.3,
     vad_aggressiveness: int = 2,
     vad_silence_frame_threshold: int = 12,
-    vad_speech_frame_threshold: int = 8,
+    vad_speech_frame_threshold: int = 5,
 ) -> "FastAPI":
     from fastapi import FastAPI, Request, WebSocket
 
@@ -433,7 +433,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     apps_run_parser.add_argument(
         "--vad-speech-frame-threshold",
         type=int,
-        default=8,
+        default=5,
         help="Number of 20ms frames of speech before speech detection is triggered",
     )
     apps_run_parser.set_defaults(
