@@ -16,6 +16,7 @@ from .streaming_aiagent import JaxlAppStreamingAIAgent
 from .streaming_audio_chunks import JaxlAppStreamingAudioChunk
 from .streaming_speech_segments import JaxlAppStreamingSpeechSegment
 from .streaming_transcriptions import JaxlAppStreamingTranscription
+from .streaming_wav_file import JaxlAppStreamingWavFile
 
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
     "JaxlAppStreamingSpeechSegment",
     "JaxlAppStreamingTranscription",
     "JaxlAppStreamingAIAgent",
+    "JaxlAppStreamingWavFile",
 ]
