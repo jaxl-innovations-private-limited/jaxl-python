@@ -37,7 +37,7 @@ from jaxl.api.base import (
 from jaxl.api.client.models.call_tag_response import CallTagResponse
 from jaxl.api.client.types import Response
 from jaxl.api.resources.accounts import accounts_me
-from jaxl.api.resources.calls import calls_hangup, calls_tag_add
+from jaxl.api.resources.calls import calls_atag_add, calls_hangup
 from jaxl.api.resources.silence import SilenceDetector
 
 
@@ -138,7 +138,7 @@ def _start_server(
     wss: Dict[int, WebSocket] = {}
 
     async def _add_tag(call_id: int, tag: str) -> Response[CallTagResponse]:
-        return calls_tag_add({"call_id": call_id, "tag": tag})
+        return await calls_atag_add({"call_id": call_id, "tag": tag})
 
     async def _hangup(call_id: int) -> Response[Any]:
         return calls_hangup({"call_id": call_id})

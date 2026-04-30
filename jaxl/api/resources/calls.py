@@ -274,6 +274,18 @@ def calls_tag_add(args: Dict[str, Any]) -> Response[CallTagResponse]:
     )
 
 
+async def calls_atag_add(args: Dict[str, Any]) -> Response[CallTagResponse]:
+    return await v1_calls_tags_create.asyncio_detailed(
+        call_id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallTagRequest(name=args["tag"]),
+    )
+
+
 def calls_hangup(args: Dict[str, Any]) -> Response[Any]:
     return v1_calls_hangup_retrieve.sync_detailed(
         id=args["call_id"],
@@ -299,6 +311,30 @@ def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
 
 def calls_message(args: Dict[str, Any]) -> Response[Any]:
     return v1_calls_messages_create.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallMessageRequestRequest(
+            text=encrypt(args["text"]),
+            timestamp=datetime.fromtimestamp(
+                args.get("epoch", None) or time.time(),
+                tz=timezone.utc,
+            ),
+            why=WhyEnum[cast(str, args["direction"]).upper()],
+            type=(
+                CallMessageRequestTypeEnum.VALUE_1
+                if args["type"] == "chat"
+                else CallMessageRequestTypeEnum.VALUE_10
+            ),
+        ),
+    )
+
+
+async def calls_amessage(args: Dict[str, Any]) -> Response[Any]:
+    return await v1_calls_messages_create.asyncio_detailed(
         id=args["call_id"],
         client=jaxl_api_client(
             JaxlApiModule.CALL,
@@ -611,11 +647,17 @@ class JaxlCallsSDK:
     def add_tag(self, **kwargs: Any) -> Response[CallTagResponse]:
         return calls_tag_add(kwargs)
 
+    async def aadd_tag(self, **kwargs: Any) -> Response[CallTagResponse]:
+        return await calls_atag_add(kwargs)
+
     def hangup(self, **kwargs: Any) -> Response[Any]:
         return calls_hangup(kwargs)
 
     def message(self, **kwargs: Any) -> Response[Any]:
         return calls_message(kwargs)
+
+    async def amessage(self, **kwargs: Any) -> Response[Any]:
+        return await calls_amessage(kwargs)
 
     def audio(self, **kwargs: Any) -> Response[Any | CallAudioReason]:
         return calls_audio(kwargs)
