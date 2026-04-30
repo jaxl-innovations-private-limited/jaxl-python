@@ -37,7 +37,7 @@ from jaxl.api.base import (
 from jaxl.api.client.models.call_tag_response import CallTagResponse
 from jaxl.api.client.types import Response
 from jaxl.api.resources.accounts import accounts_me
-from jaxl.api.resources.calls import calls_atag_add, calls_hangup
+from jaxl.api.resources.calls import calls_ahangup, calls_atag_add
 from jaxl.api.resources.silence import SilenceDetector
 
 
@@ -141,7 +141,7 @@ def _start_server(
         return await calls_atag_add({"call_id": call_id, "tag": tag})
 
     async def _hangup(call_id: int) -> Response[Any]:
-        return calls_hangup({"call_id": call_id})
+        return await calls_ahangup({"call_id": call_id})
 
     async def _clear_audio(call_id: int) -> bool:
         try:

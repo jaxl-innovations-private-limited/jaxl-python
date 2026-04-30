@@ -297,6 +297,17 @@ def calls_hangup(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+async def calls_ahangup(args: Dict[str, Any]) -> Response[Any]:
+    return await v1_calls_hangup_retrieve.asyncio_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+    )
+
+
 def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
     return v1_calls_transfer_create.sync_detailed(
         id=args["call_id"],
@@ -652,6 +663,9 @@ class JaxlCallsSDK:
 
     def hangup(self, **kwargs: Any) -> Response[Any]:
         return calls_hangup(kwargs)
+
+    async def ahangup(self, **kwargs: Any) -> Response[Any]:
+        return await calls_ahangup(kwargs)
 
     def message(self, **kwargs: Any) -> Response[Any]:
         return calls_message(kwargs)
