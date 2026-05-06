@@ -20,8 +20,7 @@ import tempfile
 import uuid
 import warnings
 import wave
-from collections import deque
-from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 
 from fastapi.websockets import WebSocketState
 from starlette.websockets import WebSocketDisconnect
@@ -239,7 +238,6 @@ def _start_server(
             speech_frame_threshold=vad_speech_frame_threshold,
         )
         speaking: bool = False
-        buffer: Deque[bytes] = deque(maxlen=4)
         slin16s: List[bytes] = []
 
         await ws.accept()
@@ -257,18 +255,22 @@ def _start_server(
                     # Invoke audio chunk handlers
                     await app.handle_audio_chunk(req, slin16)
                     # Detect start/end of speech
-                    buffer.append(slin16)
                     change = sdetector.process(slin16)
-                    current_frame_is_speech = sdetector.last_frame_is_speech
                     # Manage speech segments
                     if change is True:
                         speaking = change
                         await app.handle_speech_detection(state["call_id"], speaking)
-                        if len(slin16s) == 0:
-                            # Copy over a short, fixed preroll window.
-                            slin16s = list(buffer)
-                            if len(slin16s) > 0:
-                                await app.handle_speech_chunks(req, slin16s)
+                        # Pull the detector's preroll — this contains the
+                        # trigger frames (the `speech_frame_threshold` speech
+                        # frames that fired speech-start) plus a few earlier
+                        # frames for consonant-onset context. Forwarding
+                        # this preroll fixes the head-clipping bug where
+                        # short utterances ("haan", "ji") were truncated.
+                        preroll_bytes = sdetector.consume_preroll()
+                        if preroll_bytes:
+                            preroll_chunks = [preroll_bytes]
+                            slin16s.extend(preroll_chunks)
+                            await app.handle_speech_chunks(req, preroll_chunks)
                     elif change is False:
                         speaking = change
                         await app.handle_speech_detection(state["call_id"], speaking)
@@ -290,9 +292,14 @@ def _start_server(
                     else:
                         assert change is None
                         if speaking is True:
-                            if current_frame_is_speech:
-                                await app.handle_speech_chunks(req, [slin16])
-                                slin16s.append(slin16)
+                            # Forward EVERY chunk during an active speech
+                            # segment — including frames webrtcvad flagged
+                            # as not-speech. Inter-word silences (e.g.
+                            # between "haan" and "maam") are part of the
+                            # utterance and dropping them corrupts prosody
+                            # and confuses downstream ASR.
+                            await app.handle_speech_chunks(req, [slin16])
+                            slin16s.append(slin16)
                         else:
                             assert speaking is False
                 elif ev == "connected":
