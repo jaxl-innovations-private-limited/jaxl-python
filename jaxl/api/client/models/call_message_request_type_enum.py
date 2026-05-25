@@ -13,6 +13,7 @@ from enum import IntEnum
 class CallMessageRequestTypeEnum(IntEnum):
     VALUE_10 = 10
     VALUE_1 = 1
+    VALUE_14 = 14
 
     def __str__(self) -> str:
         return str(self.value)

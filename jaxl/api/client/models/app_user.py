@@ -25,6 +25,7 @@ class AppUser:
         id (int):
         user (int):
         platform (PlatformEnum):
+        email (str):
         account (Union[Unset, int]): Defaults to 0.  This value gets incremented when a user creates a new account on
             the app after deleting their previous app user accounts.
         verified (Union[Unset, bool]): Whether user email has been verified.
@@ -34,6 +35,7 @@ class AppUser:
     id: int
     user: int
     platform: PlatformEnum
+    email: str
     jaxlid: Optional[str]
     account: Union[Unset, int] = UNSET
     verified: Union[Unset, bool] = UNSET
@@ -44,6 +46,7 @@ class AppUser:
         user = self.user
         platform = self.platform.value
 
+        email = self.email
         account = self.account
         verified = self.verified
         jaxlid = self.jaxlid
@@ -55,6 +58,7 @@ class AppUser:
                 "id": id,
                 "user": user,
                 "platform": platform,
+                "email": email,
                 "jaxlid": jaxlid,
             }
         )
@@ -74,6 +78,8 @@ class AppUser:
 
         platform = PlatformEnum(d.pop("platform"))
 
+        email = d.pop("email")
+
         account = d.pop("account", UNSET)
 
         verified = d.pop("verified", UNSET)
@@ -84,6 +90,7 @@ class AppUser:
             id=id,
             user=user,
             platform=platform,
+            email=email,
             account=account,
             verified=verified,
             jaxlid=jaxlid,

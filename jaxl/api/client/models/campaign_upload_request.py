@@ -19,11 +19,8 @@ from ..models.campaign_upload_type_enum import CampaignUploadTypeEnum
 from ..models.content_type_enum import ContentTypeEnum
 from ..types import UNSET, File, Unset
 
-
 if TYPE_CHECKING:
-    from ..models.campaign_upload_request_options import (
-        CampaignUploadRequestOptions,
-    )
+    from ..models.campaign_upload_request_options import CampaignUploadRequestOptions
     from ..models.campaign_window_request import CampaignWindowRequest
 
 
@@ -45,6 +42,7 @@ class CampaignUploadRequest:
         window (Union[Unset, None, CampaignWindowRequest]):
         auto_retry (Union[Unset, bool]):
         cc (Union[Unset, None, str]):
+        num_retries (Union[Unset, None, int]): Number of retries for failed campaign calls.
         options (Union[Unset, None, CampaignUploadRequestOptions]):
     """
 
@@ -59,6 +57,7 @@ class CampaignUploadRequest:
     window: Union[Unset, None, "CampaignWindowRequest"] = UNSET
     auto_retry: Union[Unset, bool] = False
     cc: Union[Unset, None, str] = UNSET
+    num_retries: Union[Unset, None, int] = UNSET
     options: Union[Unset, None, "CampaignUploadRequestOptions"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
@@ -83,6 +82,7 @@ class CampaignUploadRequest:
 
         auto_retry = self.auto_retry
         cc = self.cc
+        num_retries = self.num_retries
         options: Union[Unset, None, Dict[str, Any]] = UNSET
         if not isinstance(self.options, Unset):
             options = self.options.to_dict() if self.options else None
@@ -111,6 +111,8 @@ class CampaignUploadRequest:
             field_dict["auto_retry"] = auto_retry
         if cc is not UNSET:
             field_dict["cc"] = cc
+        if num_retries is not UNSET:
+            field_dict["num_retries"] = num_retries
         if options is not UNSET:
             field_dict["options"] = options
 
@@ -152,7 +154,7 @@ class CampaignUploadRequest:
             window = (
                 (None, json.dumps(self.window.to_dict()).encode(), "application/json")
                 if self.window
-                else window
+                else UNSET
             )
 
         auto_retry = (
@@ -165,12 +167,17 @@ class CampaignUploadRequest:
             if isinstance(self.cc, Unset)
             else (None, str(self.cc).encode(), "text/plain")
         )
+        num_retries = (
+            self.num_retries
+            if isinstance(self.num_retries, Unset)
+            else (None, str(self.num_retries).encode(), "text/plain")
+        )
         options: Union[Unset, Tuple[None, bytes, str]] = UNSET
         if not isinstance(self.options, Unset):
             options = (
                 (None, json.dumps(self.options.to_dict()).encode(), "application/json")
                 if self.options
-                else options
+                else UNSET
             )
 
         field_dict: Dict[str, Any] = {}
@@ -202,6 +209,8 @@ class CampaignUploadRequest:
             field_dict["auto_retry"] = auto_retry
         if cc is not UNSET:
             field_dict["cc"] = cc
+        if num_retries is not UNSET:
+            field_dict["num_retries"] = num_retries
         if options is not UNSET:
             field_dict["options"] = options
 
@@ -251,6 +260,8 @@ class CampaignUploadRequest:
 
         cc = d.pop("cc", UNSET)
 
+        num_retries = d.pop("num_retries", UNSET)
+
         _options = d.pop("options", UNSET)
         options: Union[Unset, None, CampaignUploadRequestOptions]
         if _options is None:
@@ -272,6 +283,7 @@ class CampaignUploadRequest:
             window=window,
             auto_retry=auto_retry,
             cc=cc,
+            num_retries=num_retries,
             options=options,
         )
 

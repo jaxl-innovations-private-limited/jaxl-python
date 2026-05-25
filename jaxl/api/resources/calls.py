@@ -270,7 +270,10 @@ def calls_tag_add(args: Dict[str, Any]) -> Response[CallTagResponse]:
             credentials=args.get("credentials", None),
             auth_token=args.get("auth_token", None),
         ),
-        json_body=CallTagRequest(name=args["tag"]),
+        json_body=CallTagRequest(
+            name=args["tag"],
+            rationale=args.get("rationale", None),
+        ),
     )
 
 
@@ -282,7 +285,10 @@ async def calls_atag_add(args: Dict[str, Any]) -> Response[CallTagResponse]:
             credentials=args.get("credentials", None),
             auth_token=args.get("auth_token", None),
         ),
-        json_body=CallTagRequest(name=args["tag"]),
+        json_body=CallTagRequest(
+            name=args["tag"],
+            rationale=args.get("rationale", None),
+        ),
     )
 
 

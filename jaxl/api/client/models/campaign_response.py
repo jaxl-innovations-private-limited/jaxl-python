@@ -14,6 +14,7 @@ import attr
 from dateutil.parser import isoparse
 
 from ..models.campaign_response_status_enum import CampaignResponseStatusEnum
+from ..models.cta_type_enum import CtaTypeEnum
 
 if TYPE_CHECKING:
     from ..models.campaign_stats import CampaignStats
@@ -35,6 +36,7 @@ class CampaignResponse:
         tags (List['CampaignTag']):
         created_on (datetime.datetime): Datetime when this object was created
         in_window (bool):
+        cta_type (CtaTypeEnum):
     """
 
     id: int
@@ -45,6 +47,7 @@ class CampaignResponse:
     tags: List["CampaignTag"]
     created_on: datetime.datetime
     in_window: bool
+    cta_type: CtaTypeEnum
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -64,6 +67,7 @@ class CampaignResponse:
         created_on = self.created_on.isoformat()
 
         in_window = self.in_window
+        cta_type = self.cta_type.value
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -77,6 +81,7 @@ class CampaignResponse:
                 "tags": tags,
                 "created_on": created_on,
                 "in_window": in_window,
+                "cta_type": cta_type,
             }
         )
 
@@ -109,6 +114,8 @@ class CampaignResponse:
 
         in_window = d.pop("in_window")
 
+        cta_type = CtaTypeEnum(d.pop("cta_type"))
+
         campaign_response = cls(
             id=id,
             name=name,
@@ -118,6 +125,7 @@ class CampaignResponse:
             tags=tags,
             created_on=created_on,
             in_window=in_window,
+            cta_type=cta_type,
         )
 
         campaign_response.additional_properties = d

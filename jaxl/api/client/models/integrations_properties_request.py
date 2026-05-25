@@ -29,11 +29,13 @@ class IntegrationsPropertiesRequest:
         shopify (Union[Unset, None, ShopifyAuthRequestRequest]):
         exotel (Union[Unset, None, ExotelAuthRequestRequest]):
         stripe (Union[Unset, None, StripeAuthRequestRequest]):
+        shiprocket (Union[Unset, None, ShopifyAuthRequestRequest]):
     """
 
     shopify: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
     exotel: Union[Unset, None, "ExotelAuthRequestRequest"] = UNSET
     stripe: Union[Unset, None, "StripeAuthRequestRequest"] = UNSET
+    shiprocket: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -49,6 +51,10 @@ class IntegrationsPropertiesRequest:
         if not isinstance(self.stripe, Unset):
             stripe = self.stripe.to_dict() if self.stripe else None
 
+        shiprocket: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.shiprocket, Unset):
+            shiprocket = self.shiprocket.to_dict() if self.shiprocket else None
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -58,6 +64,8 @@ class IntegrationsPropertiesRequest:
             field_dict["exotel"] = exotel
         if stripe is not UNSET:
             field_dict["stripe"] = stripe
+        if shiprocket is not UNSET:
+            field_dict["shiprocket"] = shiprocket
 
         return field_dict
 
@@ -95,10 +103,20 @@ class IntegrationsPropertiesRequest:
         else:
             stripe = StripeAuthRequestRequest.from_dict(_stripe)
 
+        _shiprocket = d.pop("shiprocket", UNSET)
+        shiprocket: Union[Unset, None, ShopifyAuthRequestRequest]
+        if _shiprocket is None:
+            shiprocket = None
+        elif isinstance(_shiprocket, Unset):
+            shiprocket = UNSET
+        else:
+            shiprocket = ShopifyAuthRequestRequest.from_dict(_shiprocket)
+
         integrations_properties_request = cls(
             shopify=shopify,
             exotel=exotel,
             stripe=stripe,
+            shiprocket=shiprocket,
         )
 
         integrations_properties_request.additional_properties = d

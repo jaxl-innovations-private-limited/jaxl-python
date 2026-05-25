@@ -25,6 +25,7 @@ if TYPE_CHECKING:
     from ..models.campaign_metadata import CampaignMetadata
     from ..models.device import Device
     from ..models.location import Location
+    from ..models.upload_metadata import UploadMetadata
 
 
 T = TypeVar("T", bound="Call")
@@ -72,6 +73,7 @@ class Call:
         cid (Optional[int]):
         is_bot (Optional[bool]):
         camp (Optional[CampaignMetadata]):
+        upload_metadata (Optional[UploadMetadata]):
     """
 
     id: int
@@ -101,6 +103,7 @@ class Call:
     cid: Optional[int]
     is_bot: Optional[bool]
     camp: Optional["CampaignMetadata"]
+    upload_metadata: Optional["UploadMetadata"]
     parent: Union[Unset, None, int] = UNSET
     sid: Union[Unset, None, str] = UNSET
     missed: Union[Unset, bool] = UNSET
@@ -192,6 +195,10 @@ class Call:
         is_bot = self.is_bot
         camp = self.camp.to_dict() if self.camp else None
 
+        upload_metadata = (
+            self.upload_metadata.to_dict() if self.upload_metadata else None
+        )
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -223,6 +230,7 @@ class Call:
                 "cid": cid,
                 "is_bot": is_bot,
                 "camp": camp,
+                "upload_metadata": upload_metadata,
             }
         )
         if parent is not UNSET:
@@ -255,6 +263,7 @@ class Call:
         from ..models.campaign_metadata import CampaignMetadata
         from ..models.device import Device
         from ..models.location import Location
+        from ..models.upload_metadata import UploadMetadata
 
         d = src_dict.copy()
         id = d.pop("id")
@@ -378,6 +387,13 @@ class Call:
         else:
             camp = CampaignMetadata.from_dict(_camp)
 
+        _upload_metadata = d.pop("upload_metadata")
+        upload_metadata: Optional[UploadMetadata]
+        if _upload_metadata is None:
+            upload_metadata = None
+        else:
+            upload_metadata = UploadMetadata.from_dict(_upload_metadata)
+
         call = cls(
             id=id,
             direction=direction,
@@ -415,6 +431,7 @@ class Call:
             cid=cid,
             is_bot=is_bot,
             camp=camp,
+            upload_metadata=upload_metadata,
         )
 
         call.additional_properties = d

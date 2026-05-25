@@ -16,6 +16,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.analytic import Analytic
+    from ..models.ivr_menu_response_settings import IVRMenuResponseSettings
 
 
 T = TypeVar("T", bound="IVRMenuResponse")
@@ -33,6 +34,13 @@ class IVRMenuResponse:
         created_by (int):
         hangup (Union[Unset, bool]): Whether the call should be ended after speaking out the greeting message
         phone (Union[Unset, List[int]]):
+        settings (Union[Unset, IVRMenuResponseSettings]): Adhoc key-value pairs storing ivr settings. Stores following
+            dynamic settings: 1) speak_greeting -- Defaults to true. 2) ask_for_input -- Request called input before CTA
+            execution. 3) confirm_input -- Whether to confirm user input before proceeding with CTA. 4) callback_url -- Pre-
+            CTA callback URL.  IVR CTA is executed if url returns 200 OK. 5) callback_url_method -- Method to use then
+            invoking callback_url e.g. GET or POST.6) cta -- Fully validated runtime CTA to execute. 7) status_callback_url
+            -- A callback url invoked with call flow status changes. 8) status_callback_url_method -- Method to use then
+            invoking status_callback_url_method e.g. GET or POST.
     """
 
     id: int
@@ -43,6 +51,7 @@ class IVRMenuResponse:
     created_by: int
     hangup: Union[Unset, bool] = UNSET
     phone: Union[Unset, List[int]] = UNSET
+    settings: Union[Unset, "IVRMenuResponseSettings"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -63,6 +72,10 @@ class IVRMenuResponse:
         if not isinstance(self.phone, Unset):
             phone = self.phone
 
+        settings: Union[Unset, Dict[str, Any]] = UNSET
+        if not isinstance(self.settings, Unset):
+            settings = self.settings.to_dict()
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -79,12 +92,15 @@ class IVRMenuResponse:
             field_dict["hangup"] = hangup
         if phone is not UNSET:
             field_dict["phone"] = phone
+        if settings is not UNSET:
+            field_dict["settings"] = settings
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.analytic import Analytic
+        from ..models.ivr_menu_response_settings import IVRMenuResponseSettings
 
         d = src_dict.copy()
         id = d.pop("id")
@@ -108,6 +124,13 @@ class IVRMenuResponse:
 
         phone = cast(List[int], d.pop("phone", UNSET))
 
+        _settings = d.pop("settings", UNSET)
+        settings: Union[Unset, IVRMenuResponseSettings]
+        if isinstance(_settings, Unset):
+            settings = UNSET
+        else:
+            settings = IVRMenuResponseSettings.from_dict(_settings)
+
         ivr_menu_response = cls(
             id=id,
             name=name,
@@ -117,6 +140,7 @@ class IVRMenuResponse:
             created_by=created_by,
             hangup=hangup,
             phone=phone,
+            settings=settings,
         )
 
         ivr_menu_response.additional_properties = d

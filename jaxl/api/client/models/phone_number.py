@@ -45,6 +45,11 @@ class PhoneNumber:
         ivr (Union[Unset, None, int]): Optional IVR for all incoming calls to this number
         registered_from_device (Optional[int]):
         attributes (Optional[PhoneNumberAttributes]):
+        order_id (Optional[int]): Payments order ID reference
+        paid_till (Optional[datetime.datetime]): Only applicable for system owned numbers which are purchased by the app
+            user. This field is automatically updated upon receiving purchase notification from our payment gateway.
+        kyc_id (Optional[int]): Optional KYC associated with this number
+        sms_verified (Optional[bool]): Whether this phone number has completed the otp verification
         jaxlid (Optional[str]):
     """
 
@@ -58,6 +63,10 @@ class PhoneNumber:
     resource: ResourceEnum
     registered_from_device: Optional[int]
     attributes: Optional["PhoneNumberAttributes"]
+    order_id: Optional[int]
+    paid_till: Optional[datetime.datetime]
+    kyc_id: Optional[int]
+    sms_verified: Optional[bool]
     jaxlid: Optional[str]
     verified: bool = False
     ivr: Union[Unset, None, int] = UNSET
@@ -82,6 +91,11 @@ class PhoneNumber:
         registered_from_device = self.registered_from_device
         attributes = self.attributes.to_dict() if self.attributes else None
 
+        order_id = self.order_id
+        paid_till = self.paid_till.isoformat() if self.paid_till else None
+
+        kyc_id = self.kyc_id
+        sms_verified = self.sms_verified
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -99,6 +113,10 @@ class PhoneNumber:
                 "resource": resource,
                 "registered_from_device": registered_from_device,
                 "attributes": attributes,
+                "order_id": order_id,
+                "paid_till": paid_till,
+                "kyc_id": kyc_id,
+                "sms_verified": sms_verified,
                 "jaxlid": jaxlid,
             }
         )
@@ -142,6 +160,19 @@ class PhoneNumber:
         else:
             attributes = PhoneNumberAttributes.from_dict(_attributes)
 
+        order_id = d.pop("order_id")
+
+        _paid_till = d.pop("paid_till")
+        paid_till: Optional[datetime.datetime]
+        if _paid_till is None:
+            paid_till = None
+        else:
+            paid_till = isoparse(_paid_till)
+
+        kyc_id = d.pop("kyc_id")
+
+        sms_verified = d.pop("sms_verified")
+
         jaxlid = d.pop("jaxlid")
 
         phone_number = cls(
@@ -157,6 +188,10 @@ class PhoneNumber:
             ivr=ivr,
             registered_from_device=registered_from_device,
             attributes=attributes,
+            order_id=order_id,
+            paid_till=paid_till,
+            kyc_id=kyc_id,
+            sms_verified=sms_verified,
             jaxlid=jaxlid,
         )
 

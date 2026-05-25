@@ -7,57 +7,34 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import Any, Dict, List, Type, TypeVar
 
 import attr
 
-from ..types import UNSET, Unset
-
-T = TypeVar("T", bound="CallTagRequest")
+T = TypeVar("T", bound="IVRMenuRequestSettings")
 
 
 @attr.s(auto_attribs=True)
-class CallTagRequest:
-    """
-    Attributes:
-        name (str):
-        rationale (Union[Unset, None, str]):  Default: ''.
-    """
+class IVRMenuRequestSettings:
+    """ """
 
-    name: str
-    rationale: Union[Unset, None, str] = ""
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        name = self.name
-        rationale = self.rationale
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "name": name,
-            }
-        )
-        if rationale is not UNSET:
-            field_dict["rationale"] = rationale
+        field_dict.update({})
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        name = d.pop("name")
+        ivr_menu_request_settings = cls()
 
-        rationale = d.pop("rationale", UNSET)
-
-        call_tag_request = cls(
-            name=name,
-            rationale=rationale,
-        )
-
-        call_tag_request.additional_properties = d
-        return call_tag_request
+        ivr_menu_request_settings.additional_properties = d
+        return ivr_menu_request_settings
 
     @property
     def additional_keys(self) -> List[str]:

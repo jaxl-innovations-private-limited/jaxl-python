@@ -44,10 +44,16 @@ class DHMessage:
         encrypted (str):
         att (List['DHMessageAttachment']):
         deleted (bool):
+        fe (int):
+        fi (int):
+        te (int):
+        ti (int):
         type (Union[Unset, DHMessageTypeEnum]):
         irt (Optional[int]):
         fname (Optional[str]):
         reactions (Optional[DHMessageReaction]):
+        tag (Union[Unset, None, str]): Context (tag) associated with this dh message. For example, when creating
+            customer notes from within an active call context,tag=call:512
         jaxlid (Optional[str]):
     """
 
@@ -66,11 +72,16 @@ class DHMessage:
     encrypted: str
     att: List["DHMessageAttachment"]
     deleted: bool
+    fe: int
+    fi: int
+    te: int
+    ti: int
     irt: Optional[int]
     fname: Optional[str]
     reactions: Optional["DHMessageReaction"]
     jaxlid: Optional[str]
     type: Union[Unset, DHMessageTypeEnum] = UNSET
+    tag: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -95,6 +106,10 @@ class DHMessage:
             att.append(att_item)
 
         deleted = self.deleted
+        fe = self.fe
+        fi = self.fi
+        te = self.te
+        ti = self.ti
         type: Union[Unset, int] = UNSET
         if not isinstance(self.type, Unset):
             type = self.type.value
@@ -103,6 +118,7 @@ class DHMessage:
         fname = self.fname
         reactions = self.reactions.to_dict() if self.reactions else None
 
+        tag = self.tag
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -124,6 +140,10 @@ class DHMessage:
                 "encrypted": encrypted,
                 "att": att,
                 "deleted": deleted,
+                "fe": fe,
+                "fi": fi,
+                "te": te,
+                "ti": ti,
                 "irt": irt,
                 "fname": fname,
                 "reactions": reactions,
@@ -132,6 +152,8 @@ class DHMessage:
         )
         if type is not UNSET:
             field_dict["type"] = type
+        if tag is not UNSET:
+            field_dict["tag"] = tag
 
         return field_dict
 
@@ -176,6 +198,14 @@ class DHMessage:
 
         deleted = d.pop("deleted")
 
+        fe = d.pop("fe")
+
+        fi = d.pop("fi")
+
+        te = d.pop("te")
+
+        ti = d.pop("ti")
+
         _type = d.pop("type", UNSET)
         type: Union[Unset, DHMessageTypeEnum]
         if isinstance(_type, Unset):
@@ -193,6 +223,8 @@ class DHMessage:
             reactions = None
         else:
             reactions = DHMessageReaction.from_dict(_reactions)
+
+        tag = d.pop("tag", UNSET)
 
         jaxlid = d.pop("jaxlid")
 
@@ -212,10 +244,15 @@ class DHMessage:
             encrypted=encrypted,
             att=att,
             deleted=deleted,
+            fe=fe,
+            fi=fi,
+            te=te,
+            ti=ti,
             type=type,
             irt=irt,
             fname=fname,
             reactions=reactions,
+            tag=tag,
             jaxlid=jaxlid,
         )
 
