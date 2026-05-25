@@ -308,7 +308,12 @@ class BaseJaxlApp:
         return None
 
     async def add_tag(
-        self, call_id: int, tag: str
+        self, call_id: int, tag: str, rationale: Optional[str] = None
     ) -> Optional[Response[CallTagResponse]]:
-        """Add tag to a call by ID."""
+        """Add tag to a call by ID.
+
+        `rationale` (optional) carries the caller's explanation for
+        the tag (e.g. an AI agent's reasoning) and is persisted
+        alongside the tag by the backend.
+        """
         return None

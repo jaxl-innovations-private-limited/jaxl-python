@@ -136,8 +136,12 @@ def _start_server(
 
     wss: Dict[int, WebSocket] = {}
 
-    async def _add_tag(call_id: int, tag: str) -> Response[CallTagResponse]:
-        return await calls_atag_add({"call_id": call_id, "tag": tag})
+    async def _add_tag(
+        call_id: int, tag: str, rationale: Optional[str] = None
+    ) -> Response[CallTagResponse]:
+        return await calls_atag_add(
+            {"call_id": call_id, "tag": tag, "rationale": rationale}
+        )
 
     async def _hangup(call_id: int) -> Response[Any]:
         return await calls_ahangup({"call_id": call_id})
