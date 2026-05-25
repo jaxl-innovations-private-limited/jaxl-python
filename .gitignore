@@ -35,3 +35,5 @@ jaxl-api-credentials*.json
 docs
 jaxlapi.sh
 *.py.orig
+CLAUDE.md
+CURRENT.md
