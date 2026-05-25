@@ -7,12 +7,16 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
 
 import attr
 
 from ..models.call_type_enum import CallTypeEnum
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.cta_request import CTARequest
+
 
 T = TypeVar("T", bound="CallTokenRequest")
 
@@ -31,6 +35,7 @@ class CallTokenRequest:
         ivr_id (Union[Unset, None, int]):
         total_recharge (Union[Unset, None, str]):
         cid (Union[Unset, None, int]): Call ID which acted as source for this outgoing call
+        cta (Union[Unset, None, CTARequest]):
     """
 
     from_number: str
@@ -43,6 +48,7 @@ class CallTokenRequest:
     ivr_id: Union[Unset, None, int] = UNSET
     total_recharge: Union[Unset, None, str] = UNSET
     cid: Union[Unset, None, int] = UNSET
+    cta: Union[Unset, None, "CTARequest"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -57,6 +63,9 @@ class CallTokenRequest:
         ivr_id = self.ivr_id
         total_recharge = self.total_recharge
         cid = self.cid
+        cta: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.cta, Unset):
+            cta = self.cta.to_dict() if self.cta else None
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -78,11 +87,15 @@ class CallTokenRequest:
             field_dict["total_recharge"] = total_recharge
         if cid is not UNSET:
             field_dict["cid"] = cid
+        if cta is not UNSET:
+            field_dict["cta"] = cta
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.cta_request import CTARequest
+
         d = src_dict.copy()
         from_number = d.pop("from_number")
 
@@ -104,6 +117,15 @@ class CallTokenRequest:
 
         cid = d.pop("cid", UNSET)
 
+        _cta = d.pop("cta", UNSET)
+        cta: Union[Unset, None, CTARequest]
+        if _cta is None:
+            cta = None
+        elif isinstance(_cta, Unset):
+            cta = UNSET
+        else:
+            cta = CTARequest.from_dict(_cta)
+
         call_token_request = cls(
             from_number=from_number,
             to_number=to_number,
@@ -115,6 +137,7 @@ class CallTokenRequest:
             ivr_id=ivr_id,
             total_recharge=total_recharge,
             cid=cid,
+            cta=cta,
         )
 
         call_token_request.additional_properties = d

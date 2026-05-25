@@ -15,16 +15,23 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.paginated_dh_message_list import PaginatedDHMessageList
+from ...models.v1_messages_list_types_item import V1MessagesListTypesItem
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     *,
     client: AuthenticatedClient,
+    fe: Union[Unset, None, int] = UNSET,
+    fi: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     mid: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     okey: Union[Unset, None, List[str]] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
+    te: Union[Unset, None, int] = UNSET,
+    ti: Union[Unset, None, int] = UNSET,
+    types: Union[Unset, None, List[V1MessagesListTypesItem]] = UNSET,
 ) -> Dict[str, Any]:
     url = "{}/v1/messages/".format(client.base_url)
 
@@ -32,6 +39,10 @@ def _get_kwargs(
     cookies: Dict[str, Any] = client.get_cookies()
 
     params: Dict[str, Any] = {}
+    params["fe"] = fe
+
+    params["fi"] = fi
+
     params["limit"] = limit
 
     params["mid"] = mid
@@ -46,6 +57,25 @@ def _get_kwargs(
             json_okey = okey
 
     params["okey"] = json_okey
+
+    params["tag"] = tag
+
+    params["te"] = te
+
+    params["ti"] = ti
+
+    json_types: Union[Unset, None, List[str]] = UNSET
+    if not isinstance(types, Unset):
+        if types is None:
+            json_types = None
+        else:
+            json_types = []
+            for types_item_data in types:
+                types_item = types_item_data.value
+
+                json_types.append(types_item)
+
+    params["types"] = json_types
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -86,18 +116,30 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
+    fe: Union[Unset, None, int] = UNSET,
+    fi: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     mid: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     okey: Union[Unset, None, List[str]] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
+    te: Union[Unset, None, int] = UNSET,
+    ti: Union[Unset, None, int] = UNSET,
+    types: Union[Unset, None, List[V1MessagesListTypesItem]] = UNSET,
 ) -> Response[PaginatedDHMessageList]:
     """API view set for Network message related model.
 
     Args:
+        fe (Union[Unset, None, int]):
+        fi (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         mid (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
         okey (Union[Unset, None, List[str]]):
+        tag (Union[Unset, None, str]):
+        te (Union[Unset, None, int]):
+        ti (Union[Unset, None, int]):
+        types (Union[Unset, None, List[V1MessagesListTypesItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -109,10 +151,16 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         client=client,
+        fe=fe,
+        fi=fi,
         limit=limit,
         mid=mid,
         offset=offset,
         okey=okey,
+        tag=tag,
+        te=te,
+        ti=ti,
+        types=types,
     )
 
     response = httpx.request(
@@ -126,18 +174,30 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
+    fe: Union[Unset, None, int] = UNSET,
+    fi: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     mid: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     okey: Union[Unset, None, List[str]] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
+    te: Union[Unset, None, int] = UNSET,
+    ti: Union[Unset, None, int] = UNSET,
+    types: Union[Unset, None, List[V1MessagesListTypesItem]] = UNSET,
 ) -> Optional[PaginatedDHMessageList]:
     """API view set for Network message related model.
 
     Args:
+        fe (Union[Unset, None, int]):
+        fi (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         mid (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
         okey (Union[Unset, None, List[str]]):
+        tag (Union[Unset, None, str]):
+        te (Union[Unset, None, int]):
+        ti (Union[Unset, None, int]):
+        types (Union[Unset, None, List[V1MessagesListTypesItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -149,28 +209,46 @@ def sync(
 
     return sync_detailed(
         client=client,
+        fe=fe,
+        fi=fi,
         limit=limit,
         mid=mid,
         offset=offset,
         okey=okey,
+        tag=tag,
+        te=te,
+        ti=ti,
+        types=types,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
+    fe: Union[Unset, None, int] = UNSET,
+    fi: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     mid: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     okey: Union[Unset, None, List[str]] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
+    te: Union[Unset, None, int] = UNSET,
+    ti: Union[Unset, None, int] = UNSET,
+    types: Union[Unset, None, List[V1MessagesListTypesItem]] = UNSET,
 ) -> Response[PaginatedDHMessageList]:
     """API view set for Network message related model.
 
     Args:
+        fe (Union[Unset, None, int]):
+        fi (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         mid (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
         okey (Union[Unset, None, List[str]]):
+        tag (Union[Unset, None, str]):
+        te (Union[Unset, None, int]):
+        ti (Union[Unset, None, int]):
+        types (Union[Unset, None, List[V1MessagesListTypesItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -182,10 +260,16 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         client=client,
+        fe=fe,
+        fi=fi,
         limit=limit,
         mid=mid,
         offset=offset,
         okey=okey,
+        tag=tag,
+        te=te,
+        ti=ti,
+        types=types,
     )
 
     async with httpx.AsyncClient(verify=client.verify_ssl) as _client:
@@ -197,18 +281,30 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
+    fe: Union[Unset, None, int] = UNSET,
+    fi: Union[Unset, None, int] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
     mid: Union[Unset, None, int] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     okey: Union[Unset, None, List[str]] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
+    te: Union[Unset, None, int] = UNSET,
+    ti: Union[Unset, None, int] = UNSET,
+    types: Union[Unset, None, List[V1MessagesListTypesItem]] = UNSET,
 ) -> Optional[PaginatedDHMessageList]:
     """API view set for Network message related model.
 
     Args:
+        fe (Union[Unset, None, int]):
+        fi (Union[Unset, None, int]):
         limit (Union[Unset, None, int]):
         mid (Union[Unset, None, int]):
         offset (Union[Unset, None, int]):
         okey (Union[Unset, None, List[str]]):
+        tag (Union[Unset, None, str]):
+        te (Union[Unset, None, int]):
+        ti (Union[Unset, None, int]):
+        types (Union[Unset, None, List[V1MessagesListTypesItem]]):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -221,9 +317,15 @@ async def asyncio(
     return (
         await asyncio_detailed(
             client=client,
+            fe=fe,
+            fi=fi,
             limit=limit,
             mid=mid,
             offset=offset,
             okey=okey,
+            tag=tag,
+            te=te,
+            ti=ti,
+            types=types,
         )
     ).parsed

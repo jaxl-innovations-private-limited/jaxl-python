@@ -7,6 +7,7 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+import datetime
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Union
 
@@ -24,9 +25,12 @@ def _get_kwargs(
     client: AuthenticatedClient,
     aid: Union[Unset, None, List[int]] = UNSET,
     bot: Union[Unset, None, bool] = UNSET,
+    campaign: Union[Unset, None, bool] = UNSET,
+    campaign_id: Union[Unset, None, int] = UNSET,
     currency: int,
     direction: Union[Unset, None, V1CallsListDirection] = UNSET,
     duration: Union[Unset, None, int] = UNSET,
+    end_time: Union[Unset, None, datetime.datetime] = UNSET,
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
@@ -35,6 +39,8 @@ def _get_kwargs(
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    start_time: Union[Unset, None, datetime.datetime] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
     tid: Union[Unset, None, List[int]] = UNSET,
     to_number: Union[Unset, None, str] = UNSET,
@@ -57,6 +63,10 @@ def _get_kwargs(
 
     params["bot"] = bot
 
+    params["campaign"] = campaign
+
+    params["campaign_id"] = campaign_id
+
     params["currency"] = currency
 
     json_direction: Union[Unset, None, int] = UNSET
@@ -66,6 +76,12 @@ def _get_kwargs(
     params["direction"] = json_direction
 
     params["duration"] = duration
+
+    json_end_time: Union[Unset, None, str] = UNSET
+    if not isinstance(end_time, Unset):
+        json_end_time = end_time.isoformat() if end_time else None
+
+    params["end_time"] = json_end_time
 
     params["from_number"] = from_number
 
@@ -82,6 +98,14 @@ def _get_kwargs(
     params["our_numbers"] = our_numbers
 
     params["recording"] = recording
+
+    json_start_time: Union[Unset, None, str] = UNSET
+    if not isinstance(start_time, Unset):
+        json_start_time = start_time.isoformat() if start_time else None
+
+    params["start_time"] = json_start_time
+
+    params["tag"] = tag
 
     params["tag_operator"] = tag_operator
 
@@ -139,9 +163,12 @@ def sync_detailed(
     client: AuthenticatedClient,
     aid: Union[Unset, None, List[int]] = UNSET,
     bot: Union[Unset, None, bool] = UNSET,
+    campaign: Union[Unset, None, bool] = UNSET,
+    campaign_id: Union[Unset, None, int] = UNSET,
     currency: int,
     direction: Union[Unset, None, V1CallsListDirection] = UNSET,
     duration: Union[Unset, None, int] = UNSET,
+    end_time: Union[Unset, None, datetime.datetime] = UNSET,
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
@@ -150,6 +177,8 @@ def sync_detailed(
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    start_time: Union[Unset, None, datetime.datetime] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
     tid: Union[Unset, None, List[int]] = UNSET,
     to_number: Union[Unset, None, str] = UNSET,
@@ -160,9 +189,12 @@ def sync_detailed(
     Args:
         aid (Union[Unset, None, List[int]]):
         bot (Union[Unset, None, bool]):
+        campaign (Union[Unset, None, bool]):
+        campaign_id (Union[Unset, None, int]):
         currency (int):
         direction (Union[Unset, None, V1CallsListDirection]):
         duration (Union[Unset, None, int]):
+        end_time (Union[Unset, None, datetime.datetime]):
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
@@ -171,6 +203,8 @@ def sync_detailed(
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        start_time (Union[Unset, None, datetime.datetime]):
+        tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
         tid (Union[Unset, None, List[int]]):
         to_number (Union[Unset, None, str]):
@@ -188,9 +222,12 @@ def sync_detailed(
         client=client,
         aid=aid,
         bot=bot,
+        campaign=campaign,
+        campaign_id=campaign_id,
         currency=currency,
         direction=direction,
         duration=duration,
+        end_time=end_time,
         from_number=from_number,
         ivr=ivr,
         limit=limit,
@@ -199,6 +236,8 @@ def sync_detailed(
         other_numbers=other_numbers,
         our_numbers=our_numbers,
         recording=recording,
+        start_time=start_time,
+        tag=tag,
         tag_operator=tag_operator,
         tid=tid,
         to_number=to_number,
@@ -218,9 +257,12 @@ def sync(
     client: AuthenticatedClient,
     aid: Union[Unset, None, List[int]] = UNSET,
     bot: Union[Unset, None, bool] = UNSET,
+    campaign: Union[Unset, None, bool] = UNSET,
+    campaign_id: Union[Unset, None, int] = UNSET,
     currency: int,
     direction: Union[Unset, None, V1CallsListDirection] = UNSET,
     duration: Union[Unset, None, int] = UNSET,
+    end_time: Union[Unset, None, datetime.datetime] = UNSET,
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
@@ -229,6 +271,8 @@ def sync(
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    start_time: Union[Unset, None, datetime.datetime] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
     tid: Union[Unset, None, List[int]] = UNSET,
     to_number: Union[Unset, None, str] = UNSET,
@@ -239,9 +283,12 @@ def sync(
     Args:
         aid (Union[Unset, None, List[int]]):
         bot (Union[Unset, None, bool]):
+        campaign (Union[Unset, None, bool]):
+        campaign_id (Union[Unset, None, int]):
         currency (int):
         direction (Union[Unset, None, V1CallsListDirection]):
         duration (Union[Unset, None, int]):
+        end_time (Union[Unset, None, datetime.datetime]):
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
@@ -250,6 +297,8 @@ def sync(
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        start_time (Union[Unset, None, datetime.datetime]):
+        tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
         tid (Union[Unset, None, List[int]]):
         to_number (Union[Unset, None, str]):
@@ -267,9 +316,12 @@ def sync(
         client=client,
         aid=aid,
         bot=bot,
+        campaign=campaign,
+        campaign_id=campaign_id,
         currency=currency,
         direction=direction,
         duration=duration,
+        end_time=end_time,
         from_number=from_number,
         ivr=ivr,
         limit=limit,
@@ -278,6 +330,8 @@ def sync(
         other_numbers=other_numbers,
         our_numbers=our_numbers,
         recording=recording,
+        start_time=start_time,
+        tag=tag,
         tag_operator=tag_operator,
         tid=tid,
         to_number=to_number,
@@ -290,9 +344,12 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     aid: Union[Unset, None, List[int]] = UNSET,
     bot: Union[Unset, None, bool] = UNSET,
+    campaign: Union[Unset, None, bool] = UNSET,
+    campaign_id: Union[Unset, None, int] = UNSET,
     currency: int,
     direction: Union[Unset, None, V1CallsListDirection] = UNSET,
     duration: Union[Unset, None, int] = UNSET,
+    end_time: Union[Unset, None, datetime.datetime] = UNSET,
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
@@ -301,6 +358,8 @@ async def asyncio_detailed(
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    start_time: Union[Unset, None, datetime.datetime] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
     tid: Union[Unset, None, List[int]] = UNSET,
     to_number: Union[Unset, None, str] = UNSET,
@@ -311,9 +370,12 @@ async def asyncio_detailed(
     Args:
         aid (Union[Unset, None, List[int]]):
         bot (Union[Unset, None, bool]):
+        campaign (Union[Unset, None, bool]):
+        campaign_id (Union[Unset, None, int]):
         currency (int):
         direction (Union[Unset, None, V1CallsListDirection]):
         duration (Union[Unset, None, int]):
+        end_time (Union[Unset, None, datetime.datetime]):
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
@@ -322,6 +384,8 @@ async def asyncio_detailed(
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        start_time (Union[Unset, None, datetime.datetime]):
+        tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
         tid (Union[Unset, None, List[int]]):
         to_number (Union[Unset, None, str]):
@@ -339,9 +403,12 @@ async def asyncio_detailed(
         client=client,
         aid=aid,
         bot=bot,
+        campaign=campaign,
+        campaign_id=campaign_id,
         currency=currency,
         direction=direction,
         duration=duration,
+        end_time=end_time,
         from_number=from_number,
         ivr=ivr,
         limit=limit,
@@ -350,6 +417,8 @@ async def asyncio_detailed(
         other_numbers=other_numbers,
         our_numbers=our_numbers,
         recording=recording,
+        start_time=start_time,
+        tag=tag,
         tag_operator=tag_operator,
         tid=tid,
         to_number=to_number,
@@ -367,9 +436,12 @@ async def asyncio(
     client: AuthenticatedClient,
     aid: Union[Unset, None, List[int]] = UNSET,
     bot: Union[Unset, None, bool] = UNSET,
+    campaign: Union[Unset, None, bool] = UNSET,
+    campaign_id: Union[Unset, None, int] = UNSET,
     currency: int,
     direction: Union[Unset, None, V1CallsListDirection] = UNSET,
     duration: Union[Unset, None, int] = UNSET,
+    end_time: Union[Unset, None, datetime.datetime] = UNSET,
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
@@ -378,6 +450,8 @@ async def asyncio(
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    start_time: Union[Unset, None, datetime.datetime] = UNSET,
+    tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
     tid: Union[Unset, None, List[int]] = UNSET,
     to_number: Union[Unset, None, str] = UNSET,
@@ -388,9 +462,12 @@ async def asyncio(
     Args:
         aid (Union[Unset, None, List[int]]):
         bot (Union[Unset, None, bool]):
+        campaign (Union[Unset, None, bool]):
+        campaign_id (Union[Unset, None, int]):
         currency (int):
         direction (Union[Unset, None, V1CallsListDirection]):
         duration (Union[Unset, None, int]):
+        end_time (Union[Unset, None, datetime.datetime]):
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
@@ -399,6 +476,8 @@ async def asyncio(
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        start_time (Union[Unset, None, datetime.datetime]):
+        tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
         tid (Union[Unset, None, List[int]]):
         to_number (Union[Unset, None, str]):
@@ -417,9 +496,12 @@ async def asyncio(
             client=client,
             aid=aid,
             bot=bot,
+            campaign=campaign,
+            campaign_id=campaign_id,
             currency=currency,
             direction=direction,
             duration=duration,
+            end_time=end_time,
             from_number=from_number,
             ivr=ivr,
             limit=limit,
@@ -428,6 +510,8 @@ async def asyncio(
             other_numbers=other_numbers,
             our_numbers=our_numbers,
             recording=recording,
+            start_time=start_time,
+            tag=tag,
             tag_operator=tag_operator,
             tid=tid,
             to_number=to_number,

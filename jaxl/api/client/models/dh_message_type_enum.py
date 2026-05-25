@@ -22,6 +22,10 @@ class DHMessageTypeEnum(IntEnum):
     VALUE_8 = 8
     VALUE_9 = 9
     VALUE_10 = 10
+    VALUE_11 = 11
+    VALUE_12 = 12
+    VALUE_13 = 13
+    VALUE_14 = 14
 
     def __str__(self) -> str:
         return str(self.value)

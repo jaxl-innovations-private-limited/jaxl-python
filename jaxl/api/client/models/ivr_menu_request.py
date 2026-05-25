@@ -7,11 +7,15 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
 
 import attr
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.ivr_menu_request_settings import IVRMenuRequestSettings
+
 
 T = TypeVar("T", bound="IVRMenuRequest")
 
@@ -22,15 +26,20 @@ class IVRMenuRequest:
     Attributes:
         name (str): Name of this IVR menu as shown/spoken to user before following up with options
         hangup (Union[Unset, bool]): Whether the call should be ended after speaking out the greeting message
+        settings (Union[Unset, None, IVRMenuRequestSettings]):
     """
 
     name: str
     hangup: Union[Unset, bool] = UNSET
+    settings: Union[Unset, None, "IVRMenuRequestSettings"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         name = self.name
         hangup = self.hangup
+        settings: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.settings, Unset):
+            settings = self.settings.to_dict() if self.settings else None
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -41,19 +50,33 @@ class IVRMenuRequest:
         )
         if hangup is not UNSET:
             field_dict["hangup"] = hangup
+        if settings is not UNSET:
+            field_dict["settings"] = settings
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.ivr_menu_request_settings import IVRMenuRequestSettings
+
         d = src_dict.copy()
         name = d.pop("name")
 
         hangup = d.pop("hangup", UNSET)
 
+        _settings = d.pop("settings", UNSET)
+        settings: Union[Unset, None, IVRMenuRequestSettings]
+        if _settings is None:
+            settings = None
+        elif isinstance(_settings, Unset):
+            settings = UNSET
+        else:
+            settings = IVRMenuRequestSettings.from_dict(_settings)
+
         ivr_menu_request = cls(
             name=name,
             hangup=hangup,
+            settings=settings,
         )
 
         ivr_menu_request.additional_properties = d

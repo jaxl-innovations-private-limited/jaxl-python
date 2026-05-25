@@ -92,7 +92,9 @@ from .item import Item
 from .ivr_collection import IVRCollection
 from .ivr_collection_request import IVRCollectionRequest
 from .ivr_menu_request import IVRMenuRequest
+from .ivr_menu_request_settings import IVRMenuRequestSettings
 from .ivr_menu_response import IVRMenuResponse
+from .ivr_menu_response_settings import IVRMenuResponseSettings
 from .ivr_menu_response_status_enum import IVRMenuResponseStatusEnum
 from .ivr_options_invalid_response import IVROptionsInvalidResponse
 from .ivr_options_request import IVROptionsRequest
@@ -156,6 +158,7 @@ from .rental_currency_enum import RentalCurrencyEnum
 from .resource_enum import ResourceEnum
 from .shopify_auth_request_request import ShopifyAuthRequestRequest
 from .stripe_auth_request_request import StripeAuthRequestRequest
+from .upload_metadata import UploadMetadata
 from .user_agent import UserAgent
 from .user_agent_browser import UserAgentBrowser
 from .user_agent_device import UserAgentDevice
@@ -175,6 +178,7 @@ from .v1_kyc_list_iso_country import V1KycListIsoCountry
 from .v1_kyc_list_provider_status_item import V1KycListProviderStatusItem
 from .v1_kyc_list_resource import V1KycListResource
 from .v1_kyc_list_status import V1KycListStatus
+from .v1_messages_list_types_item import V1MessagesListTypesItem
 from .v1_phonenumbers_list_additional_status_item import (
     V1PhonenumbersListAdditionalStatusItem,
 )
@@ -276,7 +280,9 @@ __all__ = (
     "IVRCollection",
     "IVRCollectionRequest",
     "IVRMenuRequest",
+    "IVRMenuRequestSettings",
     "IVRMenuResponse",
+    "IVRMenuResponseSettings",
     "IVRMenuResponseStatusEnum",
     "IVROptionsInvalidResponse",
     "IVROptionsRequest",
@@ -336,6 +342,7 @@ __all__ = (
     "ResourceEnum",
     "ShopifyAuthRequestRequest",
     "StripeAuthRequestRequest",
+    "UploadMetadata",
     "UserAgent",
     "UserAgentBrowser",
     "UserAgentDevice",
@@ -353,6 +360,7 @@ __all__ = (
     "V1KycListProviderStatusItem",
     "V1KycListResource",
     "V1KycListStatus",
+    "V1MessagesListTypesItem",
     "V1PhonenumbersListAdditionalStatusItem",
     "V1PhonenumbersListProvider",
     "V1PhonenumbersListStatus",

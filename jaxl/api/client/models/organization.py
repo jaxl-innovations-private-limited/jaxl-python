@@ -7,7 +7,7 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union, cast
 
 import attr
 
@@ -31,6 +31,7 @@ class Organization:
         domain (Union[Unset, None, str]): Organization domain
         owner (Union[Unset, None, int]): AppUser who owns this organization
         phone_number (Union[Unset, None, str]): Organization cellular number provided by organization
+        managers (Union[Unset, List[int]]): List of manager user IDs
         jaxlid (Optional[str]):
     """
 
@@ -41,6 +42,7 @@ class Organization:
     domain: Union[Unset, None, str] = UNSET
     owner: Union[Unset, None, int] = UNSET
     phone_number: Union[Unset, None, str] = UNSET
+    managers: Union[Unset, List[int]] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -51,6 +53,10 @@ class Organization:
         domain = self.domain
         owner = self.owner
         phone_number = self.phone_number
+        managers: Union[Unset, List[int]] = UNSET
+        if not isinstance(self.managers, Unset):
+            managers = self.managers
+
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -69,6 +75,8 @@ class Organization:
             field_dict["owner"] = owner
         if phone_number is not UNSET:
             field_dict["phone_number"] = phone_number
+        if managers is not UNSET:
+            field_dict["managers"] = managers
 
         return field_dict
 
@@ -89,6 +97,8 @@ class Organization:
 
         phone_number = d.pop("phone_number", UNSET)
 
+        managers = cast(List[int], d.pop("managers", UNSET))
+
         jaxlid = d.pop("jaxlid")
 
         organization = cls(
@@ -98,6 +108,7 @@ class Organization:
             domain=domain,
             owner=owner,
             phone_number=phone_number,
+            managers=managers,
             jaxlid=jaxlid,
         )
 

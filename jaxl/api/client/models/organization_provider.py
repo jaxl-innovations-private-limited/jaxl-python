@@ -7,9 +7,11 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar
+from typing import Any, Dict, List, Type, TypeVar, Union
 
 import attr
+
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="OrganizationProvider")
 
@@ -21,17 +23,20 @@ class OrganizationProvider:
         id (int):
         provider_name (str): Name of provider like for exotel it is jaxl61 for shopify it is shop domain
         provider_type (str):
+        ivr_id (Union[Unset, None, int]): Ivr id assigned to this
     """
 
     id: int
     provider_name: str
     provider_type: str
+    ivr_id: Union[Unset, None, int] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
         provider_name = self.provider_name
         provider_type = self.provider_type
+        ivr_id = self.ivr_id
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -42,6 +47,8 @@ class OrganizationProvider:
                 "provider_type": provider_type,
             }
         )
+        if ivr_id is not UNSET:
+            field_dict["ivr_id"] = ivr_id
 
         return field_dict
 
@@ -54,10 +61,13 @@ class OrganizationProvider:
 
         provider_type = d.pop("provider_type")
 
+        ivr_id = d.pop("ivr_id", UNSET)
+
         organization_provider = cls(
             id=id,
             provider_name=provider_name,
             provider_type=provider_type,
+            ivr_id=ivr_id,
         )
 
         organization_provider.additional_properties = d

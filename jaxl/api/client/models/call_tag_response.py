@@ -7,9 +7,11 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar
+from typing import Any, Dict, List, Type, TypeVar, Union
 
 import attr
+
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CallTagResponse")
 
@@ -20,15 +22,18 @@ class CallTagResponse:
     Attributes:
         id (int):
         name (str): This field store the name as it is pass by user
+        rationale (Union[Unset, None, str]): Tag reasoning
     """
 
     id: int
     name: str
+    rationale: Union[Unset, None, str] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
         name = self.name
+        rationale = self.rationale
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -38,6 +43,8 @@ class CallTagResponse:
                 "name": name,
             }
         )
+        if rationale is not UNSET:
+            field_dict["rationale"] = rationale
 
         return field_dict
 
@@ -48,9 +55,12 @@ class CallTagResponse:
 
         name = d.pop("name")
 
+        rationale = d.pop("rationale", UNSET)
+
         call_tag_response = cls(
             id=id,
             name=name,
+            rationale=rationale,
         )
 
         call_tag_response.additional_properties = d

@@ -24,15 +24,18 @@ T = TypeVar("T", bound="CampaignMetadata")
 class CampaignMetadata:
     """
     Attributes:
+        campaign_id (int): Campaign to which this target metadata belongs
         metadata (Union[Unset, None, CampaignMetadataMetadata]): Any additional metadata provided with target
         name (Optional[str]):
     """
 
+    campaign_id: int
     name: Optional[str]
     metadata: Union[Unset, None, "CampaignMetadataMetadata"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
+        campaign_id = self.campaign_id
         metadata: Union[Unset, None, Dict[str, Any]] = UNSET
         if not isinstance(self.metadata, Unset):
             metadata = self.metadata.to_dict() if self.metadata else None
@@ -43,6 +46,7 @@ class CampaignMetadata:
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
+                "campaign_id": campaign_id,
                 "name": name,
             }
         )
@@ -56,6 +60,8 @@ class CampaignMetadata:
         from ..models.campaign_metadata_metadata import CampaignMetadataMetadata
 
         d = src_dict.copy()
+        campaign_id = d.pop("campaign_id")
+
         _metadata = d.pop("metadata", UNSET)
         metadata: Union[Unset, None, CampaignMetadataMetadata]
         if _metadata is None:
@@ -68,6 +74,7 @@ class CampaignMetadata:
         name = d.pop("name")
 
         campaign_metadata = cls(
+            campaign_id=campaign_id,
             metadata=metadata,
             name=name,
         )

@@ -87,6 +87,8 @@ def sync_detailed(
     offset: Union[Unset, None, int] = UNSET,
 ) -> Response[PaginatedOrganizationGroupResponseList]:
     """List organizations teams.  By default does not return empty teams.
+    1) Owner and org manager(Payment) able to list all org group.
+    1) Team member and manager also able to team in which they are.
 
     Args:
         org_id (str):
@@ -127,6 +129,8 @@ def sync(
     offset: Union[Unset, None, int] = UNSET,
 ) -> Optional[PaginatedOrganizationGroupResponseList]:
     """List organizations teams.  By default does not return empty teams.
+    1) Owner and org manager(Payment) able to list all org group.
+    1) Team member and manager also able to team in which they are.
 
     Args:
         org_id (str):
@@ -160,6 +164,8 @@ async def asyncio_detailed(
     offset: Union[Unset, None, int] = UNSET,
 ) -> Response[PaginatedOrganizationGroupResponseList]:
     """List organizations teams.  By default does not return empty teams.
+    1) Owner and org manager(Payment) able to list all org group.
+    1) Team member and manager also able to team in which they are.
 
     Args:
         org_id (str):
@@ -198,6 +204,8 @@ async def asyncio(
     offset: Union[Unset, None, int] = UNSET,
 ) -> Optional[PaginatedOrganizationGroupResponseList]:
     """List organizations teams.  By default does not return empty teams.
+    1) Owner and org manager(Payment) able to list all org group.
+    1) Team member and manager also able to team in which they are.
 
     Args:
         org_id (str):
