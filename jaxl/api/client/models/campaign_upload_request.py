@@ -154,7 +154,7 @@ class CampaignUploadRequest:
             window = (
                 (None, json.dumps(self.window.to_dict()).encode(), "application/json")
                 if self.window
-                else None
+                else UNSET
             )
 
         auto_retry = (
@@ -177,7 +177,7 @@ class CampaignUploadRequest:
             options = (
                 (None, json.dumps(self.options.to_dict()).encode(), "application/json")
                 if self.options
-                else None
+                else UNSET
             )
 
         field_dict: Dict[str, Any] = {}

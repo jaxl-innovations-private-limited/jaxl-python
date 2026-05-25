@@ -109,7 +109,7 @@ class IVROptionsResponse:
 
         _cta = d.pop("cta", UNSET)
         cta: Union[Unset, CTA]
-        if isinstance(_cta, Unset):
+        if isinstance(_cta, Unset) or _cta is None:
             cta = UNSET
         else:
             cta = CTA.from_dict(_cta)
