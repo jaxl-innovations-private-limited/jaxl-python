@@ -326,6 +326,18 @@ def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
     )
 
 
+async def calls_atransfer(args: Dict[str, Any]) -> Response[Any]:
+    return v1_calls_transfer_create.asyncio_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallTransferRequestRequest(next_or_cta=create_next_or_cta(args)),
+    )
+
+
 def calls_message(args: Dict[str, Any]) -> Response[Any]:
     return v1_calls_messages_create.sync_detailed(
         id=args["call_id"],
