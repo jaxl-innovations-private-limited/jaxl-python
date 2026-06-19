@@ -327,7 +327,7 @@ def calls_transfer(args: Dict[str, Any]) -> Response[Any]:
 
 
 async def calls_atransfer(args: Dict[str, Any]) -> Response[Any]:
-    return v1_calls_transfer_create.asyncio_detailed(
+    return await v1_calls_transfer_create.asyncio_detailed(
         id=args["call_id"],
         client=jaxl_api_client(
             JaxlApiModule.CALL,
