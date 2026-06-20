@@ -306,6 +306,12 @@ def _start_server(
                             slin16s.append(slin16)
                         else:
                             assert speaking is False
+                elif ev == "handoff":
+                    await app.handle_handoff(
+                        state["call_id"],
+                        int(data[ev]["call_id"]),
+                        str(data[ev]["status"]),
+                    )
                 elif ev == "connected":
                     pass
                 else:

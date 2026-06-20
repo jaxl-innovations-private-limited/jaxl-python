@@ -196,6 +196,15 @@ class BaseJaxlApp:
         """Invoke when websocket stream has been disconnected for bidirectional audio packets."""
         return None
 
+    async def handle_handoff(
+        self, call_id: int, handoff_call_id: int, status: str
+    ) -> None:
+        """Invoked as a result of call transfer API.
+
+        handoff_call_id is the same call ID returned by call transfer API.
+        """
+        return None
+
     async def handle_speech_detection(self, call_id: int, speaking: bool) -> None:
         """Invoked when speech starts and ends."""
         return None
