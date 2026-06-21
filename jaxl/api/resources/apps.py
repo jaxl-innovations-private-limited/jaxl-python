@@ -251,7 +251,17 @@ def _start_server(
         await app.on_stream_connect(state["call_id"])
         try:
             while True:
-                data = json.loads(await ws.receive_text())
+                try:
+                    raw = await ws.receive_text()
+                except (WebSocketDisconnect, RuntimeError):
+                    # The socket is already gone: a clean client disconnect,
+                    # or a RuntimeError ("WebSocket is not connected") when the
+                    # call was torn down from another task and that close raced
+                    # this receive loop. Either way there is nothing more to
+                    # read — exit cleanly. (Scoped to the receive so a genuine
+                    # error in a handler below still surfaces.)
+                    break
+                data = json.loads(raw)
                 ev = data["event"]
                 if ev == "media":
                     req = JaxlStreamRequest(pk=ivr_id, state=state)
@@ -323,7 +333,13 @@ def _start_server(
                 if state["call_id"] in wss:
                     del wss[state["call_id"]]
                 if ws.client_state != WebSocketState.DISCONNECTED:
-                    await ws.close()
+                    try:
+                        await ws.close()
+                    except RuntimeError:
+                        # Already closing / closed (e.g. teardown closed it
+                        # from another task) — "Cannot call send once a close
+                        # message has been sent." Nothing to do.
+                        pass
             finally:
                 await app.on_stream_disconnect(state["call_id"])
 
