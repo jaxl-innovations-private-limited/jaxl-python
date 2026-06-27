@@ -25,7 +25,7 @@ from typing import (
 import requests
 from fastapi import WebSocket
 from fastapi.responses import Response as FastApiResponse
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 from jaxl.api.client.models.call_tag_response import CallTagResponse
 from jaxl.api.client.types import Response
@@ -90,6 +90,24 @@ class JaxlWebhookResponse(BaseModel):
     prompt: List[str]
     num_characters: Union[int, str]
     mark: Optional[str] = None
+
+
+class JaxlStreamMeta(BaseModel):
+    """Optional per-packet metadata sent alongside a media chunk.
+
+    Carries upstream signal-processing hints (e.g. speaker attribution).
+    All fields optional; consumers must tolerate its absence and ignore
+    unknown keys.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    # "customer" | "other" | "unknown"
+    speaker: Optional[str] = None
+    # 0.0..1.0 confidence in the speaker label
+    speaker_confidence: Optional[float] = None
+    # whether the frame contains speech (vs silence)
+    is_speech: Optional[bool] = None
 
 
 class JaxlStreamRequest(BaseModel):
@@ -213,6 +231,7 @@ class BaseJaxlApp:
         self,
         req: JaxlStreamRequest,
         slin16: bytes,
+        meta: Optional[JaxlStreamMeta] = None,
     ) -> None:
         return None
 

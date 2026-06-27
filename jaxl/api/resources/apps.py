@@ -28,6 +28,7 @@ from starlette.websockets import WebSocketDisconnect
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamMeta,
     JaxlStreamRequest,
     JaxlWebhookEvent,
     JaxlWebhookRequest,
@@ -266,8 +267,11 @@ def _start_server(
                 if ev == "media":
                     req = JaxlStreamRequest(pk=ivr_id, state=state)
                     slin16 = base64.b64decode(data[ev]["payload"])
+                    # Optional per-packet metadata (e.g. speaker attribution)
+                    _meta = data[ev].get("meta")
+                    meta = JaxlStreamMeta(**_meta) if _meta else None
                     # Invoke audio chunk handlers
-                    await app.handle_audio_chunk(req, slin16)
+                    await app.handle_audio_chunk(req, slin16, meta=meta)
                     # Detect start/end of speech
                     change = sdetector.process(slin16)
                     # Manage speech segments
