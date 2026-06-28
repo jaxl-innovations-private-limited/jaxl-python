@@ -7,9 +7,12 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
+from typing import Optional
+
 from jaxl.api.base import (
     HANDLER_RESPONSE,
     BaseJaxlApp,
+    JaxlStreamMeta,
     JaxlStreamRequest,
     JaxlWebhookRequest,
     JaxlWebhookResponse,
@@ -29,6 +32,7 @@ class JaxlAppStreamingAudioChunk(BaseJaxlApp):
         self,
         req: JaxlStreamRequest,
         slin16: bytes,
+        meta: Optional[JaxlStreamMeta] = None,
     ) -> None:
         print(f"Received {len(slin16)} bytes of raw audio")
         return None
