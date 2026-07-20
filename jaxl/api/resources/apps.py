@@ -174,10 +174,29 @@ def _start_server(
             logger.warning(f"⚠️ send_audio failure: {exc}")
             return False
 
+    async def _send_mark(call_id: int, mark: str) -> bool:
+        try:
+            await wss[call_id].send_text(
+                json.dumps(
+                    {
+                        "event": "mark",
+                        "mark": {
+                            "name": mark,
+                        },
+                    }
+                )
+            )
+            return True
+        # pylint: disable=broad-exception-caught
+        except Exception as exc:
+            logger.warning(f"⚠️ send_mark failure: {exc}")
+            return False
+
     app.send_audio = _send_audio  # type: ignore[method-assign]
     app.clear_audio = _clear_audio  # type: ignore[method-assign]
     app.add_tag = _add_tag  # type: ignore[method-assign]
     app.hangup = _hangup  # type: ignore[method-assign]
+    app.send_mark = _send_mark  # type: ignore[method-assign]
 
     @server.api_route(
         "/webhook/",
@@ -325,6 +344,11 @@ def _start_server(
                         state["call_id"],
                         int(data[ev]["call_id"]),
                         str(data[ev]["status"]),
+                    )
+                elif ev == "mark":
+                    # Echo envelope is {"event": "mark", "mark": {"name": ...}}
+                    await app.handle_stream_mark(
+                        state["call_id"], str(data[ev]["name"])
                     )
                 elif ev == "connected":
                     pass

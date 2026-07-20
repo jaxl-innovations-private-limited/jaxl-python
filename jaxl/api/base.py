@@ -331,6 +331,14 @@ class BaseJaxlApp:
         """Clear any buffered audio."""
         return False
 
+    async def send_mark(self, call_id: int, mark: str) -> bool:
+        """Send a mark packet."""
+        return False
+
+    async def handle_stream_mark(self, call_id: int, mark: str) -> None:
+        """Invoked when upstream sends back mark response."""
+        return None
+
     async def hangup(self, call_id: int) -> Optional[Response[Any]]:
         """Hangup call by ID"""
         return None
