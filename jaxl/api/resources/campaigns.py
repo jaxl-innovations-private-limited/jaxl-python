@@ -203,7 +203,16 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         "--ai-id",
         type=str,
         required=False,
-        choices=["custom", "cod", "ndr", "acart", "feedback"],
+        choices=[
+            "cod",
+            "acart",
+            "ndr",
+            "feedback",
+            "leadq",
+            "hiring",
+            "membership",
+            "custom",
+        ],
         help="AI Agent ID",
     )
     group.add_argument(
