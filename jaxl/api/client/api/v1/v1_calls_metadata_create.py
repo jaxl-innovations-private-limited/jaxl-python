@@ -8,26 +8,26 @@ with or without modification, is strictly prohibited.
 """
 
 from http import HTTPStatus
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union, cast
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.patched_phone_number_update_request import (
-    PatchedPhoneNumberUpdateRequest,
+from ...models.v1_calls_metadata_create_json_body import V1CallsMetadataCreateJsonBody
+from ...models.v1_calls_metadata_create_response_200 import (
+    V1CallsMetadataCreateResponse200,
 )
-from ...models.phone_number import PhoneNumber
 from ...types import Response
 
 
 def _get_kwargs(
-    id: int,
+    call_id: str,
     *,
     client: AuthenticatedClient,
-    json_body: PatchedPhoneNumberUpdateRequest,
+    json_body: V1CallsMetadataCreateJsonBody,
 ) -> Dict[str, Any]:
-    url = "{}/v1/phonenumbers/{id}/".format(client.base_url, id=id)
+    url = "{}/v1/calls/{call_id}/metadata/".format(client.base_url, call_id=call_id)
 
     headers: Dict[str, str] = client.get_headers()
     cookies: Dict[str, Any] = client.get_cookies()
@@ -35,7 +35,7 @@ def _get_kwargs(
     json_json_body = json_body.to_dict()
 
     return {
-        "method": "patch",
+        "method": "post",
         "url": url,
         "headers": headers,
         "cookies": cookies,
@@ -46,11 +46,20 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Client, response: httpx.Response
-) -> Optional[PhoneNumber]:
+) -> Optional[Union[Any, V1CallsMetadataCreateResponse200]]:
     if response.status_code == HTTPStatus.OK:
-        response_200 = PhoneNumber.from_dict(response.json())
+        response_200 = V1CallsMetadataCreateResponse200.from_dict(response.json())
 
         return response_200
+    if response.status_code == HTTPStatus.BAD_REQUEST:
+        response_400 = cast(Any, None)
+        return response_400
+    if response.status_code == HTTPStatus.FORBIDDEN:
+        response_403 = cast(Any, None)
+        return response_403
+    if response.status_code == HTTPStatus.NOT_FOUND:
+        response_404 = cast(Any, None)
+        return response_404
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(f"Unexpected status code: {response.status_code}")
     else:
@@ -59,7 +68,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Client, response: httpx.Response
-) -> Response[PhoneNumber]:
+) -> Response[Union[Any, V1CallsMetadataCreateResponse200]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -69,32 +78,31 @@ def _build_response(
 
 
 def sync_detailed(
-    id: int,
+    call_id: str,
     *,
     client: AuthenticatedClient,
-    json_body: PatchedPhoneNumberUpdateRequest,
-) -> Response[PhoneNumber]:
-    """API view set for PhoneNumber model.
+    json_body: V1CallsMetadataCreateJsonBody,
+) -> Response[Union[Any, V1CallsMetadataCreateResponse200]]:
+    """MERGE the request body into the call's metadata.
+
+    POST-as-merge (not PATCH) keeps the router mount identical to
+    the sibling `calls/<id>/tags/` collection. Idempotent: re-posting
+    the same payload is a no-op-equivalent overwrite.
 
     Args:
-        id (int):
-        json_body (PatchedPhoneNumberUpdateRequest): OpenAPI request body for PATCH
-            /v1/phonenumbers/{id}/.
-
-            The view handles these keys itself (`ringing_strategy` is not a model
-            field — it lives in OrganizationSetting), so this serializer keeps the
-            generated client contract honest; it does not drive validation.
+        call_id (str):
+        json_body (V1CallsMetadataCreateJsonBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PhoneNumber]
+        Response[Union[Any, V1CallsMetadataCreateResponse200]]
     """
 
     kwargs = _get_kwargs(
-        id=id,
+        call_id=call_id,
         client=client,
         json_body=json_body,
     )
@@ -108,64 +116,62 @@ def sync_detailed(
 
 
 def sync(
-    id: int,
+    call_id: str,
     *,
     client: AuthenticatedClient,
-    json_body: PatchedPhoneNumberUpdateRequest,
-) -> Optional[PhoneNumber]:
-    """API view set for PhoneNumber model.
+    json_body: V1CallsMetadataCreateJsonBody,
+) -> Optional[Union[Any, V1CallsMetadataCreateResponse200]]:
+    """MERGE the request body into the call's metadata.
+
+    POST-as-merge (not PATCH) keeps the router mount identical to
+    the sibling `calls/<id>/tags/` collection. Idempotent: re-posting
+    the same payload is a no-op-equivalent overwrite.
 
     Args:
-        id (int):
-        json_body (PatchedPhoneNumberUpdateRequest): OpenAPI request body for PATCH
-            /v1/phonenumbers/{id}/.
-
-            The view handles these keys itself (`ringing_strategy` is not a model
-            field — it lives in OrganizationSetting), so this serializer keeps the
-            generated client contract honest; it does not drive validation.
+        call_id (str):
+        json_body (V1CallsMetadataCreateJsonBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PhoneNumber]
+        Response[Union[Any, V1CallsMetadataCreateResponse200]]
     """
 
     return sync_detailed(
-        id=id,
+        call_id=call_id,
         client=client,
         json_body=json_body,
     ).parsed
 
 
 async def asyncio_detailed(
-    id: int,
+    call_id: str,
     *,
     client: AuthenticatedClient,
-    json_body: PatchedPhoneNumberUpdateRequest,
-) -> Response[PhoneNumber]:
-    """API view set for PhoneNumber model.
+    json_body: V1CallsMetadataCreateJsonBody,
+) -> Response[Union[Any, V1CallsMetadataCreateResponse200]]:
+    """MERGE the request body into the call's metadata.
+
+    POST-as-merge (not PATCH) keeps the router mount identical to
+    the sibling `calls/<id>/tags/` collection. Idempotent: re-posting
+    the same payload is a no-op-equivalent overwrite.
 
     Args:
-        id (int):
-        json_body (PatchedPhoneNumberUpdateRequest): OpenAPI request body for PATCH
-            /v1/phonenumbers/{id}/.
-
-            The view handles these keys itself (`ringing_strategy` is not a model
-            field — it lives in OrganizationSetting), so this serializer keeps the
-            generated client contract honest; it does not drive validation.
+        call_id (str):
+        json_body (V1CallsMetadataCreateJsonBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PhoneNumber]
+        Response[Union[Any, V1CallsMetadataCreateResponse200]]
     """
 
     kwargs = _get_kwargs(
-        id=id,
+        call_id=call_id,
         client=client,
         json_body=json_body,
     )
@@ -177,33 +183,32 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-    id: int,
+    call_id: str,
     *,
     client: AuthenticatedClient,
-    json_body: PatchedPhoneNumberUpdateRequest,
-) -> Optional[PhoneNumber]:
-    """API view set for PhoneNumber model.
+    json_body: V1CallsMetadataCreateJsonBody,
+) -> Optional[Union[Any, V1CallsMetadataCreateResponse200]]:
+    """MERGE the request body into the call's metadata.
+
+    POST-as-merge (not PATCH) keeps the router mount identical to
+    the sibling `calls/<id>/tags/` collection. Idempotent: re-posting
+    the same payload is a no-op-equivalent overwrite.
 
     Args:
-        id (int):
-        json_body (PatchedPhoneNumberUpdateRequest): OpenAPI request body for PATCH
-            /v1/phonenumbers/{id}/.
-
-            The view handles these keys itself (`ringing_strategy` is not a model
-            field — it lives in OrganizationSetting), so this serializer keeps the
-            generated client contract honest; it does not drive validation.
+        call_id (str):
+        json_body (V1CallsMetadataCreateJsonBody):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[PhoneNumber]
+        Response[Union[Any, V1CallsMetadataCreateResponse200]]
     """
 
     return (
         await asyncio_detailed(
-            id=id,
+            call_id=call_id,
             client=client,
             json_body=json_body,
         )

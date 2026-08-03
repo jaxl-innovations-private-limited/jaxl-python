@@ -15,6 +15,8 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
+    from ..models.nimbus_post_auth_request_request import NimbusPostAuthRequestRequest
+    from ..models.sales_max_auth_request_request import SalesMaxAuthRequestRequest
     from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
     from ..models.stripe_auth_request_request import StripeAuthRequestRequest
 
@@ -30,12 +32,16 @@ class IntegrationsPropertiesRequest:
         exotel (Union[Unset, None, ExotelAuthRequestRequest]):
         stripe (Union[Unset, None, StripeAuthRequestRequest]):
         shiprocket (Union[Unset, None, ShopifyAuthRequestRequest]):
+        nimbuspost (Union[Unset, None, NimbusPostAuthRequestRequest]):
+        salesmax (Union[Unset, None, SalesMaxAuthRequestRequest]):
     """
 
     shopify: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
     exotel: Union[Unset, None, "ExotelAuthRequestRequest"] = UNSET
     stripe: Union[Unset, None, "StripeAuthRequestRequest"] = UNSET
     shiprocket: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
+    nimbuspost: Union[Unset, None, "NimbusPostAuthRequestRequest"] = UNSET
+    salesmax: Union[Unset, None, "SalesMaxAuthRequestRequest"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -55,6 +61,14 @@ class IntegrationsPropertiesRequest:
         if not isinstance(self.shiprocket, Unset):
             shiprocket = self.shiprocket.to_dict() if self.shiprocket else None
 
+        nimbuspost: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.nimbuspost, Unset):
+            nimbuspost = self.nimbuspost.to_dict() if self.nimbuspost else None
+
+        salesmax: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.salesmax, Unset):
+            salesmax = self.salesmax.to_dict() if self.salesmax else None
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -66,12 +80,20 @@ class IntegrationsPropertiesRequest:
             field_dict["stripe"] = stripe
         if shiprocket is not UNSET:
             field_dict["shiprocket"] = shiprocket
+        if nimbuspost is not UNSET:
+            field_dict["nimbuspost"] = nimbuspost
+        if salesmax is not UNSET:
+            field_dict["salesmax"] = salesmax
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
+        from ..models.nimbus_post_auth_request_request import (
+            NimbusPostAuthRequestRequest,
+        )
+        from ..models.sales_max_auth_request_request import SalesMaxAuthRequestRequest
         from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
         from ..models.stripe_auth_request_request import StripeAuthRequestRequest
 
@@ -112,11 +134,31 @@ class IntegrationsPropertiesRequest:
         else:
             shiprocket = ShopifyAuthRequestRequest.from_dict(_shiprocket)
 
+        _nimbuspost = d.pop("nimbuspost", UNSET)
+        nimbuspost: Union[Unset, None, NimbusPostAuthRequestRequest]
+        if _nimbuspost is None:
+            nimbuspost = None
+        elif isinstance(_nimbuspost, Unset):
+            nimbuspost = UNSET
+        else:
+            nimbuspost = NimbusPostAuthRequestRequest.from_dict(_nimbuspost)
+
+        _salesmax = d.pop("salesmax", UNSET)
+        salesmax: Union[Unset, None, SalesMaxAuthRequestRequest]
+        if _salesmax is None:
+            salesmax = None
+        elif isinstance(_salesmax, Unset):
+            salesmax = UNSET
+        else:
+            salesmax = SalesMaxAuthRequestRequest.from_dict(_salesmax)
+
         integrations_properties_request = cls(
             shopify=shopify,
             exotel=exotel,
             stripe=stripe,
             shiprocket=shiprocket,
+            nimbuspost=nimbuspost,
+            salesmax=salesmax,
         )
 
         integrations_properties_request.additional_properties = d

@@ -79,6 +79,7 @@ from .direction_enum import DirectionEnum
 from .emoji import Emoji
 from .emoji_reaction import EmojiReaction
 from .exotel_auth_request_request import ExotelAuthRequestRequest
+from .failure_reason_enum import FailureReasonEnum
 from .id_enum import IdEnum
 from .integrations_error_response import IntegrationsErrorResponse
 from .integrations_properties_request import IntegrationsPropertiesRequest
@@ -104,6 +105,7 @@ from .kyc_status_enum import KycStatusEnum
 from .kyc_upload_metadata import KycUploadMetadata
 from .location import Location
 from .next_or_cta_request import NextOrCTARequest
+from .nimbus_post_auth_request_request import NimbusPostAuthRequestRequest
 from .order_status_enum import OrderStatusEnum
 from .organization import Organization
 from .organization_employee import OrganizationEmployee
@@ -131,12 +133,16 @@ from .paginated_organization_list import PaginatedOrganizationList
 from .paginated_organization_provider_list import PaginatedOrganizationProviderList
 from .paginated_phone_number_list import PaginatedPhoneNumberList
 from .patched_ivr_options_update_request import PatchedIVROptionsUpdateRequest
-from .patched_phone_number_request import PatchedPhoneNumberRequest
+from .patched_phone_number_update_request import PatchedPhoneNumberUpdateRequest
+from .patched_phone_number_update_request_frontdesk import (
+    PatchedPhoneNumberUpdateRequestFrontdesk,
+)
 from .payment_gateway_fees_info import PaymentGatewayFeesInfo
 from .period_enum import PeriodEnum
 from .phone_number import PhoneNumber
 from .phone_number_attributes import PhoneNumberAttributes
 from .phone_number_capabilities import PhoneNumberCapabilities
+from .phone_number_frontdesk import PhoneNumberFrontdesk
 from .phone_number_provider_enum import PhoneNumberProviderEnum
 from .phone_number_search_response import PhoneNumberSearchResponse
 from .phone_number_status_enum import PhoneNumberStatusEnum
@@ -156,6 +162,8 @@ from .provider_status_enum import ProviderStatusEnum
 from .reaction_by import ReactionBy
 from .rental_currency_enum import RentalCurrencyEnum
 from .resource_enum import ResourceEnum
+from .ringing_strategy_enum import RingingStrategyEnum
+from .sales_max_auth_request_request import SalesMaxAuthRequestRequest
 from .shopify_auth_request_request import ShopifyAuthRequestRequest
 from .stripe_auth_request_request import StripeAuthRequestRequest
 from .upload_metadata import UploadMetadata
@@ -167,6 +175,8 @@ from .user_agent_platform import UserAgentPlatform
 from .user_identity import UserIdentity
 from .v1_app_organizations_list_status_item import V1AppOrganizationsListStatusItem
 from .v1_calls_list_direction import V1CallsListDirection
+from .v1_calls_metadata_create_json_body import V1CallsMetadataCreateJsonBody
+from .v1_calls_metadata_create_response_200 import V1CallsMetadataCreateResponse200
 from .v1_calls_report_retrieve_date_range import V1CallsReportRetrieveDateRange
 from .v1_calls_report_retrieve_fields_item import V1CallsReportRetrieveFieldsItem
 from .v1_campaign_list_status_item import V1CampaignListStatusItem
@@ -267,6 +277,7 @@ __all__ = (
     "Emoji",
     "EmojiReaction",
     "ExotelAuthRequestRequest",
+    "FailureReasonEnum",
     "IdEnum",
     "IntegrationsErrorResponse",
     "IntegrationsPropertiesRequest",
@@ -292,6 +303,7 @@ __all__ = (
     "KycUploadMetadata",
     "Location",
     "NextOrCTARequest",
+    "NimbusPostAuthRequestRequest",
     "OrderStatusEnum",
     "Organization",
     "OrganizationEmployee",
@@ -315,12 +327,14 @@ __all__ = (
     "PaginatedOrganizationProviderList",
     "PaginatedPhoneNumberList",
     "PatchedIVROptionsUpdateRequest",
-    "PatchedPhoneNumberRequest",
+    "PatchedPhoneNumberUpdateRequest",
+    "PatchedPhoneNumberUpdateRequestFrontdesk",
     "PaymentGatewayFeesInfo",
     "PeriodEnum",
     "PhoneNumber",
     "PhoneNumberAttributes",
     "PhoneNumberCapabilities",
+    "PhoneNumberFrontdesk",
     "PhoneNumberProviderEnum",
     "PhoneNumberSearchResponse",
     "PhoneNumberStatusEnum",
@@ -340,6 +354,8 @@ __all__ = (
     "ReactionBy",
     "RentalCurrencyEnum",
     "ResourceEnum",
+    "RingingStrategyEnum",
+    "SalesMaxAuthRequestRequest",
     "ShopifyAuthRequestRequest",
     "StripeAuthRequestRequest",
     "UploadMetadata",
@@ -351,6 +367,8 @@ __all__ = (
     "UserIdentity",
     "V1AppOrganizationsListStatusItem",
     "V1CallsListDirection",
+    "V1CallsMetadataCreateJsonBody",
+    "V1CallsMetadataCreateResponse200",
     "V1CallsReportRetrieveDateRange",
     "V1CallsReportRetrieveFieldsItem",
     "V1CampaignListStatusItem",

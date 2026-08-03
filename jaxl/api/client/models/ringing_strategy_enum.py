@@ -7,19 +7,12 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from enum import IntEnum
+from enum import Enum
 
 
-class PlatformEnum(IntEnum):
-    VALUE_1 = 1
-    VALUE_2 = 2
-    VALUE_3 = 3
-    VALUE_4 = 4
-    VALUE_5 = 5
-    VALUE_6 = 6
-    VALUE_7 = 7
-    VALUE_8 = 8
-    VALUE_9 = 9
+class RingingStrategyEnum(str, Enum):
+    BROADCAST = "BROADCAST"
+    ROUND_ROBIN = "ROUND_ROBIN"
 
     def __str__(self) -> str:
         return str(self.value)

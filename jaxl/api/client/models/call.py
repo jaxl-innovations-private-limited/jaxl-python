@@ -8,13 +8,14 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union, cast
 
 import attr
 from dateutil.parser import isoparse
 
 from ..models.call_type_enum import CallTypeEnum
 from ..models.direction_enum import DirectionEnum
+from ..models.failure_reason_enum import FailureReasonEnum
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -74,6 +75,7 @@ class Call:
         is_bot (Optional[bool]):
         camp (Optional[CampaignMetadata]):
         upload_metadata (Optional[UploadMetadata]):
+        failure_reason (Union[FailureReasonEnum, None, Unset]): Reason for call failure
     """
 
     id: int
@@ -113,6 +115,7 @@ class Call:
     recording_start_time: Union[Unset, None, datetime.datetime] = UNSET
     device_id: Union[Unset, None, int] = UNSET
     ivr: Union[Unset, None, int] = UNSET
+    failure_reason: Union[FailureReasonEnum, None, Unset] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -199,6 +202,20 @@ class Call:
             self.upload_metadata.to_dict() if self.upload_metadata else None
         )
 
+        failure_reason: Union[None, Unset, str]
+        if isinstance(self.failure_reason, Unset):
+            failure_reason = UNSET
+        elif self.failure_reason is None:
+            failure_reason = None
+
+        elif isinstance(self.failure_reason, FailureReasonEnum):
+            failure_reason = UNSET
+            if not isinstance(self.failure_reason, Unset):
+                failure_reason = self.failure_reason.value
+
+        else:
+            failure_reason = self.failure_reason
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -251,6 +268,8 @@ class Call:
             field_dict["device_id"] = device_id
         if ivr is not UNSET:
             field_dict["ivr"] = ivr
+        if failure_reason is not UNSET:
+            field_dict["failure_reason"] = failure_reason
 
         return field_dict
 
@@ -394,6 +413,30 @@ class Call:
         else:
             upload_metadata = UploadMetadata.from_dict(_upload_metadata)
 
+        def _parse_failure_reason(
+            data: object,
+        ) -> Union[FailureReasonEnum, None, Unset]:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                _failure_reason_type_0 = data
+                failure_reason_type_0: Union[Unset, FailureReasonEnum]
+                if isinstance(_failure_reason_type_0, Unset):
+                    failure_reason_type_0 = UNSET
+                else:
+                    failure_reason_type_0 = FailureReasonEnum(_failure_reason_type_0)
+
+                return failure_reason_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[FailureReasonEnum, None, Unset], data)
+
+        failure_reason = _parse_failure_reason(d.pop("failure_reason", UNSET))
+
         call = cls(
             id=id,
             direction=direction,
@@ -432,6 +475,7 @@ class Call:
             is_bot=is_bot,
             camp=camp,
             upload_metadata=upload_metadata,
+            failure_reason=failure_reason,
         )
 
         call.additional_properties = d
