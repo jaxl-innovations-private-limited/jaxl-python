@@ -19,8 +19,8 @@ from jaxl.api.client.api.v1 import (
 from jaxl.api.client.models.paginated_phone_number_list import (
     PaginatedPhoneNumberList,
 )
-from jaxl.api.client.models.patched_phone_number_request import (
-    PatchedPhoneNumberRequest,
+from jaxl.api.client.models.patched_phone_number_update_request import (
+    PatchedPhoneNumberUpdateRequest,
 )
 from jaxl.api.client.models.phone_number import PhoneNumber
 from jaxl.api.client.models.phone_number_search_response import (
@@ -66,7 +66,7 @@ def phones_ivrs(args: Dict[str, Any]) -> Response[PhoneNumber]:
             auth_token=args.get("auth_token", None),
         ),
         id=existing.parsed.results[0].id,
-        json_body=PatchedPhoneNumberRequest(ivr=args["ivr"]),
+        json_body=PatchedPhoneNumberUpdateRequest(ivr=args["ivr"]),
     )
 
 

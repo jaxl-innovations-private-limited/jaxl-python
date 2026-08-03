@@ -21,28 +21,28 @@ class OrganizationGroupResponse:
     Attributes:
         id (int):
         name (str): Group name
-        employees (List[int]): Employees who are member of this business group
         phone_numbers (List[str]): List of phone numbers UID assigned to this team
         admins (List[int]):
+        employees (List[int]):
         jaxlid (Optional[str]):
     """
 
     id: int
     name: str
-    employees: List[int]
     phone_numbers: List[str]
     admins: List[int]
+    employees: List[int]
     jaxlid: Optional[str]
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
         name = self.name
-        employees = self.employees
-
         phone_numbers = self.phone_numbers
 
         admins = self.admins
+
+        employees = self.employees
 
         jaxlid = self.jaxlid
 
@@ -52,9 +52,9 @@ class OrganizationGroupResponse:
             {
                 "id": id,
                 "name": name,
-                "employees": employees,
                 "phone_numbers": phone_numbers,
                 "admins": admins,
+                "employees": employees,
                 "jaxlid": jaxlid,
             }
         )
@@ -68,20 +68,20 @@ class OrganizationGroupResponse:
 
         name = d.pop("name")
 
-        employees = cast(List[int], d.pop("employees"))
-
         phone_numbers = cast(List[str], d.pop("phone_numbers"))
 
         admins = cast(List[int], d.pop("admins"))
+
+        employees = cast(List[int], d.pop("employees"))
 
         jaxlid = d.pop("jaxlid")
 
         organization_group_response = cls(
             id=id,
             name=name,
-            employees=employees,
             phone_numbers=phone_numbers,
             admins=admins,
+            employees=employees,
             jaxlid=jaxlid,
         )
 

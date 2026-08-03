@@ -7,48 +7,34 @@ Redistribution and use in source and binary forms,
 with or without modification, is strictly prohibited.
 """
 
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import Any, Dict, List, Type, TypeVar
 
 import attr
 
-from ..types import UNSET, Unset
-
-T = TypeVar("T", bound="PatchedPhoneNumberRequest")
+T = TypeVar("T", bound="V1CallsMetadataCreateJsonBody")
 
 
 @attr.s(auto_attribs=True)
-class PatchedPhoneNumberRequest:
-    """Adds a 'jaxlid' field which contains signed ID information.
+class V1CallsMetadataCreateJsonBody:
+    """ """
 
-    Attributes:
-        ivr (Union[Unset, None, int]): Optional IVR for all incoming calls to this number
-    """
-
-    ivr: Union[Unset, None, int] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        ivr = self.ivr
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if ivr is not UNSET:
-            field_dict["ivr"] = ivr
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        ivr = d.pop("ivr", UNSET)
+        v1_calls_metadata_create_json_body = cls()
 
-        patched_phone_number_request = cls(
-            ivr=ivr,
-        )
-
-        patched_phone_number_request.additional_properties = d
-        return patched_phone_number_request
+        v1_calls_metadata_create_json_body.additional_properties = d
+        return v1_calls_metadata_create_json_body
 
     @property
     def additional_keys(self) -> List[str]:

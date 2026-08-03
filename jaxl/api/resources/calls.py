@@ -20,6 +20,7 @@ from jaxl.api.client.api.v1 import (
     v1_calls_hangup_retrieve,
     v1_calls_list,
     v1_calls_messages_create,
+    v1_calls_metadata_create,
     v1_calls_retrieve,
     v1_calls_tags_create,
     v1_calls_token_create,
@@ -51,6 +52,12 @@ from jaxl.api.client.models.call_tts_request_request import (
 from jaxl.api.client.models.call_type_enum import CallTypeEnum
 from jaxl.api.client.models.call_usage_response import CallUsageResponse
 from jaxl.api.client.models.paginated_call_list import PaginatedCallList
+from jaxl.api.client.models.v1_calls_metadata_create_json_body import (
+    V1CallsMetadataCreateJsonBody,
+)
+from jaxl.api.client.models.v1_calls_metadata_create_response_200 import (
+    V1CallsMetadataCreateResponse200,
+)
 from jaxl.api.client.models.why_enum import WhyEnum
 from jaxl.api.client.types import Response, Unset
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
@@ -401,6 +408,44 @@ def calls_audio(args: Dict[str, Any]) -> Response[Any | CallAudioReason]:
     with open(args["path"], "wb+") as recording:
         recording.write(response.content)
     return response
+
+
+def calls_metadata(
+    args: Dict[str, Any],
+) -> Response[Any | V1CallsMetadataCreateResponse200]:
+    """MERGE ``args["metadata"]`` (a flat JSON object) into the call's
+    metadata. Merge-only server semantics: existing keys not present in
+    the payload are preserved; backend-owned keys are rejected."""
+    assert "call_id" in args and isinstance(args.get("metadata"), dict)
+    return v1_calls_metadata_create.sync_detailed(
+        call_id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=V1CallsMetadataCreateJsonBody.from_dict(
+            dict(args["metadata"])
+        ),
+    )
+
+
+async def calls_ametadata(
+    args: Dict[str, Any],
+) -> Response[Any | V1CallsMetadataCreateResponse200]:
+    """Async variant of :func:`calls_metadata`."""
+    assert "call_id" in args and isinstance(args.get("metadata"), dict)
+    return await v1_calls_metadata_create.asyncio_detailed(
+        call_id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=V1CallsMetadataCreateJsonBody.from_dict(
+            dict(args["metadata"])
+        ),
+    )
 
 
 def _subparser(parser: argparse.ArgumentParser) -> None:

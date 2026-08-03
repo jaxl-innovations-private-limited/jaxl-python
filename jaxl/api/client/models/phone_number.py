@@ -8,7 +8,7 @@ with or without modification, is strictly prohibited.
 """
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypeVar, Union, cast
 
 import attr
 from dateutil.parser import isoparse
@@ -16,11 +16,13 @@ from dateutil.parser import isoparse
 from ..models.phone_number_provider_enum import PhoneNumberProviderEnum
 from ..models.phone_number_status_enum import PhoneNumberStatusEnum
 from ..models.resource_enum import ResourceEnum
+from ..models.ringing_strategy_enum import RingingStrategyEnum
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.phone_number_attributes import PhoneNumberAttributes
     from ..models.phone_number_capabilities import PhoneNumberCapabilities
+    from ..models.phone_number_frontdesk import PhoneNumberFrontdesk
 
 
 T = TypeVar("T", bound="PhoneNumber")
@@ -50,6 +52,8 @@ class PhoneNumber:
             user. This field is automatically updated upon receiving purchase notification from our payment gateway.
         kyc_id (Optional[int]): Optional KYC associated with this number
         sms_verified (Optional[bool]): Whether this phone number has completed the otp verification
+        frontdesk (Union[Unset, None, PhoneNumberFrontdesk]): Save front desk key
+        ringing_strategy (Union[None, RingingStrategyEnum]):
         jaxlid (Optional[str]):
     """
 
@@ -67,9 +71,11 @@ class PhoneNumber:
     paid_till: Optional[datetime.datetime]
     kyc_id: Optional[int]
     sms_verified: Optional[bool]
+    ringing_strategy: Union[None, RingingStrategyEnum]
     jaxlid: Optional[str]
     verified: bool = False
     ivr: Union[Unset, None, int] = UNSET
+    frontdesk: Union[Unset, None, "PhoneNumberFrontdesk"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -96,6 +102,20 @@ class PhoneNumber:
 
         kyc_id = self.kyc_id
         sms_verified = self.sms_verified
+        frontdesk: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.frontdesk, Unset):
+            frontdesk = self.frontdesk.to_dict() if self.frontdesk else None
+
+        ringing_strategy: Union[None, str]
+        if self.ringing_strategy is None:
+            ringing_strategy = None
+
+        elif isinstance(self.ringing_strategy, RingingStrategyEnum):
+            ringing_strategy = self.ringing_strategy.value
+
+        else:
+            ringing_strategy = self.ringing_strategy
+
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -117,11 +137,14 @@ class PhoneNumber:
                 "paid_till": paid_till,
                 "kyc_id": kyc_id,
                 "sms_verified": sms_verified,
+                "ringing_strategy": ringing_strategy,
                 "jaxlid": jaxlid,
             }
         )
         if ivr is not UNSET:
             field_dict["ivr"] = ivr
+        if frontdesk is not UNSET:
+            field_dict["frontdesk"] = frontdesk
 
         return field_dict
 
@@ -129,6 +152,7 @@ class PhoneNumber:
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.phone_number_attributes import PhoneNumberAttributes
         from ..models.phone_number_capabilities import PhoneNumberCapabilities
+        from ..models.phone_number_frontdesk import PhoneNumberFrontdesk
 
         d = src_dict.copy()
         id = d.pop("id")
@@ -173,6 +197,30 @@ class PhoneNumber:
 
         sms_verified = d.pop("sms_verified")
 
+        _frontdesk = d.pop("frontdesk", UNSET)
+        frontdesk: Union[Unset, None, PhoneNumberFrontdesk]
+        if _frontdesk is None:
+            frontdesk = None
+        elif isinstance(_frontdesk, Unset):
+            frontdesk = UNSET
+        else:
+            frontdesk = PhoneNumberFrontdesk.from_dict(_frontdesk)
+
+        def _parse_ringing_strategy(data: object) -> Union[None, RingingStrategyEnum]:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                ringing_strategy_type_0 = RingingStrategyEnum(data)
+
+                return ringing_strategy_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[None, RingingStrategyEnum], data)
+
+        ringing_strategy = _parse_ringing_strategy(d.pop("ringing_strategy"))
+
         jaxlid = d.pop("jaxlid")
 
         phone_number = cls(
@@ -192,6 +240,8 @@ class PhoneNumber:
             paid_till=paid_till,
             kyc_id=kyc_id,
             sms_verified=sms_verified,
+            frontdesk=frontdesk,
+            ringing_strategy=ringing_strategy,
             jaxlid=jaxlid,
         )
 
