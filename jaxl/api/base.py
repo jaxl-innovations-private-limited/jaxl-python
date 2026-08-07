@@ -113,8 +113,14 @@ class JaxlStreamMeta(BaseModel):
 class JaxlStreamRequest(BaseModel):
     # IVR ID
     pk: int
-    # Webhook state
+    # Webhook state (present on legacy streams that carry the full
+    # base64 state blob in the websocket URL; None on slim streams)
     state: Optional[JaxlWebhookState]
+    # Call ID for this stream — always populated by the SDK server.
+    # On slim streams (the `call_id=` query form) this is the ONLY
+    # call identity on the socket; apps needing the full state should
+    # take it from the SETUP webhook instead.
+    call_id: Optional[int] = None
 
 
 class JaxlPhoneCta(BaseModel):

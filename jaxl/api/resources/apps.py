@@ -248,12 +248,23 @@ def _start_server(
         """Jaxl Streaming Unidirectional Websockets Endpoint."""
         _ivr_id = ws.query_params.get("ivr_id")
         _state = ws.query_params.get("state")
-        if _state is None or _ivr_id is None:
+        _call_id = ws.query_params.get("call_id")
+        # Exactly ONE of `state` (legacy: the full webhook-state blob,
+        # base64-encoded into the websocket URL) or `call_id` (slim
+        # form: only the call identity rides the URL; the full state
+        # travels via the SETUP webhook) must be present — never both,
+        # never neither.
+        if _ivr_id is None or (_state is None) == (_call_id is None):
             await ws.close(code=1008)
             return
 
         ivr_id = int(_ivr_id)
-        state = json.loads(base64.urlsafe_b64decode(_state))
+        if _state is not None:
+            state = json.loads(base64.urlsafe_b64decode(_state))
+            call_id = int(state["call_id"])
+        else:
+            state = None
+            call_id = int(_call_id)  # type: ignore[arg-type]
 
         # Speech detector, Speech state & Segment buffer
         sdetector = SilenceDetector(
@@ -265,10 +276,10 @@ def _start_server(
         slin16s: List[bytes] = []
 
         await ws.accept()
-        wss[state["call_id"]] = ws
+        wss[call_id] = ws
 
         # pylint: disable=too-many-nested-blocks
-        await app.on_stream_connect(state["call_id"])
+        await app.on_stream_connect(call_id)
         try:
             while True:
                 try:
@@ -284,7 +295,7 @@ def _start_server(
                 data = json.loads(raw)
                 ev = data["event"]
                 if ev == "media":
-                    req = JaxlStreamRequest(pk=ivr_id, state=state)
+                    req = JaxlStreamRequest(pk=ivr_id, state=state, call_id=call_id)
                     slin16 = base64.b64decode(data[ev]["payload"])
                     # Optional per-packet metadata (e.g. speaker attribution)
                     _meta = data[ev].get("meta")
@@ -296,7 +307,7 @@ def _start_server(
                     # Manage speech segments
                     if change is True:
                         speaking = change
-                        await app.handle_speech_detection(state["call_id"], speaking)
+                        await app.handle_speech_detection(call_id, speaking)
                         # Pull the detector's preroll — this contains the
                         # trigger frames (the `speech_frame_threshold` speech
                         # frames that fired speech-start) plus a few earlier
@@ -310,7 +321,7 @@ def _start_server(
                             await app.handle_speech_chunks(req, preroll_chunks)
                     elif change is False:
                         speaking = change
-                        await app.handle_speech_detection(state["call_id"], speaking)
+                        await app.handle_speech_detection(call_id, speaking)
                         if len(slin16s) > 0:
                             # Invoke speech segment handlers
                             await app.handle_speech_segment(req, slin16s)
@@ -341,14 +352,14 @@ def _start_server(
                             assert speaking is False
                 elif ev == "handoff":
                     await app.handle_handoff(
-                        state["call_id"],
+                        call_id,
                         int(data[ev]["call_id"]),
                         str(data[ev]["status"]),
                     )
                 elif ev == "mark":
                     # Echo envelope is {"event": "mark", "mark": {"name": ...}}
                     await app.handle_stream_mark(
-                        state["call_id"], str(data[ev]["name"])
+                        call_id, str(data[ev]["name"])
                     )
                 elif ev == "connected":
                     pass
@@ -358,8 +369,8 @@ def _start_server(
             pass
         finally:
             try:
-                if state["call_id"] in wss:
-                    del wss[state["call_id"]]
+                if call_id in wss:
+                    del wss[call_id]
                 if ws.client_state != WebSocketState.DISCONNECTED:
                     try:
                         await ws.close()
@@ -369,7 +380,7 @@ def _start_server(
                         # message has been sent." Nothing to do.
                         pass
             finally:
-                await app.on_stream_disconnect(state["call_id"])
+                await app.on_stream_disconnect(call_id)
 
     for config, func in app.api_routes():
         server.add_api_route(
