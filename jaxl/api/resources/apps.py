@@ -382,6 +382,26 @@ def _start_server(
             finally:
                 await app.on_stream_disconnect(call_id)
 
+    async def _on_startup() -> None:
+        """Give the app its ONE pre-traffic moment with a live event
+        loop. The app object is constructed synchronously before the
+        server starts, so `__init__` cannot schedule background work —
+        this is where a pool/cache/client warm-up belongs. Guarded: a
+        slow or failing warm-up must never stop the server serving."""
+        try:
+            await app.on_startup()
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            logger.exception(f"on_startup failed, continuing: {exc!r}")
+
+    async def _on_shutdown() -> None:
+        try:
+            await app.on_shutdown()
+        except Exception as exc:  # pylint: disable=broad-exception-caught
+            logger.exception(f"on_shutdown failed, continuing: {exc!r}")
+
+    server.add_event_handler("startup", _on_startup)
+    server.add_event_handler("shutdown", _on_shutdown)
+
     for config, func in app.api_routes():
         server.add_api_route(
             path=config[0],

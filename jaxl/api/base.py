@@ -183,6 +183,32 @@ class BaseJaxlApp:
         return []
 
     # pylint: disable=no-self-use,unused-argument
+    async def on_startup(self) -> None:
+        """Invoked ONCE, on the server's startup event, before any call.
+
+        This is the first point at which a running event loop exists —
+        ``__init__`` runs while the app object is constructed, which
+        happens synchronously before the server starts, so background
+        tasks cannot be scheduled there.
+
+        Use it to warm anything that would otherwise be paid on the
+        critical path of the first call: connection pools, model
+        clients, caches, on-disk asset checks. Keep it non-blocking and
+        never raise — an exception here is logged and ignored so a slow
+        or failing warm-up can never stop the server from serving.
+        """
+        return None
+
+    # pylint: disable=no-self-use,unused-argument
+    async def on_shutdown(self) -> None:
+        """Invoked ONCE, on the server's shutdown event.
+
+        Counterpart to :meth:`on_startup` — release anything it warmed
+        (open sockets, background tasks). Never raise.
+        """
+        return None
+
+    # pylint: disable=no-self-use,unused-argument
     async def handle_configure(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
         """Invoked when a phone number gets assigned to IVR."""
         return None
