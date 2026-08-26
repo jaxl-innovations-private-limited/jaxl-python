@@ -73,6 +73,9 @@ class Call:
         is_finalized (Optional[bool]):
         cid (Optional[int]):
         is_bot (Optional[bool]):
+        picked_by (Optional[str]):
+        picked_by_member (Optional[str]):
+        picked_by_employee_id (Optional[int]):
         camp (Optional[CampaignMetadata]):
         upload_metadata (Optional[UploadMetadata]):
         failure_reason (Union[FailureReasonEnum, None, Unset]): Reason for call failure
@@ -104,6 +107,9 @@ class Call:
     is_finalized: Optional[bool]
     cid: Optional[int]
     is_bot: Optional[bool]
+    picked_by: Optional[str]
+    picked_by_member: Optional[str]
+    picked_by_employee_id: Optional[int]
     camp: Optional["CampaignMetadata"]
     upload_metadata: Optional["UploadMetadata"]
     parent: Union[Unset, None, int] = UNSET
@@ -196,6 +202,9 @@ class Call:
         is_finalized = self.is_finalized
         cid = self.cid
         is_bot = self.is_bot
+        picked_by = self.picked_by
+        picked_by_member = self.picked_by_member
+        picked_by_employee_id = self.picked_by_employee_id
         camp = self.camp.to_dict() if self.camp else None
 
         upload_metadata = (
@@ -246,6 +255,9 @@ class Call:
                 "is_finalized": is_finalized,
                 "cid": cid,
                 "is_bot": is_bot,
+                "picked_by": picked_by,
+                "picked_by_member": picked_by_member,
+                "picked_by_employee_id": picked_by_employee_id,
                 "camp": camp,
                 "upload_metadata": upload_metadata,
             }
@@ -399,6 +411,12 @@ class Call:
 
         is_bot = d.pop("is_bot")
 
+        picked_by = d.pop("picked_by")
+
+        picked_by_member = d.pop("picked_by_member")
+
+        picked_by_employee_id = d.pop("picked_by_employee_id")
+
         _camp = d.pop("camp")
         camp: Optional[CampaignMetadata]
         if _camp is None:
@@ -473,6 +491,9 @@ class Call:
             is_finalized=is_finalized,
             cid=cid,
             is_bot=is_bot,
+            picked_by=picked_by,
+            picked_by_member=picked_by_member,
+            picked_by_employee_id=picked_by_employee_id,
             camp=camp,
             upload_metadata=upload_metadata,
             failure_reason=failure_reason,

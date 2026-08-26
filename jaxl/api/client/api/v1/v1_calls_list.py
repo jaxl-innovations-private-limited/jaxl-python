@@ -34,11 +34,13 @@ def _get_kwargs(
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
+    live: Union[Unset, None, bool] = UNSET,
     missed: Union[Unset, None, bool] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    scheduled: Union[Unset, None, bool] = UNSET,
     start_time: Union[Unset, None, datetime.datetime] = UNSET,
     tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
@@ -89,6 +91,8 @@ def _get_kwargs(
 
     params["limit"] = limit
 
+    params["live"] = live
+
     params["missed"] = missed
 
     params["offset"] = offset
@@ -98,6 +102,8 @@ def _get_kwargs(
     params["our_numbers"] = our_numbers
 
     params["recording"] = recording
+
+    params["scheduled"] = scheduled
 
     json_start_time: Union[Unset, None, str] = UNSET
     if not isinstance(start_time, Unset):
@@ -172,11 +178,13 @@ def sync_detailed(
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
+    live: Union[Unset, None, bool] = UNSET,
     missed: Union[Unset, None, bool] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    scheduled: Union[Unset, None, bool] = UNSET,
     start_time: Union[Unset, None, datetime.datetime] = UNSET,
     tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
@@ -198,11 +206,13 @@ def sync_detailed(
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
+        live (Union[Unset, None, bool]):
         missed (Union[Unset, None, bool]):
         offset (Union[Unset, None, int]):
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        scheduled (Union[Unset, None, bool]):
         start_time (Union[Unset, None, datetime.datetime]):
         tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
@@ -231,11 +241,13 @@ def sync_detailed(
         from_number=from_number,
         ivr=ivr,
         limit=limit,
+        live=live,
         missed=missed,
         offset=offset,
         other_numbers=other_numbers,
         our_numbers=our_numbers,
         recording=recording,
+        scheduled=scheduled,
         start_time=start_time,
         tag=tag,
         tag_operator=tag_operator,
@@ -266,11 +278,13 @@ def sync(
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
+    live: Union[Unset, None, bool] = UNSET,
     missed: Union[Unset, None, bool] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    scheduled: Union[Unset, None, bool] = UNSET,
     start_time: Union[Unset, None, datetime.datetime] = UNSET,
     tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
@@ -292,11 +306,13 @@ def sync(
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
+        live (Union[Unset, None, bool]):
         missed (Union[Unset, None, bool]):
         offset (Union[Unset, None, int]):
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        scheduled (Union[Unset, None, bool]):
         start_time (Union[Unset, None, datetime.datetime]):
         tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
@@ -325,11 +341,13 @@ def sync(
         from_number=from_number,
         ivr=ivr,
         limit=limit,
+        live=live,
         missed=missed,
         offset=offset,
         other_numbers=other_numbers,
         our_numbers=our_numbers,
         recording=recording,
+        scheduled=scheduled,
         start_time=start_time,
         tag=tag,
         tag_operator=tag_operator,
@@ -353,11 +371,13 @@ async def asyncio_detailed(
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
+    live: Union[Unset, None, bool] = UNSET,
     missed: Union[Unset, None, bool] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    scheduled: Union[Unset, None, bool] = UNSET,
     start_time: Union[Unset, None, datetime.datetime] = UNSET,
     tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
@@ -379,11 +399,13 @@ async def asyncio_detailed(
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
+        live (Union[Unset, None, bool]):
         missed (Union[Unset, None, bool]):
         offset (Union[Unset, None, int]):
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        scheduled (Union[Unset, None, bool]):
         start_time (Union[Unset, None, datetime.datetime]):
         tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
@@ -412,11 +434,13 @@ async def asyncio_detailed(
         from_number=from_number,
         ivr=ivr,
         limit=limit,
+        live=live,
         missed=missed,
         offset=offset,
         other_numbers=other_numbers,
         our_numbers=our_numbers,
         recording=recording,
+        scheduled=scheduled,
         start_time=start_time,
         tag=tag,
         tag_operator=tag_operator,
@@ -445,11 +469,13 @@ async def asyncio(
     from_number: Union[Unset, None, str] = UNSET,
     ivr: Union[Unset, None, bool] = UNSET,
     limit: Union[Unset, None, int] = UNSET,
+    live: Union[Unset, None, bool] = UNSET,
     missed: Union[Unset, None, bool] = UNSET,
     offset: Union[Unset, None, int] = UNSET,
     other_numbers: Union[Unset, None, str] = UNSET,
     our_numbers: Union[Unset, None, str] = UNSET,
     recording: Union[Unset, None, bool] = UNSET,
+    scheduled: Union[Unset, None, bool] = UNSET,
     start_time: Union[Unset, None, datetime.datetime] = UNSET,
     tag: Union[Unset, None, str] = UNSET,
     tag_operator: Union[Unset, None, bool] = UNSET,
@@ -471,11 +497,13 @@ async def asyncio(
         from_number (Union[Unset, None, str]):
         ivr (Union[Unset, None, bool]):
         limit (Union[Unset, None, int]):
+        live (Union[Unset, None, bool]):
         missed (Union[Unset, None, bool]):
         offset (Union[Unset, None, int]):
         other_numbers (Union[Unset, None, str]):
         our_numbers (Union[Unset, None, str]):
         recording (Union[Unset, None, bool]):
+        scheduled (Union[Unset, None, bool]):
         start_time (Union[Unset, None, datetime.datetime]):
         tag (Union[Unset, None, str]):
         tag_operator (Union[Unset, None, bool]):
@@ -505,11 +533,13 @@ async def asyncio(
             from_number=from_number,
             ivr=ivr,
             limit=limit,
+            live=live,
             missed=missed,
             offset=offset,
             other_numbers=other_numbers,
             our_numbers=our_numbers,
             recording=recording,
+            scheduled=scheduled,
             start_time=start_time,
             tag=tag,
             tag_operator=tag_operator,

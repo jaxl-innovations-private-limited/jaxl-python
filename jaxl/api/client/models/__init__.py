@@ -100,6 +100,10 @@ from .ivr_menu_response_status_enum import IVRMenuResponseStatusEnum
 from .ivr_options_invalid_response import IVROptionsInvalidResponse
 from .ivr_options_request import IVROptionsRequest
 from .ivr_options_response import IVROptionsResponse
+from .kb_search_request import KbSearchRequest
+from .kb_sse_event import KbSseEvent
+from .kind_enum import KindEnum
+from .kwik_engage_auth_request_request import KwikEngageAuthRequestRequest
 from .kyc import Kyc
 from .kyc_status_enum import KycStatusEnum
 from .kyc_upload_metadata import KycUploadMetadata
@@ -298,6 +302,10 @@ __all__ = (
     "IVROptionsInvalidResponse",
     "IVROptionsRequest",
     "IVROptionsResponse",
+    "KbSearchRequest",
+    "KbSseEvent",
+    "KindEnum",
+    "KwikEngageAuthRequestRequest",
     "Kyc",
     "KycStatusEnum",
     "KycUploadMetadata",
