@@ -15,6 +15,7 @@ from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
     from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
+    from ..models.kwik_engage_auth_request_request import KwikEngageAuthRequestRequest
     from ..models.nimbus_post_auth_request_request import NimbusPostAuthRequestRequest
     from ..models.sales_max_auth_request_request import SalesMaxAuthRequestRequest
     from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
@@ -34,6 +35,7 @@ class IntegrationsPropertiesRequest:
         shiprocket (Union[Unset, None, ShopifyAuthRequestRequest]):
         nimbuspost (Union[Unset, None, NimbusPostAuthRequestRequest]):
         salesmax (Union[Unset, None, SalesMaxAuthRequestRequest]):
+        kwik_engage (Union[Unset, None, KwikEngageAuthRequestRequest]):
     """
 
     shopify: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
@@ -42,6 +44,7 @@ class IntegrationsPropertiesRequest:
     shiprocket: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
     nimbuspost: Union[Unset, None, "NimbusPostAuthRequestRequest"] = UNSET
     salesmax: Union[Unset, None, "SalesMaxAuthRequestRequest"] = UNSET
+    kwik_engage: Union[Unset, None, "KwikEngageAuthRequestRequest"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -69,6 +72,10 @@ class IntegrationsPropertiesRequest:
         if not isinstance(self.salesmax, Unset):
             salesmax = self.salesmax.to_dict() if self.salesmax else None
 
+        kwik_engage: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.kwik_engage, Unset):
+            kwik_engage = self.kwik_engage.to_dict() if self.kwik_engage else None
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -84,12 +91,17 @@ class IntegrationsPropertiesRequest:
             field_dict["nimbuspost"] = nimbuspost
         if salesmax is not UNSET:
             field_dict["salesmax"] = salesmax
+        if kwik_engage is not UNSET:
+            field_dict["kwik_engage"] = kwik_engage
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
+        from ..models.kwik_engage_auth_request_request import (
+            KwikEngageAuthRequestRequest,
+        )
         from ..models.nimbus_post_auth_request_request import (
             NimbusPostAuthRequestRequest,
         )
@@ -152,6 +164,15 @@ class IntegrationsPropertiesRequest:
         else:
             salesmax = SalesMaxAuthRequestRequest.from_dict(_salesmax)
 
+        _kwik_engage = d.pop("kwik_engage", UNSET)
+        kwik_engage: Union[Unset, None, KwikEngageAuthRequestRequest]
+        if _kwik_engage is None:
+            kwik_engage = None
+        elif isinstance(_kwik_engage, Unset):
+            kwik_engage = UNSET
+        else:
+            kwik_engage = KwikEngageAuthRequestRequest.from_dict(_kwik_engage)
+
         integrations_properties_request = cls(
             shopify=shopify,
             exotel=exotel,
@@ -159,6 +180,7 @@ class IntegrationsPropertiesRequest:
             shiprocket=shiprocket,
             nimbuspost=nimbuspost,
             salesmax=salesmax,
+            kwik_engage=kwik_engage,
         )
 
         integrations_properties_request.additional_properties = d
