@@ -9,7 +9,10 @@ with or without modification, is strictly prohibited.
 
 import argparse
 import time
+from http import HTTPStatus
 import uuid
+
+import httpx
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
@@ -193,6 +196,81 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
             provider=None,
             cid=None,
         ),
+    )
+
+
+def _schedule_request(
+    method: str,
+    path: str,
+    json_body: Optional[Dict[str, Any]],
+    args: Dict[str, Any],
+) -> Response[Any]:
+    """F-167a K-1b — raw request against the scheduled-call endpoints,
+    wrapped in the SDK's standard Response shape.
+
+    Hand-written (same request shape the generated modules build) until the
+    OpenAPI client is regenerated with /v1/calls/schedule/."""
+    client = jaxl_api_client(
+        JaxlApiModule.CALL,
+        credentials=args.get("credentials", None),
+        auth_token=args.get("auth_token", None),
+    )
+    kwargs: Dict[str, Any] = {
+        "method": method,
+        "url": f"{client.base_url}{path}",
+        "headers": client.get_headers(),
+        "cookies": client.get_cookies(),
+        "timeout": client.get_timeout(),
+    }
+    if json_body is not None:
+        kwargs["json"] = json_body
+    raw = httpx.request(verify=client.verify_ssl, **kwargs)
+    try:
+        parsed = raw.json()
+    except ValueError:
+        parsed = None
+    return Response(
+        status_code=HTTPStatus(raw.status_code),
+        content=raw.content,
+        headers=raw.headers,
+        parsed=parsed,
+    )
+
+
+def calls_schedule(args: Dict[str, Any]) -> Response[Any]:
+    """Schedule a standalone outbound call for a future time (no prior
+    call needed). `run_at` is ISO-8601 with timezone."""
+    return _schedule_request(
+        "post",
+        "/v1/calls/schedule/",
+        {
+            "from_number": args["from_"],
+            "to_number": args["to"],
+            "ivr_id": int(args["ivr"]),
+            "run_at": args["run_at"],
+            "reason": args.get("reason", None),
+        },
+        args,
+    )
+
+
+def calls_reschedule(args: Dict[str, Any]) -> Response[Any]:
+    """Move a still-pending scheduled call to a new run_at."""
+    return _schedule_request(
+        "post",
+        f"/v1/calls/{int(args['call_id'])}/schedule/",
+        {"run_at": args["run_at"]},
+        args,
+    )
+
+
+def calls_cancel_scheduled(args: Dict[str, Any]) -> Response[Any]:
+    """Cancel a still-pending scheduled call."""
+    return _schedule_request(
+        "delete",
+        f"/v1/calls/{int(args['call_id'])}/schedule/",
+        None,
+        args,
     )
 
 
@@ -490,6 +568,57 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
     calls_create_parser.set_defaults(
         func=calls_create,
         _arg_keys=["to", "from_", "ivr", "message", "option"],
+    )
+
+    # schedule (F-167a K-1b)
+    calls_schedule_parser = subparsers.add_parser(
+        "schedule",
+        help="Schedule a standalone outbound call for a future time",
+    )
+    calls_schedule_parser.add_argument("--to", required=True, help="Recipient E.164")
+    calls_schedule_parser.add_argument(
+        "--from", dest="from_", required=True, help="Your Jaxl number (E.164)"
+    )
+    calls_schedule_parser.add_argument(
+        "--ivr", required=True, help="IVR ID the recipient lands in on answer"
+    )
+    calls_schedule_parser.add_argument(
+        "--run-at",
+        dest="run_at",
+        required=True,
+        help="When to place the call (ISO-8601 with timezone, must be future)",
+    )
+    calls_schedule_parser.add_argument(
+        "--reason", required=False, help="Optional note stored on the call"
+    )
+    calls_schedule_parser.set_defaults(
+        func=calls_schedule,
+        _arg_keys=["to", "from_", "ivr", "run_at", "reason"],
+    )
+
+    # reschedule
+    calls_reschedule_parser = subparsers.add_parser(
+        "reschedule",
+        help="Move a still-pending scheduled call to a new time",
+    )
+    calls_reschedule_parser.add_argument("call_id", help="Scheduled call ID")
+    calls_reschedule_parser.add_argument(
+        "--run-at", dest="run_at", required=True, help="New ISO-8601 time"
+    )
+    calls_reschedule_parser.set_defaults(
+        func=calls_reschedule,
+        _arg_keys=["call_id", "run_at"],
+    )
+
+    # cancel-scheduled
+    calls_cancel_scheduled_parser = subparsers.add_parser(
+        "cancel-scheduled",
+        help="Cancel a still-pending scheduled call",
+    )
+    calls_cancel_scheduled_parser.add_argument("call_id", help="Scheduled call ID")
+    calls_cancel_scheduled_parser.set_defaults(
+        func=calls_cancel_scheduled,
+        _arg_keys=["call_id"],
     )
 
     # list
