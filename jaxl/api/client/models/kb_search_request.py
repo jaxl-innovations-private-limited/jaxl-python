@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Type, TypeVar, Union
 
 import attr
 
+from ..models.kb_search_mode_enum import KbSearchModeEnum
 from ..models.kind_enum import KindEnum
 from ..types import UNSET, Unset
 
@@ -22,38 +23,52 @@ class KbSearchRequest:
     """
     Attributes:
         call_id (int):
-        query (str):
         kind (Union[Unset, KindEnum]):  Default: KindEnum.PRODUCTS.
+        query (Union[Unset, str]):  Default: ''.
         limit (Union[Unset, int]):  Default: 5.
+        mode (Union[Unset, KbSearchModeEnum]):  Default: KbSearchModeEnum.SPECIFIC.
+        category (Union[Unset, str]):  Default: ''.
     """
 
     call_id: int
-    query: str
     kind: Union[Unset, KindEnum] = KindEnum.PRODUCTS
+    query: Union[Unset, str] = ""
     limit: Union[Unset, int] = 5
+    mode: Union[Unset, KbSearchModeEnum] = KbSearchModeEnum.SPECIFIC
+    category: Union[Unset, str] = ""
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         call_id = self.call_id
-        query = self.query
         kind: Union[Unset, str] = UNSET
         if not isinstance(self.kind, Unset):
             kind = self.kind.value
 
+        query = self.query
         limit = self.limit
+        mode: Union[Unset, str] = UNSET
+        if not isinstance(self.mode, Unset):
+            mode = self.mode.value
+
+        category = self.category
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
                 "call_id": call_id,
-                "query": query,
             }
         )
         if kind is not UNSET:
             field_dict["kind"] = kind
+        if query is not UNSET:
+            field_dict["query"] = query
         if limit is not UNSET:
             field_dict["limit"] = limit
+        if mode is not UNSET:
+            field_dict["mode"] = mode
+        if category is not UNSET:
+            field_dict["category"] = category
 
         return field_dict
 
@@ -62,8 +77,6 @@ class KbSearchRequest:
         d = src_dict.copy()
         call_id = d.pop("call_id")
 
-        query = d.pop("query")
-
         _kind = d.pop("kind", UNSET)
         kind: Union[Unset, KindEnum]
         if isinstance(_kind, Unset):
@@ -71,13 +84,26 @@ class KbSearchRequest:
         else:
             kind = KindEnum(_kind)
 
+        query = d.pop("query", UNSET)
+
         limit = d.pop("limit", UNSET)
+
+        _mode = d.pop("mode", UNSET)
+        mode: Union[Unset, KbSearchModeEnum]
+        if isinstance(_mode, Unset):
+            mode = UNSET
+        else:
+            mode = KbSearchModeEnum(_mode)
+
+        category = d.pop("category", UNSET)
 
         kb_search_request = cls(
             call_id=call_id,
-            query=query,
             kind=kind,
+            query=query,
             limit=limit,
+            mode=mode,
+            category=category,
         )
 
         kb_search_request.additional_properties = d

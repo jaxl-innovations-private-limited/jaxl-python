@@ -10,9 +10,9 @@ with or without modification, is strictly prohibited.
 from enum import Enum
 
 
-class KindEnum(str, Enum):
-    PAGES = "pages"
-    PRODUCTS = "products"
+class KbSearchModeEnum(str, Enum):
+    BROWSE = "browse"
+    SPECIFIC = "specific"
 
     def __str__(self) -> str:
         return str(self.value)

@@ -28,6 +28,8 @@ from .call_metadata import CallMetadata
 from .call_report import CallReport
 from .call_report_reason import CallReportReason
 from .call_report_status_enum import CallReportStatusEnum
+from .call_reschedule_request import CallRescheduleRequest
+from .call_schedule_request import CallScheduleRequest
 from .call_tag_request import CallTagRequest
 from .call_tag_response import CallTagResponse
 from .call_token_request import CallTokenRequest
@@ -100,6 +102,7 @@ from .ivr_menu_response_status_enum import IVRMenuResponseStatusEnum
 from .ivr_options_invalid_response import IVROptionsInvalidResponse
 from .ivr_options_request import IVROptionsRequest
 from .ivr_options_response import IVROptionsResponse
+from .kb_search_mode_enum import KbSearchModeEnum
 from .kb_search_request import KbSearchRequest
 from .kb_sse_event import KbSseEvent
 from .kind_enum import KindEnum
@@ -234,6 +237,8 @@ __all__ = (
     "CallReport",
     "CallReportReason",
     "CallReportStatusEnum",
+    "CallRescheduleRequest",
+    "CallScheduleRequest",
     "CallTagRequest",
     "CallTagResponse",
     "CallTokenRequest",
@@ -302,6 +307,7 @@ __all__ = (
     "IVROptionsInvalidResponse",
     "IVROptionsRequest",
     "IVROptionsResponse",
+    "KbSearchModeEnum",
     "KbSearchRequest",
     "KbSseEvent",
     "KindEnum",
