@@ -9,10 +9,8 @@ with or without modification, is strictly prohibited.
 
 import argparse
 import time
-from http import HTTPStatus
 import uuid
 
-import httpx
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
@@ -30,8 +28,17 @@ from jaxl.api.client.api.v1 import (
     v1_calls_transfer_create,
     v1_calls_tts_create,
     v1_calls_usage_retrieve,
+    v1_calls_reschedule_create,
+    v1_calls_schedule_create,
+    v1_calls_schedule_destroy,
 )
 from jaxl.api.client.models.call import Call
+from jaxl.api.client.models.call_reschedule_request import (
+    CallRescheduleRequest,
+)
+from jaxl.api.client.models.call_schedule_request import (
+    CallScheduleRequest,
+)
 from jaxl.api.client.models.call_add_request_request import (
     CallAddRequestRequest,
 )
@@ -62,7 +69,7 @@ from jaxl.api.client.models.v1_calls_metadata_create_response_200 import (
     V1CallsMetadataCreateResponse200,
 )
 from jaxl.api.client.models.why_enum import WhyEnum
-from jaxl.api.client.types import Response, Unset
+from jaxl.api.client.types import UNSET, Response, Unset
 from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
 from jaxl.api.resources.ivrs import (
     IVR_CTA_KEYS,
@@ -199,78 +206,49 @@ def calls_create(args: Dict[str, Any]) -> Response[CallTokenResponse]:
     )
 
 
-def _schedule_request(
-    method: str,
-    path: str,
-    json_body: Optional[Dict[str, Any]],
-    args: Dict[str, Any],
-) -> Response[Any]:
-    """F-167a K-1b — raw request against the scheduled-call endpoints,
-    wrapped in the SDK's standard Response shape.
-
-    Hand-written (same request shape the generated modules build) until the
-    OpenAPI client is regenerated with /v1/calls/schedule/."""
-    client = jaxl_api_client(
-        JaxlApiModule.CALL,
-        credentials=args.get("credentials", None),
-        auth_token=args.get("auth_token", None),
-    )
-    kwargs: Dict[str, Any] = {
-        "method": method,
-        "url": f"{client.base_url}{path}",
-        "headers": client.get_headers(),
-        "cookies": client.get_cookies(),
-        "timeout": client.get_timeout(),
-    }
-    if json_body is not None:
-        kwargs["json"] = json_body
-    raw = httpx.request(verify=client.verify_ssl, **kwargs)
-    try:
-        parsed = raw.json()
-    except ValueError:
-        parsed = None
-    return Response(
-        status_code=HTTPStatus(raw.status_code),
-        content=raw.content,
-        headers=raw.headers,
-        parsed=parsed,
-    )
-
-
-def calls_schedule(args: Dict[str, Any]) -> Response[Any]:
+def calls_schedule(args: Dict[str, Any]) -> Response[Call]:
     """Schedule a standalone outbound call for a future time (no prior
     call needed). `run_at` is ISO-8601 with timezone."""
-    return _schedule_request(
-        "post",
-        "/v1/calls/schedule/",
-        {
-            "from_number": args["from_"],
-            "to_number": args["to"],
-            "ivr_id": int(args["ivr"]),
-            "run_at": args["run_at"],
-            "reason": args.get("reason", None),
-        },
-        args,
+    return v1_calls_schedule_create.sync_detailed(
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallScheduleRequest(
+            from_number=args["from_"],
+            to_number=args["to"],
+            ivr_id=int(args["ivr"]),
+            run_at=datetime.fromisoformat(args["run_at"]),
+            reason=args.get("reason", None) or UNSET,
+        ),
     )
 
 
-def calls_reschedule(args: Dict[str, Any]) -> Response[Any]:
+def calls_reschedule(args: Dict[str, Any]) -> Response[Call]:
     """Move a still-pending scheduled call to a new run_at."""
-    return _schedule_request(
-        "post",
-        f"/v1/calls/{int(args['call_id'])}/schedule/",
-        {"run_at": args["run_at"]},
-        args,
+    return v1_calls_reschedule_create.sync_detailed(
+        id=int(args["call_id"]),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallRescheduleRequest(
+            run_at=datetime.fromisoformat(args["run_at"]),
+        ),
     )
 
 
-def calls_cancel_scheduled(args: Dict[str, Any]) -> Response[Any]:
+def calls_cancel_scheduled(args: Dict[str, Any]) -> Response[Call]:
     """Cancel a still-pending scheduled call."""
-    return _schedule_request(
-        "delete",
-        f"/v1/calls/{int(args['call_id'])}/schedule/",
-        None,
-        args,
+    return v1_calls_schedule_destroy.sync_detailed(
+        id=int(args["call_id"]),
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
     )
 
 
