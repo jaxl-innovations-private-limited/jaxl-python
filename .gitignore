@@ -28,7 +28,6 @@ _scm_version.py
 license.py
 schema.py
 schema.yaml
-*.patch
 /site
 
 jaxl-api-credentials*.json
