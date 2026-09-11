@@ -1,0 +1,26 @@
+diff --git a/jaxl/api/resources/calls.py b/jaxl/api/resources/calls.py
+index 1bce0ab..209dbbb 100644
+--- a/jaxl/api/resources/calls.py
++++ b/jaxl/api/resources/calls.py
+@@ -69,7 +69,7 @@ from jaxl.api.client.models.v1_calls_metadata_create_response_200 import (
+     V1CallsMetadataCreateResponse200,
+ )
+ from jaxl.api.client.models.why_enum import WhyEnum
+-from jaxl.api.client.types import UNSET, Response, Unset
++from jaxl.api.client.types import UNSET, Response
+ from jaxl.api.resources._constants import DEFAULT_CURRENCY, DEFAULT_LIST_LIMIT
+ from jaxl.api.resources.ivrs import (
+     IVR_CTA_KEYS,
+@@ -303,9 +303,9 @@ def calls_add(args: Dict[str, Any]) -> Response[Any]:
+             auth_token=args.get("auth_token", None),
+         ),
+         json_body=CallAddRequestRequest(
+-            e164=args.get("e164", Unset),
+-            email=args.get("email", Unset),
+-            from_e164=args.get("from_e164", Unset),
++            e164=args.get("e164", UNSET),
++            email=args.get("email", UNSET),
++            from_e164=args.get("from_e164", UNSET),
+         ),
+     )
+ 

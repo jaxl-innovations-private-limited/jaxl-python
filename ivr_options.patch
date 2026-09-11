@@ -1,0 +1,13 @@
+diff --git a/jaxl/api/client/models/ivr_options_response.py b/jaxl/api/client/models/ivr_options_response.py
+index a057f56a0..fc3339ef1 100644
+--- a/jaxl/api/client/models/ivr_options_response.py
++++ b/jaxl/api/client/models/ivr_options_response.py
+@@ -101,7 +101,7 @@ class IVROptionsResponse:
+ 
+         _cta = d.pop("cta", UNSET)
+         cta: Union[Unset, CTA]
+-        if isinstance(_cta, Unset):
++        if isinstance(_cta, Unset) or _cta is None:
+             cta = UNSET
+         else:
+             cta = CTA.from_dict(_cta)
