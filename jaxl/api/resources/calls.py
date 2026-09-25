@@ -26,6 +26,7 @@ from jaxl.api.client.api.v1 import (
     v1_calls_tags_create,
     v1_calls_token_create,
     v1_calls_transfer_create,
+    v1_calls_dtmf_create,
     v1_calls_tts_create,
     v1_calls_usage_retrieve,
     v1_calls_reschedule_create,
@@ -55,6 +56,9 @@ from jaxl.api.client.models.call_token_request import CallTokenRequest
 from jaxl.api.client.models.call_token_response import CallTokenResponse
 from jaxl.api.client.models.call_transfer_request_request import (
     CallTransferRequestRequest,
+)
+from jaxl.api.client.models.call_dtmf_request_request import (
+    CallDtmfRequestRequest,
 )
 from jaxl.api.client.models.call_tts_request_request import (
     CallTtsRequestRequest,
@@ -322,6 +326,19 @@ def calls_tts(args: Dict[str, Any]) -> Response[Any]:
             prompts=[pro for pro in args["prompt"].split(".") if len(pro.strip()) > 0],
             mark=args.get("mark", None),
         ),
+    )
+
+
+def calls_dtmf(args: Dict[str, Any]) -> Response[Any]:
+    """Send DTMF digits into an active call (e.g. drive the far side's IVR)."""
+    return v1_calls_dtmf_create.sync_detailed(
+        id=args["call_id"],
+        client=jaxl_api_client(
+            JaxlApiModule.CALL,
+            credentials=args.get("credentials", None),
+            auth_token=args.get("auth_token", None),
+        ),
+        json_body=CallDtmfRequestRequest(digits=str(args["digits"])),
     )
 
 
@@ -677,6 +694,18 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         required=True,
     )
     calls_tts_parser.set_defaults(func=calls_tts, _arg_keys=["call_id", "prompt"])
+
+    calls_dtmf_parser = subparsers.add_parser(
+        "dtmf", help="Send DTMF digits into an active call"
+    )
+    calls_dtmf_parser.add_argument("--call-id", type=int, required=True, help="Call ID")
+    calls_dtmf_parser.add_argument(
+        "--digits",
+        type=str,
+        required=True,
+        help="Digits to send, e.g. 1 or 123# (0-9 * # A-D, max 32)",
+    )
+    calls_dtmf_parser.set_defaults(func=calls_dtmf, _arg_keys=["call_id", "digits"])
 
     calls_get_parser = subparsers.add_parser("get", help="Get a call detail")
     calls_get_parser.add_argument(
