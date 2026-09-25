@@ -49,6 +49,32 @@ DUMMY_RESPONSE = JaxlWebhookResponse(prompt=[" . "], num_characters=0)
 
 logger = logging.getLogger(__name__)
 
+# BaseJaxlApp hooks that only ever fire over the `/stream/` websocket. An app
+# overriding any of them expects a stream; if none opens, tell the developer
+# (see `_warn_if_stream_never_opens`).
+STREAMING_HANDLERS = (
+    "on_stream_connect",
+    "handle_speech_detection",
+    "handle_audio_chunk",
+    "handle_speech_chunks",
+    "handle_speech_segment",
+    "handle_transcription",
+    "handle_stream_mark",
+)
+# How long after the SETUP webhook Jaxl normally takes to open `/stream/`
+# (it opens it right after the setup response; seconds, generous for slow
+# links and grout).
+STREAM_OPEN_GRACE_S = 8.0
+
+
+def streaming_handlers_overridden(app: BaseJaxlApp) -> List[str]:
+    """Names of the streaming hooks this app implements (overrides)."""
+    return [
+        name
+        for name in STREAMING_HANDLERS
+        if getattr(type(app), name, None) is not getattr(BaseJaxlApp, name, None)
+    ]
+
 warnings.filterwarnings(
     "ignore",
     message="FP16 is not supported on CPU; using FP32 instead",
@@ -198,6 +224,28 @@ def _start_server(
     app.hangup = _hangup  # type: ignore[method-assign]
     app.send_mark = _send_mark  # type: ignore[method-assign]
 
+    streaming_handlers = streaming_handlers_overridden(app)
+
+    async def _warn_if_stream_never_opens(call_id: int) -> None:
+        """F-193 (2026-09-25): the #1 silent failure for new SDK users — the
+        app implements streaming handlers, the webhook fires, and then
+        nothing: no audio, no error. Cause: the IVR was registered as a
+        plain webhook URL, so Jaxl never opens `/stream/` (that needs
+        `?stream` in the IVR URL). Say so, loudly, once per call."""
+        await asyncio.sleep(STREAM_OPEN_GRACE_S)
+        if call_id in wss:
+            return
+        logger.warning(
+            "⚠️ call#%s: your app implements %s but Jaxl never opened the "
+            "/stream/ websocket for this call in %.0fs. Streaming needs a "
+            "STREAMING webhook IVR — re-create it with `?stream` (or "
+            "`?stream&conv` for conversational apps) in the URL, e.g. "
+            "`jaxl ivrs create --message \"https://<host>/webhook/?stream\"`.",
+            call_id,
+            ", ".join(streaming_handlers),
+            STREAM_OPEN_GRACE_S,
+        )
+
     @server.api_route(
         "/webhook/",
         methods=["POST", "DELETE"],
@@ -219,6 +267,10 @@ def _start_server(
             elif req.data:
                 response = await app.handle_user_data(req)
             else:
+                if streaming_handlers and req.state.call_id not in wss:
+                    asyncio.get_running_loop().create_task(
+                        _warn_if_stream_never_opens(req.state.call_id)
+                    )
                 response = await app.handle_setup(req)
         elif req.event == JaxlWebhookEvent.OPTION:
             assert request.method == "POST"

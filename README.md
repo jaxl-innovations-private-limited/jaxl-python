@@ -241,11 +241,15 @@ jaxl calls add --call-id 1234 --email <someone@mycompany.com>
 
 ### Remove External Phone Number from an Active Call
 
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
+
 ```bash
 jaxl calls remove --call-id 1234 --e164 +CC<Mobile Number>
 ```
 
 ### Remove Agent from an Active Call
+
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
 
 ```bash
 jaxl calls remove --call-id 1234 --email <someone@mycompany.com>
@@ -258,7 +262,24 @@ jaxl calls tts --call-id 1234 \
   --prompt "Hello, this text was injected in the middle of an active call"
 ```
 
+> Works on Jaxl-carried (SIP) calls of your own organization. The prompt is split on
+> `.` into sentences and spoken to the call by Jaxl's TTS. Not available on calls
+> carried by a BYO Twilio/Exotel account (the API returns 400).
+
+### Send DTMF Digits into an Active Call
+
+Drive the far side's IVR from your app (e.g. "press 1 for sales"):
+
+```bash
+jaxl calls dtmf --call-id 1234 --digits "1"
+jaxl calls dtmf --call-id 1234 --digits "4521#"
+```
+
+> Alphabet `0-9 * # A-D`, at most 32 digits. Jaxl-carried (SIP) calls only.
+
 ### Play Audio File in an Active Call
+
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
 
 ```bash
 jaxl calls play --call-id 1234 --audio /path/to/a/file/on/local/disk/or/public/url
@@ -267,6 +288,8 @@ jaxl calls play --call-id 1234 --audio /path/to/a/file/on/local/disk/or/public/u
 > NOTE: Audio file must be in SLIN16 format i.e. 8KHz Mono 16-bit.
 
 ### Mute a Participant in an Active Call
+
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
 
 Mute a specific cellular user in a call.
 
@@ -282,6 +305,8 @@ jaxl calls mute --call-id 1235 --email <someone@mycompany.com>
 
 ### Unmute a Participant in an Active Call
 
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
+
 Unmute a specific cellular user in a call.
 
 ```bash
@@ -296,6 +321,8 @@ jaxl calls unmute --call-id 1235 --email <someone@mycompany.com>
 
 ### Hold a Participant in an Active Call
 
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
+
 Put a cellular user on-hold in a call
 
 ```bash
@@ -309,6 +336,8 @@ jaxl calls hold --call-id 1235 --email <someone@mycompany.com>
 ```
 
 ### Unhold a Participant in an Active Call
+
+> **Coming soon** — documented ahead of the backend: this command is not in the CLI yet and there is no server-side participant control behind it today (tracked as F-193 in the Jaxl backend). Use `jaxl calls transfer` / `hangup` meanwhile.
 
 Unhold a cellular user in a call
 
@@ -334,11 +363,27 @@ Webhook IVRs can be used to programatically control the lifecycle of incoming an
 Jaxl will invoke configured webhook URL for subscribed call events. Handle the webhook request and
 use Jaxl SDK to continue and customise the call flows.
 
-To create a webhook IVR, use a `https://` URL as `--message` flag e.g.
+To create a webhook IVR, use a `https://` URL as `--message` flag. Jaxl SDK apps
+(`jaxl apps run`) serve the webhook at **`/webhook/`** and the realtime stream at
+**`/stream/`** on the same host, so register the `/webhook/` URL of your app:
 
 ```bash
-jaxl ivrs create --message "https://example.com/jaxl-webhook-ivr"
+# Plain webhook IVR (call lifecycle events only)
+jaxl ivrs create --message "https://<your-public-host>/webhook/"
+
+# Streaming webhook IVR — REQUIRED for the realtime audio / speech /
+# transcription examples below: `?stream` makes Jaxl also open the
+# `/stream/` websocket (derived from your webhook URL) for every call
+jaxl ivrs create --message "https://<your-public-host>/webhook/?stream"
+
+# Conversational streaming IVR — your app also SPEAKS back on that
+# websocket (AI agents): add `&conv`
+jaxl ivrs create --message "https://<your-public-host>/webhook/?stream&conv"
 ```
+
+> Without `?stream` no websocket is opened and streaming handlers never fire —
+> silently. Since `jaxl-python` 1.x the SDK app logs a warning when a streaming
+> handler is implemented but no stream arrives for a call.
 
 Next, assign a number to webhook IVR as shown previously under [Assign a Phone Number to IVR by ID](#assign-a-phone-number-to-ivr-by-id). Now, all incoming calls on the number will start with
 webhook before proceeding further.
@@ -349,17 +394,25 @@ See [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/t
 
 ### Realtime Streaming Audio
 
+> Requires a **streaming** webhook IVR (`?stream`` in the IVR URL — see above).
+
 Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working streaming audio examples.
 
 ### Realtime Streaming Speech Segments
+
+> Requires a **streaming** webhook IVR (`?stream`` in the IVR URL — see above).
 
 Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working streaming speech segments examples.
 
 ### Realtime Streaming Transcriptions per Speech Segment
 
+> Requires a **streaming** webhook IVR (`?stream`` in the IVR URL — see above).
+
 Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working streaming transcription per speech segment examples.
 
 ### AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS
+
+> Requires a **streaming** webhook IVR (`?stream`&conv` in the IVR URL — see above).
 
 Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working AI Agent examples.
 
