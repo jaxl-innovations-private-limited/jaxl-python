@@ -35,6 +35,8 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS](#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts)
    - [List Subscriptions Payments](#list-subscriptions-payments)
    - [List Consumable Payments](#list-consumable-payments)
+   - [List Integrations](#list-integrations)
+   - [Add an Integration](#add-an-integration)
 3. [Jaxl Python SDK](#jaxl-python-sdk)
    - [SDK Example Usage](#sdk-example-usage)
 4. [JAXL HTTP Webhook Protocol](./SPECIFICATION.md)
@@ -427,6 +429,27 @@ jaxl payments subscriptions list
 ```bash
 jaxl payments consumables total
 ```
+
+### List Integrations
+
+```bash
+jaxl integrations list
+```
+
+### Add an Integration
+
+```bash
+jaxl integrations create \
+  --provider exotel \
+  --exotel-api-key "<API Key>" \
+  --exotel-api-token "<API Token>" \
+  --exotel-tenant-id "<Tenant ID>" \
+  --exotel-flow-id 1234
+```
+
+Supported providers are `shopify`, `shiprocket`, `shiprocket_delivery`, `exotel`,
+`twilio`, `stripe`, `stripe_subscription`, `salesmax`, `nimbuspost` and `kwik_engage`.
+Each provider takes its own `--<provider>-...` flags, see `jaxl integrations create -h`.
 
 ## Jaxl Python SDK
 

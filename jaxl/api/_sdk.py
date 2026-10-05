@@ -12,6 +12,7 @@ from jaxl.api.resources.apps import JaxlAppsSDK
 from jaxl.api.resources.calls import JaxlCallsSDK
 from jaxl.api.resources.campaigns import JaxlCampaignsSDK
 from jaxl.api.resources.devices import JaxlDevicesSDK
+from jaxl.api.resources.integrations import JaxlIntegrationsSDK
 from jaxl.api.resources.ivrs import JaxlIVRsSDK
 from jaxl.api.resources.kycs import JaxlKYCsSDK
 from jaxl.api.resources.members import JaxlMembersSDK
@@ -38,3 +39,4 @@ class JaxlSDK:
         self.messages = JaxlMessagesSDK()
         self.notifications = JaxlNotificationsSDK()
         self.apps = JaxlAppsSDK()
+        self.integrations = JaxlIntegrationsSDK()

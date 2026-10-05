@@ -44,7 +44,11 @@ def _get_kwargs(
 def _parse_response(*, client: Client, response: httpx.Response) -> Optional[Any]:
     if response.status_code == HTTPStatus.OK:
         return None
+    if response.status_code == HTTPStatus.BAD_REQUEST:
+        return None
     if response.status_code == HTTPStatus.NOT_FOUND:
+        return None
+    if response.status_code == HTTPStatus.BAD_GATEWAY:
         return None
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(f"Unexpected status code: {response.status_code}")
@@ -67,11 +71,16 @@ def sync_detailed(
     client: AuthenticatedClient,
     json_body: CallDtmfRequestRequest,
 ) -> Response[Any]:
-    """Send DTMF digits into an active call.
+    """Send DTMF digits into an active call (F-193 B1, KaptureCX ask).
+
+    F-194: an API call to SIP keyed by the leg's channel id — NOT a
+    message to the call's stream.py consumer (that signaling is closed
+    after an AI handoff, exactly when Kapture drives the call).
 
     Args:
         id (int):
-        json_body (CallDtmfRequestRequest):
+        json_body (CallDtmfRequestRequest): F-193 B1: DTMF digits to send INTO an active call (ARI
+            alphabet).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -101,11 +110,16 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     json_body: CallDtmfRequestRequest,
 ) -> Response[Any]:
-    """Send DTMF digits into an active call.
+    """Send DTMF digits into an active call (F-193 B1, KaptureCX ask).
+
+    F-194: an API call to SIP keyed by the leg's channel id — NOT a
+    message to the call's stream.py consumer (that signaling is closed
+    after an AI handoff, exactly when Kapture drives the call).
 
     Args:
         id (int):
-        json_body (CallDtmfRequestRequest):
+        json_body (CallDtmfRequestRequest): F-193 B1: DTMF digits to send INTO an active call (ARI
+            alphabet).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

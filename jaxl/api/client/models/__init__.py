@@ -21,6 +21,7 @@ from .call import Call
 from .call_add_request_request import CallAddRequestRequest
 from .call_audio_reason import CallAudioReason
 from .call_cost import CallCost
+from .call_dtmf_request_request import CallDtmfRequestRequest
 from .call_location_epoch import CallLocationEpoch
 from .call_message_request_request import CallMessageRequestRequest
 from .call_message_request_type_enum import CallMessageRequestTypeEnum
@@ -171,8 +172,12 @@ from .rental_currency_enum import RentalCurrencyEnum
 from .resource_enum import ResourceEnum
 from .ringing_strategy_enum import RingingStrategyEnum
 from .sales_max_auth_request_request import SalesMaxAuthRequestRequest
+from .shiprocket_delivery_auth_request_request import (
+    ShiprocketDeliveryAuthRequestRequest,
+)
 from .shopify_auth_request_request import ShopifyAuthRequestRequest
 from .stripe_auth_request_request import StripeAuthRequestRequest
+from .twilio_call_auth_request_request import TwilioCallAuthRequestRequest
 from .upload_metadata import UploadMetadata
 from .user_agent import UserAgent
 from .user_agent_browser import UserAgentBrowser
@@ -230,6 +235,7 @@ __all__ = (
     "CallAddRequestRequest",
     "CallAudioReason",
     "CallCost",
+    "CallDtmfRequestRequest",
     "CallLocationEpoch",
     "CallMessageRequestRequest",
     "CallMessageRequestTypeEnum",
@@ -370,8 +376,10 @@ __all__ = (
     "ResourceEnum",
     "RingingStrategyEnum",
     "SalesMaxAuthRequestRequest",
+    "ShiprocketDeliveryAuthRequestRequest",
     "ShopifyAuthRequestRequest",
     "StripeAuthRequestRequest",
+    "TwilioCallAuthRequestRequest",
     "UploadMetadata",
     "UserAgent",
     "UserAgentBrowser",
