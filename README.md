@@ -28,6 +28,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Hold a Participant in an Active Call](#hold-a-participant-in-an-active-call)
    - [Unhold a Participant in an Active Call](#unhold-a-participant-in-an-active-call)
    - [Get call details](#get-call-details)
+   - [Transfer an Active Call](#transfer-an-active-call)
    - [Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs)
    - [Realtime Streaming Audio](#realtime-streaming-audio)
    - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
@@ -355,6 +356,36 @@ jaxl calls unhold --call-id 1235 --email <someone@mycompany.com>
 
 ```bash
 jaxl calls get --call-id 1234
+```
+
+### Transfer an Active Call
+
+All transfer commands need the call's `--call-id`. Find an active all's ID with:
+
+```bash
+jaxl calls list --active
+```
+
+Transfer to a phone number:
+
+```bash
+jaxl calls transfer --call-id 1234 --phone +CC<Mobile Number>
+```
+
+Transfer to a member by email. `--appusers` takes a Jaxl App User ID, not an email, so resolve it from `jaxl members list` first:
+
+```bash
+jaxl members list | grep -oP "OrganizationEmployee\(id=\d+, user_id=\d+, app_user_id=\d+, email='[^']*'" 
+# find the matching member's email in the list, note its app_user_id, then:
+jaxl calls transfer --call-id 1234 --appusers <app_user_id>
+```
+
+Transfer to a team by name. `--teams` takes a Jaxl Team ID, not a name, so resolve it from `jaxl teams list` first:
+
+```bash
+jaxl teams list | grep -oP "OrganizationGroupResponse\(id=\d+, name='[^']*'"
+# find the matching team's name in the list, note its id, then:
+jaxl calls transfer --call-id 1234 --teams <team_id>
 ```
 
 ### Receive Call Events via Webhook IVRs
