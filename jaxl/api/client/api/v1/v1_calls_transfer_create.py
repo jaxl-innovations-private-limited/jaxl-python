@@ -8,12 +8,13 @@ with or without modification, is strictly prohibited.
 """
 
 from http import HTTPStatus
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union, cast
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.call_transfer_rejected import CallTransferRejected
 from ...models.call_transfer_request_request import CallTransferRequestRequest
 from ...types import Response
 
@@ -41,18 +42,25 @@ def _get_kwargs(
     }
 
 
-def _parse_response(*, client: Client, response: httpx.Response) -> Optional[Any]:
+def _parse_response(
+    *, client: Client, response: httpx.Response
+) -> Optional[Union[Any, CallTransferRejected]]:
     if response.status_code == HTTPStatus.OK:
-        return None
+        response_200 = cast(Any, None)
+        return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        return None
+        response_400 = CallTransferRejected.from_dict(response.json())
+
+        return response_400
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(f"Unexpected status code: {response.status_code}")
     else:
         return None
 
 
-def _build_response(*, client: Client, response: httpx.Response) -> Response[Any]:
+def _build_response(
+    *, client: Client, response: httpx.Response
+) -> Response[Union[Any, CallTransferRejected]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -66,7 +74,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     json_body: CallTransferRequestRequest,
-) -> Response[Any]:
+) -> Response[Union[Any, CallTransferRejected]]:
     """API view set for Call model.
 
     Args:
@@ -78,7 +86,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any]
+        Response[Union[Any, CallTransferRejected]]
     """
 
     kwargs = _get_kwargs(
@@ -95,12 +103,12 @@ def sync_detailed(
     return _build_response(client=client, response=response)
 
 
-async def asyncio_detailed(
+def sync(
     id: int,
     *,
     client: AuthenticatedClient,
     json_body: CallTransferRequestRequest,
-) -> Response[Any]:
+) -> Optional[Union[Any, CallTransferRejected]]:
     """API view set for Call model.
 
     Args:
@@ -112,7 +120,34 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any]
+        Response[Union[Any, CallTransferRejected]]
+    """
+
+    return sync_detailed(
+        id=id,
+        client=client,
+        json_body=json_body,
+    ).parsed
+
+
+async def asyncio_detailed(
+    id: int,
+    *,
+    client: AuthenticatedClient,
+    json_body: CallTransferRequestRequest,
+) -> Response[Union[Any, CallTransferRejected]]:
+    """API view set for Call model.
+
+    Args:
+        id (int):
+        json_body (CallTransferRequestRequest):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[Union[Any, CallTransferRejected]]
     """
 
     kwargs = _get_kwargs(
@@ -125,3 +160,32 @@ async def asyncio_detailed(
         response = await _client.request(**kwargs)
 
     return _build_response(client=client, response=response)
+
+
+async def asyncio(
+    id: int,
+    *,
+    client: AuthenticatedClient,
+    json_body: CallTransferRequestRequest,
+) -> Optional[Union[Any, CallTransferRejected]]:
+    """API view set for Call model.
+
+    Args:
+        id (int):
+        json_body (CallTransferRequestRequest):
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[Union[Any, CallTransferRejected]]
+    """
+
+    return (
+        await asyncio_detailed(
+            id=id,
+            client=client,
+            json_body=json_body,
+        )
+    ).parsed
