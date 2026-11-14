@@ -14,12 +14,22 @@ import attr
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+    from ..models.cashfree_checkout_auth_request_request import (
+        CashfreeCheckoutAuthRequestRequest,
+    )
     from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
+    from ..models.go_kwik_checkout_auth_request_request import (
+        GoKwikCheckoutAuthRequestRequest,
+    )
     from ..models.kwik_engage_auth_request_request import KwikEngageAuthRequestRequest
     from ..models.nimbus_post_auth_request_request import NimbusPostAuthRequestRequest
     from ..models.sales_max_auth_request_request import SalesMaxAuthRequestRequest
+    from ..models.shiprocket_delivery_auth_request_request import (
+        ShiprocketDeliveryAuthRequestRequest,
+    )
     from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
     from ..models.stripe_auth_request_request import StripeAuthRequestRequest
+    from ..models.twilio_call_auth_request_request import TwilioCallAuthRequestRequest
 
 
 T = TypeVar("T", bound="IntegrationsPropertiesRequest")
@@ -36,6 +46,14 @@ class IntegrationsPropertiesRequest:
         nimbuspost (Union[Unset, None, NimbusPostAuthRequestRequest]):
         salesmax (Union[Unset, None, SalesMaxAuthRequestRequest]):
         kwik_engage (Union[Unset, None, KwikEngageAuthRequestRequest]):
+        twilio (Union[Unset, None, TwilioCallAuthRequestRequest]): F-171 BYO call provider: the org's OWN Twilio
+            account.
+        shiprocket_delivery (Union[Unset, None, ShiprocketDeliveryAuthRequestRequest]): Push-only from Shiprocket's side
+            -- no credentials are needed to
+            receive the webhook, just a URL pasted into their dashboard.
+            webhook_secret is reserved for future signature verification.
+        cashfree_checkout (Union[Unset, None, CashfreeCheckoutAuthRequestRequest]):
+        gokwik_checkout (Union[Unset, None, GoKwikCheckoutAuthRequestRequest]):
     """
 
     shopify: Union[Unset, None, "ShopifyAuthRequestRequest"] = UNSET
@@ -45,6 +63,12 @@ class IntegrationsPropertiesRequest:
     nimbuspost: Union[Unset, None, "NimbusPostAuthRequestRequest"] = UNSET
     salesmax: Union[Unset, None, "SalesMaxAuthRequestRequest"] = UNSET
     kwik_engage: Union[Unset, None, "KwikEngageAuthRequestRequest"] = UNSET
+    twilio: Union[Unset, None, "TwilioCallAuthRequestRequest"] = UNSET
+    shiprocket_delivery: Union[Unset, None, "ShiprocketDeliveryAuthRequestRequest"] = (
+        UNSET
+    )
+    cashfree_checkout: Union[Unset, None, "CashfreeCheckoutAuthRequestRequest"] = UNSET
+    gokwik_checkout: Union[Unset, None, "GoKwikCheckoutAuthRequestRequest"] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -76,6 +100,28 @@ class IntegrationsPropertiesRequest:
         if not isinstance(self.kwik_engage, Unset):
             kwik_engage = self.kwik_engage.to_dict() if self.kwik_engage else None
 
+        twilio: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.twilio, Unset):
+            twilio = self.twilio.to_dict() if self.twilio else None
+
+        shiprocket_delivery: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.shiprocket_delivery, Unset):
+            shiprocket_delivery = (
+                self.shiprocket_delivery.to_dict() if self.shiprocket_delivery else None
+            )
+
+        cashfree_checkout: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.cashfree_checkout, Unset):
+            cashfree_checkout = (
+                self.cashfree_checkout.to_dict() if self.cashfree_checkout else None
+            )
+
+        gokwik_checkout: Union[Unset, None, Dict[str, Any]] = UNSET
+        if not isinstance(self.gokwik_checkout, Unset):
+            gokwik_checkout = (
+                self.gokwik_checkout.to_dict() if self.gokwik_checkout else None
+            )
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -93,12 +139,26 @@ class IntegrationsPropertiesRequest:
             field_dict["salesmax"] = salesmax
         if kwik_engage is not UNSET:
             field_dict["kwik_engage"] = kwik_engage
+        if twilio is not UNSET:
+            field_dict["twilio"] = twilio
+        if shiprocket_delivery is not UNSET:
+            field_dict["shiprocket_delivery"] = shiprocket_delivery
+        if cashfree_checkout is not UNSET:
+            field_dict["cashfree_checkout"] = cashfree_checkout
+        if gokwik_checkout is not UNSET:
+            field_dict["gokwik_checkout"] = gokwik_checkout
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.cashfree_checkout_auth_request_request import (
+            CashfreeCheckoutAuthRequestRequest,
+        )
         from ..models.exotel_auth_request_request import ExotelAuthRequestRequest
+        from ..models.go_kwik_checkout_auth_request_request import (
+            GoKwikCheckoutAuthRequestRequest,
+        )
         from ..models.kwik_engage_auth_request_request import (
             KwikEngageAuthRequestRequest,
         )
@@ -106,8 +166,14 @@ class IntegrationsPropertiesRequest:
             NimbusPostAuthRequestRequest,
         )
         from ..models.sales_max_auth_request_request import SalesMaxAuthRequestRequest
+        from ..models.shiprocket_delivery_auth_request_request import (
+            ShiprocketDeliveryAuthRequestRequest,
+        )
         from ..models.shopify_auth_request_request import ShopifyAuthRequestRequest
         from ..models.stripe_auth_request_request import StripeAuthRequestRequest
+        from ..models.twilio_call_auth_request_request import (
+            TwilioCallAuthRequestRequest,
+        )
 
         d = src_dict.copy()
         _shopify = d.pop("shopify", UNSET)
@@ -173,6 +239,48 @@ class IntegrationsPropertiesRequest:
         else:
             kwik_engage = KwikEngageAuthRequestRequest.from_dict(_kwik_engage)
 
+        _twilio = d.pop("twilio", UNSET)
+        twilio: Union[Unset, None, TwilioCallAuthRequestRequest]
+        if _twilio is None:
+            twilio = None
+        elif isinstance(_twilio, Unset):
+            twilio = UNSET
+        else:
+            twilio = TwilioCallAuthRequestRequest.from_dict(_twilio)
+
+        _shiprocket_delivery = d.pop("shiprocket_delivery", UNSET)
+        shiprocket_delivery: Union[Unset, None, ShiprocketDeliveryAuthRequestRequest]
+        if _shiprocket_delivery is None:
+            shiprocket_delivery = None
+        elif isinstance(_shiprocket_delivery, Unset):
+            shiprocket_delivery = UNSET
+        else:
+            shiprocket_delivery = ShiprocketDeliveryAuthRequestRequest.from_dict(
+                _shiprocket_delivery
+            )
+
+        _cashfree_checkout = d.pop("cashfree_checkout", UNSET)
+        cashfree_checkout: Union[Unset, None, CashfreeCheckoutAuthRequestRequest]
+        if _cashfree_checkout is None:
+            cashfree_checkout = None
+        elif isinstance(_cashfree_checkout, Unset):
+            cashfree_checkout = UNSET
+        else:
+            cashfree_checkout = CashfreeCheckoutAuthRequestRequest.from_dict(
+                _cashfree_checkout
+            )
+
+        _gokwik_checkout = d.pop("gokwik_checkout", UNSET)
+        gokwik_checkout: Union[Unset, None, GoKwikCheckoutAuthRequestRequest]
+        if _gokwik_checkout is None:
+            gokwik_checkout = None
+        elif isinstance(_gokwik_checkout, Unset):
+            gokwik_checkout = UNSET
+        else:
+            gokwik_checkout = GoKwikCheckoutAuthRequestRequest.from_dict(
+                _gokwik_checkout
+            )
+
         integrations_properties_request = cls(
             shopify=shopify,
             exotel=exotel,
@@ -181,6 +289,10 @@ class IntegrationsPropertiesRequest:
             nimbuspost=nimbuspost,
             salesmax=salesmax,
             kwik_engage=kwik_engage,
+            twilio=twilio,
+            shiprocket_delivery=shiprocket_delivery,
+            cashfree_checkout=cashfree_checkout,
+            gokwik_checkout=gokwik_checkout,
         )
 
         integrations_properties_request.additional_properties = d
