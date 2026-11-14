@@ -71,11 +71,11 @@ def sync_detailed(
     client: AuthenticatedClient,
     json_body: CallDtmfRequestRequest,
 ) -> Response[Any]:
-    """Send DTMF digits into an active call (F-193 B1, KaptureCX ask).
+    """Send DTMF digits into an active call (F-193 B1).
 
     F-194: an API call to SIP keyed by the leg's channel id — NOT a
     message to the call's stream.py consumer (that signaling is closed
-    after an AI handoff, exactly when Kapture drives the call).
+    after an AI handoff).
 
     Args:
         id (int):
@@ -110,11 +110,11 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     json_body: CallDtmfRequestRequest,
 ) -> Response[Any]:
-    """Send DTMF digits into an active call (F-193 B1, KaptureCX ask).
+    """Send DTMF digits into an active call (F-193 B1).
 
     F-194: an API call to SIP keyed by the leg's channel id — NOT a
     message to the call's stream.py consumer (that signaling is closed
-    after an AI handoff, exactly when Kapture drives the call).
+    after an AI handoff).
 
     Args:
         id (int):
