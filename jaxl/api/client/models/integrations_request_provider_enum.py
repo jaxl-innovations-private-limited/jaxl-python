@@ -46,6 +46,9 @@ class IntegrationsRequestProviderEnum(IntEnum):
     VALUE_33 = 33
     VALUE_34 = 34
     VALUE_35 = 35
+    VALUE_36 = 36
+    VALUE_37 = 37
+    VALUE_38 = 38
 
     def __str__(self) -> str:
         return str(self.value)

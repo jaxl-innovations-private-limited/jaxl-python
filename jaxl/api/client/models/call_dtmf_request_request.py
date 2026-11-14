@@ -16,10 +16,10 @@ T = TypeVar("T", bound="CallDtmfRequestRequest")
 
 @attr.s(auto_attribs=True)
 class CallDtmfRequestRequest:
-    """
+    """F-193 B1: DTMF digits to send INTO an active call (ARI alphabet).
+
     Attributes:
-        digits (str): DTMF digits to send into the call, e.g. "1", "123#".
-            Alphabet: 0-9 * # A-D, at most 32.
+        digits (str): DTMF digits, e.g. '1' or '123#'. Alphabet 0-9 * # A-D, max 32.
     """
 
     digits: str
