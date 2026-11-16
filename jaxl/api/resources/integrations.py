@@ -15,8 +15,14 @@ from jaxl.api.client.api.v1 import (
     v1_app_organizations_providers_list,
     v1_integrations_create,
 )
+from jaxl.api.client.models.cashfree_checkout_auth_request_request import (
+    CashfreeCheckoutAuthRequestRequest,
+)
 from jaxl.api.client.models.exotel_auth_request_request import (
     ExotelAuthRequestRequest,
+)
+from jaxl.api.client.models.go_kwik_checkout_auth_request_request import (
+    GoKwikCheckoutAuthRequestRequest,
 )
 from jaxl.api.client.models.integrations_error_response import (
     IntegrationsErrorResponse,
@@ -191,6 +197,41 @@ PROVIDERS: Dict[str, _Provider] = {
             _Field("waba_id", "WhatsApp Business Account ID", required=True),
             _Field("phone_number_id", "WhatsApp phone number ID", required=True),
             _Field("webhook_secret", "Kwik Engage webhook secret"),
+        ),
+    ),
+    "cashfree_checkout": _Provider(
+        IntegrationsRequestProviderEnum.VALUE_37,
+        "cashfree_checkout",
+        CashfreeCheckoutAuthRequestRequest,
+        (
+            _Field(
+                "shop_domain",
+                "Domain of an already connected Shopify shop running Cashfree "
+                + "checkout. Example: my-store.myshopify.com",
+                required=True,
+            ),
+            _Field(
+                "webhook_secret",
+                "Secret key of Cashfree's abandoned-checkout webhook",
+            ),
+        ),
+    ),
+    "gokwik_checkout": _Provider(
+        IntegrationsRequestProviderEnum.VALUE_38,
+        "gokwik_checkout",
+        GoKwikCheckoutAuthRequestRequest,
+        (
+            _Field(
+                "shop_domain",
+                "Domain of an already connected Shopify shop running GoKwik "
+                + "checkout. Example: my-store.myshopify.com",
+                required=True,
+            ),
+            _Field(
+                "webhook_secret",
+                "GoKwik webhook secret. Reserved, GoKwik does not sign its "
+                + "webhooks today",
+            ),
         ),
     ),
 }

@@ -117,6 +117,11 @@ PYTHONPATH=. jaxl apps run --app examples:JaxlAppConfirmRequestedCodeAndSendToCe
 PYTHONPATH=. jaxl apps run --app examples:JaxlAppStreamingAudioChunk
 ```
 
+`handle_audio_chunk` receives 20 ms packets of 16-bit, mono, 8 kHz PCM and an optional
+`meta`. Register the IVR with `?stream&tracks` to get each speaker unmixed, with
+`meta.track` (`customer` or `member`) and `meta.call_id` on every packet. See
+[Stream Audio Format and Speaker Tracks](https://github.com/jaxl-innovations-private-limited/jaxl-python?tab=readme-ov-file#stream-audio-format-and-speaker-tracks).
+
 ### Realtime Streaming Speech Segments
 
 ```bash
@@ -160,6 +165,14 @@ async def handle_setup(self, req: JaxlWebhookRequest) -> HANDLER_RESPONSE:
 
 - Returning `.` doesn't result in a speech
 - `num_characters=-1` is currently mandatory for conversational bots because your app is expecting zero DTMF inputs
+
+### Handing the Caller to a Person
+
+When your agent transfers the caller (`jaxl calls transfer` or the transfer API), the API
+response only acknowledges the request. Implement `handle_handoff` to learn the outcome:
+`answered` means the person has the caller and your stream is about to close; `failed`
+means the caller is still with your agent. See
+[Call Handoff](https://github.com/jaxl-innovations-private-limited/jaxl-python?tab=readme-ov-file#call-handoff-transferring-a-call-out-of-your-app).
 
 ## Production
 

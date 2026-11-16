@@ -16,6 +16,7 @@ from dateutil.parser import isoparse
 from ..models.phone_number_provider_enum import PhoneNumberProviderEnum
 from ..models.phone_number_status_enum import PhoneNumberStatusEnum
 from ..models.resource_enum import ResourceEnum
+from ..models.ringing_order_enum import RingingOrderEnum
 from ..models.ringing_strategy_enum import RingingStrategyEnum
 from ..types import UNSET, Unset
 
@@ -44,6 +45,8 @@ class PhoneNumber:
         registered_from_this_device (bool):
         capabilities (PhoneNumberCapabilities):
         resource (ResourceEnum):
+        org_provider_id (Optional[int]): Primary key of the core OrganizationProvider this DID was imported from (BYO
+            call provider). Null for Jaxl-provided and user-registered numbers.
         ivr (Union[Unset, None, int]): Optional IVR for all incoming calls to this number
         registered_from_device (Optional[int]):
         attributes (Optional[PhoneNumberAttributes]):
@@ -54,6 +57,7 @@ class PhoneNumber:
         sms_verified (Optional[bool]): Whether this phone number has completed the otp verification
         frontdesk (Union[Unset, None, PhoneNumberFrontdesk]): Save front desk key
         ringing_strategy (Union[None, RingingStrategyEnum]):
+        ringing_order (Union[None, RingingOrderEnum]):
         jaxlid (Optional[str]):
     """
 
@@ -65,6 +69,7 @@ class PhoneNumber:
     registered_from_this_device: bool
     capabilities: "PhoneNumberCapabilities"
     resource: ResourceEnum
+    org_provider_id: Optional[int]
     registered_from_device: Optional[int]
     attributes: Optional["PhoneNumberAttributes"]
     order_id: Optional[int]
@@ -72,6 +77,7 @@ class PhoneNumber:
     kyc_id: Optional[int]
     sms_verified: Optional[bool]
     ringing_strategy: Union[None, RingingStrategyEnum]
+    ringing_order: Union[None, RingingOrderEnum]
     jaxlid: Optional[str]
     verified: bool = False
     ivr: Union[Unset, None, int] = UNSET
@@ -93,6 +99,7 @@ class PhoneNumber:
 
         resource = self.resource.value
 
+        org_provider_id = self.org_provider_id
         ivr = self.ivr
         registered_from_device = self.registered_from_device
         attributes = self.attributes.to_dict() if self.attributes else None
@@ -116,6 +123,16 @@ class PhoneNumber:
         else:
             ringing_strategy = self.ringing_strategy
 
+        ringing_order: Union[None, str]
+        if self.ringing_order is None:
+            ringing_order = None
+
+        elif isinstance(self.ringing_order, RingingOrderEnum):
+            ringing_order = self.ringing_order.value
+
+        else:
+            ringing_order = self.ringing_order
+
         jaxlid = self.jaxlid
 
         field_dict: Dict[str, Any] = {}
@@ -131,6 +148,7 @@ class PhoneNumber:
                 "registered_from_this_device": registered_from_this_device,
                 "capabilities": capabilities,
                 "resource": resource,
+                "org_provider_id": org_provider_id,
                 "registered_from_device": registered_from_device,
                 "attributes": attributes,
                 "order_id": order_id,
@@ -138,6 +156,7 @@ class PhoneNumber:
                 "kyc_id": kyc_id,
                 "sms_verified": sms_verified,
                 "ringing_strategy": ringing_strategy,
+                "ringing_order": ringing_order,
                 "jaxlid": jaxlid,
             }
         )
@@ -172,6 +191,8 @@ class PhoneNumber:
         capabilities = PhoneNumberCapabilities.from_dict(d.pop("capabilities"))
 
         resource = ResourceEnum(d.pop("resource"))
+
+        org_provider_id = d.pop("org_provider_id")
 
         ivr = d.pop("ivr", UNSET)
 
@@ -221,6 +242,21 @@ class PhoneNumber:
 
         ringing_strategy = _parse_ringing_strategy(d.pop("ringing_strategy"))
 
+        def _parse_ringing_order(data: object) -> Union[None, RingingOrderEnum]:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                ringing_order_type_0 = RingingOrderEnum(data)
+
+                return ringing_order_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[None, RingingOrderEnum], data)
+
+        ringing_order = _parse_ringing_order(d.pop("ringing_order"))
+
         jaxlid = d.pop("jaxlid")
 
         phone_number = cls(
@@ -233,6 +269,7 @@ class PhoneNumber:
             registered_from_this_device=registered_from_this_device,
             capabilities=capabilities,
             resource=resource,
+            org_provider_id=org_provider_id,
             ivr=ivr,
             registered_from_device=registered_from_device,
             attributes=attributes,
@@ -242,6 +279,7 @@ class PhoneNumber:
             sms_verified=sms_verified,
             frontdesk=frontdesk,
             ringing_strategy=ringing_strategy,
+            ringing_order=ringing_order,
             jaxlid=jaxlid,
         )
 

@@ -28,6 +28,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Hold a Participant in an Active Call](#hold-a-participant-in-an-active-call)
    - [Unhold a Participant in an Active Call](#unhold-a-participant-in-an-active-call)
    - [Get call details](#get-call-details)
+   - [Transfer an Active Call](#transfer-an-active-call)
    - [Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs)
    - [Realtime Streaming Audio](#realtime-streaming-audio)
    - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
@@ -51,17 +52,18 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 
 ```bash
 jaxl -h
-usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams} ...
+usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,integrations,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams} ...
 
 Jaxl CLI
 
 positional arguments:
-  {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams}
+  {accounts,apps,calls,campaigns,devices,integrations,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams}
     accounts            Manage Accounts
     apps                Manage Apps for Webhooks and Streaming audio/speech/transcriptions.
     calls               Manage Calls (Domestic & International Cellular, App-to-App)
     campaigns           Manage Campaigns
     devices             Manage Devices
+    integrations        Manage Integrations
     ivrs                Manage IVRs (Interactive Voice Response)
     kycs                Manage KYCs
     members             Manage Members
@@ -359,6 +361,36 @@ jaxl calls unhold --call-id 1235 --email <someone@mycompany.com>
 jaxl calls get --call-id 1234
 ```
 
+### Transfer an Active Call
+
+All transfer commands need the call's `--call-id`. Find an active all's ID with:
+
+```bash
+jaxl calls list --active
+```
+
+Transfer to a phone number:
+
+```bash
+jaxl calls transfer --call-id 1234 --phone +CC<Mobile Number>
+```
+
+Transfer to a member by email. `--appusers` takes a Jaxl App User ID, not an email, so resolve it from `jaxl members list` first:
+
+```bash
+jaxl members list | grep -oP "OrganizationEmployee\(id=\d+, user_id=\d+, app_user_id=\d+, email='[^']*'" 
+# find the matching member's email in the list, note its app_user_id, then:
+jaxl calls transfer --call-id 1234 --appusers <app_user_id>
+```
+
+Transfer to a team by name. `--teams` takes a Jaxl Team ID, not a name, so resolve it from `jaxl teams list` first:
+
+```bash
+jaxl teams list | grep -oP "OrganizationGroupResponse\(id=\d+, name='[^']*'"
+# find the matching team's name in the list, note its id, then:
+jaxl calls transfer --call-id 1234 --teams <team_id>
+```
+
 ### Receive Call Events via Webhook IVRs
 
 Webhook IVRs can be used to programatically control the lifecycle of incoming and outgoing calls.
@@ -381,6 +413,10 @@ jaxl ivrs create --message "https://<your-public-host>/webhook/?stream"
 # Conversational streaming IVR — your app also SPEAKS back on that
 # websocket (AI agents): add `&conv`
 jaxl ivrs create --message "https://<your-public-host>/webhook/?stream&conv"
+
+# Speaker tracks — the stream is NOT mixed and every audio packet names
+# its speaker: add `&tracks` (works with or without `&conv`)
+jaxl ivrs create --message "https://<your-public-host>/webhook/?stream&tracks"
 ```
 
 > Without `?stream` no websocket is opened and streaming handlers never fire —
@@ -418,6 +454,90 @@ Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-pyt
 
 Refer to [examples](https://github.com/jaxl-innovations-private-limited/jaxl-python/tree/main/examples) directory for working AI Agent examples.
 
+### Stream Audio Format and Speaker Tracks
+
+Audio on the `/stream/` websocket is 16-bit signed PCM, mono, 8 kHz. One packet carries
+20 ms (320 bytes).
+
+By default a call's speakers are mixed into one stream. Add `&tracks` to the IVR URL to
+receive them unmixed. Every packet then says who is speaking in its `meta`:
+
+| `meta` field | Value                                                                    |
+| ------------ | ------------------------------------------------------------------------ |
+| `track`      | `customer` (the phone side of the call) or `member` (one of your agents) |
+| `call_id`    | Call ID of that speaker's leg                                             |
+
+```python
+async def handle_audio_chunk(self, req, slin16, meta=None):
+    who = getattr(meta, "track", None)      # "customer" | "member" | None (mixed stream)
+    leg = getattr(meta, "call_id", None)
+```
+
+Notes:
+
+- `meta` may carry other optional fields (for example `speaker`, `is_speech`). Ignore the
+  ones you do not use; new fields can appear.
+- The speech handlers (`handle_speech_detection`, `handle_speech_segment`, transcriptions)
+  run one detector per websocket. On a `&tracks` stream, split the audio by `meta.track`
+  in `handle_audio_chunk` if you need speech detection per speaker.
+- If you serve `/stream/` without this SDK: a media message is
+  `{"event": "media", "media": {"payload": "<base64 PCM>", "meta": {...}}}`.
+
+### Call Handoff: Transferring a Call Out of Your App
+
+A conversational app (AI agent) hands its caller to a person with the transfer API
+(`jaxl calls transfer`, see [Transfer an Active Call](#transfer-an-active-call)). The
+transfer is a two-step protocol:
+
+1. **The API response is an acknowledgement, not the outcome.** `200` means the request was
+   accepted and the new leg is being placed. The response carries the new leg's Call ID.
+   Nobody has answered yet, and your app is still connected to the caller.
+2. **The outcome arrives on your `/stream/` websocket** as a `handoff` event. The SDK calls
+   `handle_handoff(call_id, handoff_call_id, status)`; `handoff_call_id` is the Call ID the
+   transfer API returned.
+
+| `status`   | What happened                                    | What your app should do                                                                                                      |
+| ---------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `answered` | The new party picked up and now has the caller.  | Stop speaking and finish your bookkeeping. Jaxl stops playing your audio to the caller and closes your stream right after.   |
+| `failed`   | The transfer was rejected or nobody picked up.   | The caller is still with your app. Resume the conversation; you may transfer again.                                          |
+
+```python
+async def handle_handoff(self, call_id: int, handoff_call_id: int, status: str) -> None:
+    if status == "answered":
+        ...  # the human has the caller: stop talking, save the outcome
+    else:
+        ...  # "failed": tell the caller and carry on
+```
+
+Notes:
+
+- While the new leg is ringing, your app is still the one talking to the caller.
+- Adding a participant to the call (`jaxl calls add`) is not a handoff: your app stays on the
+  call and no `handoff` event is sent.
+- If you serve `/stream/` without this SDK, the message is
+  `{"event": "handoff", "handoff": {"status": "answered" | "failed", "call_id": <new leg's Call ID>}}`.
+
+### Listening to Your Team's Calls (Human-Leg Stream)
+
+Jaxl can stream the live audio of calls your team members answer or place (no IVR or AI
+agent involved) to one of your streaming webhook IVRs. The stream is listen-only.
+
+- Create a streaming webhook IVR for it: `?stream` is required, `&tracks` is recommended,
+  `&conv` is not allowed. Ask Jaxl to enable it for your organization with that IVR's ID.
+- It follows the webhook IVR lifecycle. When a member's leg starts, your app receives
+  SETUP (`handle_setup`) with the call's state. Answer `200` to accept the call; the
+  response body is not used. Any other answer means no stream for that call. When the leg
+  ends, your app receives TEARDOWN (`handle_teardown`).
+- The `/stream/` websocket carries that IVR's ID as `ivr_id` and the leg's Call ID as
+  `call_id`. It may connect while the call is still ringing; audio starts once a member
+  has the call.
+- SETUP is once per call. A member added to a call that is already set up (a conference)
+  does not produce another SETUP; their audio arrives on the same stream, tagged with
+  their own `call_id`.
+- A call has one stream at a time. While an IVR or AI agent is streaming a call, the
+  human-leg stream is not open; after a handoff to a member it opens, and when a member
+  transfers the caller to an IVR or AI agent it closes.
+
 ### List Subscriptions Payments
 
 ```bash
@@ -448,7 +568,8 @@ jaxl integrations create \
 ```
 
 Supported providers are `shopify`, `shiprocket`, `shiprocket_delivery`, `exotel`,
-`twilio`, `stripe`, `stripe_subscription`, `salesmax`, `nimbuspost` and `kwik_engage`.
+`twilio`, `stripe`, `stripe_subscription`, `salesmax`, `nimbuspost`, `kwik_engage`,
+`cashfree_checkout` and `gokwik_checkout`.
 Each provider takes its own `--<provider>-...` flags, see `jaxl integrations create -h`.
 
 ## Jaxl Python SDK

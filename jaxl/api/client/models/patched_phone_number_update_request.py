@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union, cast
 
 import attr
 
+from ..models.ringing_order_enum import RingingOrderEnum
 from ..models.ringing_strategy_enum import RingingStrategyEnum
 from ..types import UNSET, Unset
 
@@ -36,11 +37,15 @@ class PatchedPhoneNumberUpdateRequest:
             frontdesk (Union[Unset, None, PatchedPhoneNumberUpdateRequestFrontdesk]): Save front desk key
             ringing_strategy (Union[None, RingingStrategyEnum, Unset]): Per-number ringing strategy override (B2B only).
                 null removes the override — runtime falls back to the default (BROADCAST).
+            ringing_order (Union[None, RingingOrderEnum, Unset]): Per-number ROUND_ROBIN ring order (B2B only): TOP_DOWN
+                rings owner, managers, team admins, then members; BOTTOM_UP is the reverse. null removes it — runtime keeps
+                today's order.
     """
 
     ivr: Union[Unset, None, int] = UNSET
     frontdesk: Union[Unset, None, "PatchedPhoneNumberUpdateRequestFrontdesk"] = UNSET
     ringing_strategy: Union[None, RingingStrategyEnum, Unset] = UNSET
+    ringing_order: Union[None, RingingOrderEnum, Unset] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -63,6 +68,20 @@ class PatchedPhoneNumberUpdateRequest:
         else:
             ringing_strategy = self.ringing_strategy
 
+        ringing_order: Union[None, Unset, str]
+        if isinstance(self.ringing_order, Unset):
+            ringing_order = UNSET
+        elif self.ringing_order is None:
+            ringing_order = None
+
+        elif isinstance(self.ringing_order, RingingOrderEnum):
+            ringing_order = UNSET
+            if not isinstance(self.ringing_order, Unset):
+                ringing_order = self.ringing_order.value
+
+        else:
+            ringing_order = self.ringing_order
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -72,6 +91,8 @@ class PatchedPhoneNumberUpdateRequest:
             field_dict["frontdesk"] = frontdesk
         if ringing_strategy is not UNSET:
             field_dict["ringing_strategy"] = ringing_strategy
+        if ringing_order is not UNSET:
+            field_dict["ringing_order"] = ringing_order
 
         return field_dict
 
@@ -119,10 +140,33 @@ class PatchedPhoneNumberUpdateRequest:
 
         ringing_strategy = _parse_ringing_strategy(d.pop("ringing_strategy", UNSET))
 
+        def _parse_ringing_order(data: object) -> Union[None, RingingOrderEnum, Unset]:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                _ringing_order_type_0 = data
+                ringing_order_type_0: Union[Unset, RingingOrderEnum]
+                if isinstance(_ringing_order_type_0, Unset):
+                    ringing_order_type_0 = UNSET
+                else:
+                    ringing_order_type_0 = RingingOrderEnum(_ringing_order_type_0)
+
+                return ringing_order_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[None, RingingOrderEnum, Unset], data)
+
+        ringing_order = _parse_ringing_order(d.pop("ringing_order", UNSET))
+
         patched_phone_number_update_request = cls(
             ivr=ivr,
             frontdesk=frontdesk,
             ringing_strategy=ringing_strategy,
+            ringing_order=ringing_order,
         )
 
         patched_phone_number_update_request.additional_properties = d

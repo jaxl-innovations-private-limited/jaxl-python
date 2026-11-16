@@ -35,6 +35,8 @@ from .call_tag_request import CallTagRequest
 from .call_tag_response import CallTagResponse
 from .call_token_request import CallTokenRequest
 from .call_token_response import CallTokenResponse
+from .call_transfer_rejected import CallTransferRejected
+from .call_transfer_rejected_errors import CallTransferRejectedErrors
 from .call_transfer_request_request import CallTransferRequestRequest
 from .call_tts_request_request import CallTtsRequestRequest
 from .call_type_enum import CallTypeEnum
@@ -55,6 +57,7 @@ from .campaign_window_request import CampaignWindowRequest
 from .can_user_resubscribe_plan import CanUserResubscribePlan
 from .canceled_by_enum import CanceledByEnum
 from .capabilities import Capabilities
+from .cashfree_checkout_auth_request_request import CashfreeCheckoutAuthRequestRequest
 from .connection import Connection
 from .content_type_enum import ContentTypeEnum
 from .country import Country
@@ -83,6 +86,7 @@ from .emoji import Emoji
 from .emoji_reaction import EmojiReaction
 from .exotel_auth_request_request import ExotelAuthRequestRequest
 from .failure_reason_enum import FailureReasonEnum
+from .go_kwik_checkout_auth_request_request import GoKwikCheckoutAuthRequestRequest
 from .id_enum import IdEnum
 from .integrations_error_response import IntegrationsErrorResponse
 from .integrations_properties_request import IntegrationsPropertiesRequest
@@ -170,6 +174,7 @@ from .provider_status_enum import ProviderStatusEnum
 from .reaction_by import ReactionBy
 from .rental_currency_enum import RentalCurrencyEnum
 from .resource_enum import ResourceEnum
+from .ringing_order_enum import RingingOrderEnum
 from .ringing_strategy_enum import RingingStrategyEnum
 from .sales_max_auth_request_request import SalesMaxAuthRequestRequest
 from .shiprocket_delivery_auth_request_request import (
@@ -249,6 +254,8 @@ __all__ = (
     "CallTagResponse",
     "CallTokenRequest",
     "CallTokenResponse",
+    "CallTransferRejected",
+    "CallTransferRejectedErrors",
     "CallTransferRequestRequest",
     "CallTtsRequestRequest",
     "CallTypeEnum",
@@ -269,6 +276,7 @@ __all__ = (
     "CanceledByEnum",
     "CanUserResubscribePlan",
     "Capabilities",
+    "CashfreeCheckoutAuthRequestRequest",
     "Connection",
     "ContentTypeEnum",
     "Country",
@@ -293,6 +301,7 @@ __all__ = (
     "EmojiReaction",
     "ExotelAuthRequestRequest",
     "FailureReasonEnum",
+    "GoKwikCheckoutAuthRequestRequest",
     "IdEnum",
     "IntegrationsErrorResponse",
     "IntegrationsPropertiesRequest",
@@ -374,6 +383,7 @@ __all__ = (
     "ReactionBy",
     "RentalCurrencyEnum",
     "ResourceEnum",
+    "RingingOrderEnum",
     "RingingStrategyEnum",
     "SalesMaxAuthRequestRequest",
     "ShiprocketDeliveryAuthRequestRequest",
