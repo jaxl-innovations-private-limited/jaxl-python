@@ -36,6 +36,8 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [AI Agent: Realtime Transcriptions STT ➡️ LLM/MCP ➡️ TTS](#ai-agent-realtime-transcriptions-stt-️-llmmcp-️-tts)
    - [List Subscriptions Payments](#list-subscriptions-payments)
    - [List Consumable Payments](#list-consumable-payments)
+   - [List Integrations](#list-integrations)
+   - [Add an Integration](#add-an-integration)
 3. [Jaxl Python SDK](#jaxl-python-sdk)
    - [SDK Example Usage](#sdk-example-usage)
 4. [JAXL HTTP Webhook Protocol](./SPECIFICATION.md)
@@ -50,17 +52,18 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
 
 ```bash
 jaxl -h
-usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams} ...
+usage: jaxl [-h] {accounts,apps,calls,campaigns,devices,integrations,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams} ...
 
 Jaxl CLI
 
 positional arguments:
-  {accounts,apps,calls,campaigns,devices,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams}
+  {accounts,apps,calls,campaigns,devices,integrations,ivrs,kycs,members,messages,notifications,orgs,payments,phones,teams}
     accounts            Manage Accounts
     apps                Manage Apps for Webhooks and Streaming audio/speech/transcriptions.
     calls               Manage Calls (Domestic & International Cellular, App-to-App)
     campaigns           Manage Campaigns
     devices             Manage Devices
+    integrations        Manage Integrations
     ivrs                Manage IVRs (Interactive Voice Response)
     kycs                Manage KYCs
     members             Manage Members
@@ -546,6 +549,28 @@ jaxl payments subscriptions list
 ```bash
 jaxl payments consumables total
 ```
+
+### List Integrations
+
+```bash
+jaxl integrations list
+```
+
+### Add an Integration
+
+```bash
+jaxl integrations create \
+  --provider exotel \
+  --exotel-api-key "<API Key>" \
+  --exotel-api-token "<API Token>" \
+  --exotel-tenant-id "<Tenant ID>" \
+  --exotel-flow-id 1234
+```
+
+Supported providers are `shopify`, `shiprocket`, `shiprocket_delivery`, `exotel`,
+`twilio`, `stripe`, `stripe_subscription`, `salesmax`, `nimbuspost`, `kwik_engage`,
+`cashfree_checkout` and `gokwik_checkout`.
+Each provider takes its own `--<provider>-...` flags, see `jaxl integrations create -h`.
 
 ## Jaxl Python SDK
 
