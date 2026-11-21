@@ -165,6 +165,31 @@ You can also search for a specific purchased number:
 jaxl phones list --e164 "+CC<Purchased Jaxl Number>"
 ```
 
+### List Organization Members
+
+```bash
+# all members
+jaxl members list
+
+# one member, by their email ID
+jaxl members list --email "member@example.com"
+
+# several members, repeat the flag per email ID
+jaxl members list --email "member@example.com" --email "manager@example.com"
+
+# several members, using shell brace expansion
+jaxl members list --email={member@example.com,manager@example.com}
+
+# shorter still when the domain is shared
+jaxl members list --email={member,manager}@example.com
+
+# You can pipe the output to grep to keep only the fields you need. For example, to print just the member id, user_id, app_user_id and email ID:
+
+jaxl members list --email "member@example.com" \
+  | grep -oP "\bid=\d+, user_id=\d+, app_user_id=\d+, email='[^']*'"
+```
+
+
 ### Assign a Phone Number to IVR by ID
 
 All incoming calls to this number will send user to the assigned IVR.
@@ -375,11 +400,11 @@ Transfer to a phone number:
 jaxl calls transfer --call-id 1234 --phone +CC<Mobile Number>
 ```
 
-Transfer to a member by email. `--appusers` takes a Jaxl App User ID, not an email, so resolve it from `jaxl members list` first:
+Transfer to a member by email. `--appusers` takes a Jaxl App User ID, not an email, so resolve it from `jaxl members list --email` first:
 
 ```bash
-jaxl members list | grep -oP "OrganizationEmployee\(id=\d+, user_id=\d+, app_user_id=\d+, email='[^']*'" 
-# find the matching member's email in the list, note its app_user_id, then:
+jaxl members list --email "member@example.com"
+# note the `app_user_id` from the response, then:
 jaxl calls transfer --call-id 1234 --appusers <app_user_id>
 ```
 
@@ -590,6 +615,7 @@ sdk = JaxlSDK()
 response = sdk.calls.create(to="+CC<Callee Number>", from_="+CC<Purchased Jaxl Number>", ivr=1234)
 response = sdk.calls.list(currency=2) # 1=USD, 2=INR
 response = sdk.accounts.me()
+response = sdk.members.list(member_email=["member@example.com", "manager@example.com"])
 ```
 
 ## SDK Documentation
