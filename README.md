@@ -182,20 +182,13 @@ jaxl members list --email={member@example.com,manager@example.com}
 
 # shorter still when the domain is shared
 jaxl members list --email={member,manager}@example.com
-```
 
-You can pipe the output to `grep` to keep only the fields you need. For example,
-to print just the member `id`, `app_user_id` and email ID:
+# You can pipe the output to grep to keep only the fields you need. For example, to print just the member id, user_id, app_user_id and email ID:
 
-```bash
 jaxl members list --email "member@example.com" \
-  | grep -oP "\bid=\d+, user_id=\d+, app_user_id=\d+, email='[^']*'" \
-  | sed -E "s/user_id=[0-9]+, //"
+  | grep -oP "\bid=\d+, user_id=\d+, app_user_id=\d+, email='[^']*'"
 ```
 
-```
-id=24, app_user_id=35, email='member@example.com'
-```
 
 ### Assign a Phone Number to IVR by ID
 
