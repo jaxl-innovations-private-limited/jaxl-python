@@ -8,7 +8,6 @@ with or without modification, is strictly prohibited.
 """
 
 import argparse
-import hashlib
 from typing import Any, Dict
 
 from jaxl.api._client import JaxlApiModule, jaxl_api_client
@@ -18,12 +17,7 @@ from jaxl.api.client.models.paginated_dh_message_list import (
 )
 from jaxl.api.client.types import Response
 from jaxl.api.resources._constants import DEFAULT_LIST_LIMIT
-
-
-def _sha256(data: str) -> str:
-    key = hashlib.sha256()
-    key.update(data.encode())
-    return key.hexdigest()
+from jaxl.api.resources._utils import sha256_hexdigest
 
 
 def messages_list(args: Dict[str, Any]) -> Response[PaginatedDHMessageList]:
@@ -34,7 +28,10 @@ def messages_list(args: Dict[str, Any]) -> Response[PaginatedDHMessageList]:
             auth_token=args.get("auth_token", None),
         ),
         limit=args.get("limit", DEFAULT_LIST_LIMIT),
-        okey=[_sha256(member_email) for member_email in args.get("member_email", [])],
+        okey=[
+            sha256_hexdigest(member_email)
+            for member_email in args.get("member_email", [])
+        ],
         mid=None,
         offset=None,
     )
