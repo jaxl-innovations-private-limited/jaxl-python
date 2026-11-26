@@ -29,6 +29,7 @@ Use Jaxl from Python code or directly via the `jaxl` command-line tool.
    - [Unhold a Participant in an Active Call](#unhold-a-participant-in-an-active-call)
    - [Get call details](#get-call-details)
    - [Transfer an Active Call](#transfer-an-active-call)
+   - [Run a Campaign on a Custom IVR](#run-a-campaign-on-a-custom-ivr)
    - [Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs)
    - [Realtime Streaming Audio](#realtime-streaming-audio)
    - [Realtime Streaming Speech Segments](#realtime-streaming-speech-segments)
@@ -415,6 +416,75 @@ jaxl teams list | grep -oP "OrganizationGroupResponse\(id=\d+, name='[^']*'"
 # find the matching team's name in the list, note its id, then:
 jaxl calls transfer --call-id 1234 --teams <team_id>
 ```
+
+Transfer to an IVR. `--next` takes an IVR ID, which you can find with `jaxl ivrs list`:
+
+```bash
+jaxl ivrs list --limit 100 \
+  | grep -oP "IVRMenuResponse\(id=\d+, name='[^']*'" 
+  
+# note the matching IVR's id, then:
+jaxl calls transfer --call-id 1234 --next <ivr_id>
+```
+
+Unlike the campaign override described in
+[Run a Campaign on a Custom IVR](#run-a-campaign-on-a-custom-ivr), `--next` accepts
+**any** of your IVRs — a webhook IVR as well as a plain DTMF/TTS one that Jaxl serves
+itself.
+
+
+### Run a Campaign on a Custom IVR
+
+A campaign normally runs on one of Jaxl's hosted AI agents (`--type ai --ai-id <shortcode>`).
+To run it on one of **your own** IVRs instead, use `--type ivr` with the IVR's ID:
+
+```bash
+jaxl campaigns create \
+  --type ivr --ivr-id <ivr_id> \
+  --path leads.csv --country-code IN \
+  --template "Hello {customer_name}, your order {order_id}..." \
+  --start-time 09:00 --end-time 19:00 --timezone Asia/Kolkata
+```
+
+Find the IVR's ID with `jaxl ivrs list`. The IVR must be **your organization's own
+webhook IVR** — see
+[Receive Call Events via Webhook IVRs](#receive-call-events-via-webhook-ivrs). An IVR
+belonging to another organization, or a non-webhook IVR, is rejected:
+
+```
+IVR <id> is not a webhook IVR.
+IVR <id> not found for this account.
+```
+
+`leads.csv` needs a `target` column of E.164 phone numbers, plus a column for every
+placeholder used in `--template`. An example `leads.csv` is like:
+
+```csv
+target,customer_name,order_id
++919876543210,Asha,ORD1001
++919812345678,Rahul,ORD1002
+```
+
+Here `--template "Hello {customer_name}, your order {order_id}..."` resolves to
+`Hello Asha, your order ORD1001...` for the first row — one call per row.
+
+Two things to know about `--template` on this path:
+
+- It is **not** spoken by Jaxl. Every column of the CSV row is substituted into it, and
+  the result is handed to your webhook inside the IVR state as
+  `state.greeting_message`, alongside the raw columns in `state.metadata`. Your webhook
+  decides whether to speak it, use it as the agent's prompt, or ignore it.
+- Your webhook must answer the SETUP event with `200`. While it is unreachable, calls
+  connect and then play *"An application error has occurred"*, or drop as missed calls
+  if SETUP exhausts its retries before the callee answers.
+
+The created campaign reports `cta_type=6` (AI agent) with `cta_id` set to your IVR's ID:
+
+```
+Campaign(id=751, cta_type=<CtaTypeEnum.VALUE_6: 6>, cta_id=63, run_at=None)
+```
+
+Calls are placed **sequentially**, one target after the previous call completes.
 
 ### Receive Call Events via Webhook IVRs
 
